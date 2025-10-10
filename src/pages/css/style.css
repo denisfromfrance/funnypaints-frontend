@@ -1,0 +1,249 @@
+.cta-button{
+    background-color: #FFAA00;
+    color: black;
+    transition: transform 0.3s ease-in-out;
+    border: none;
+    outline: none;
+    border-radius: 10px;
+    padding: 5px 10px 5px 10px;
+}
+
+.cta-button:hover{
+    transform: scale(1.02);
+    background-color: #EE8800;
+}
+
+
+.step-card{
+    background-color: #2e2e2e !important;
+    color: white !important;
+    box-shadow: 0px 0px 10px 1px #555;
+    transition: transform 0.1s ease-in-out;
+}
+
+.step-card:hover{
+    transform: scale(1.03);
+}
+
+
+.authentication-form{
+    background-color: #EEEEFF;
+    box-shadow: 0px 0px 0px 0px #DDF;
+    transition: transform 0.3s ease-in-out;
+}
+
+.authentication-form:hover{
+    transform: scale(1.02);
+    animation: popupForm;
+    animation-timing-function: ease-in-out;
+    animation-duration: 0.3s;
+    animation-fill-mode: forwards;
+}
+
+.authentication-form:not(:hover){
+    transform: scale(1.0);
+    animation: normalForm;
+    animation-timing-function: ease-in-out;
+    animation-duration: 0.3s;
+    animation-fill-mode: forwards;
+}
+
+
+@keyframes popupForm {
+    from{
+        box-shadow: 0px 0px  0px 0px #DDF;
+    }
+
+    to{
+        box-shadow: 5px 5px 0px 0px #DDF;
+    }
+}
+
+@keyframes normalForm {
+    from{
+        box-shadow: 5px 5px 0px 0px #DDF;
+    }
+
+    to{
+        box-shadow: 0px 0px  0px 0px #DDF;
+    }
+}
+
+
+
+.form-field{
+    background-color: white !important;
+}
+
+
+.admin-dashboard-card{
+    position: relative;
+    border-radius: 8px;
+    padding: 10px;
+    /* overflow: hidden; */
+    background-color: white;
+}
+
+.admin-dashboard-card::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: conic-gradient(from 0deg, #0000FF, #AA00FF, #FF0000, #FFAA00, #FF5555, #FF0000, #AA00FF, #0000FF, #00AAFF, #0000FF);
+    padding: 2px;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    border-radius: 8px;
+    z-index: 1;
+}
+
+.tools-button {
+    display: none;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    background-color: transparent;
+    color: white !important;
+}
+
+
+.tools-button:hover {
+    background-color: #FFF1;
+    backdrop-filter: blur(10px);
+}
+
+.image-card{
+    transition: transform 0.2s ease-in-out;
+    position: relative;
+}
+
+.image-card:hover{
+    transform: scale(1.03);
+}
+
+.image-card:hover .tools-button{
+    display: inline;
+}
+
+
+.review-card{
+    box-shadow: 2px 2px 5px 1px #000A !important;
+    background-color: #DDDDFF !important;
+}
+
+.wall-image-container{
+    display: grid !important;
+    grid-template-columns: repeat(33%, 33%, 33%);
+    grid-template-rows: auto;
+}
+
+.new-request-button{
+    background: linear-gradient(45deg, #AA00FF, #0000FF);
+    color: white;
+    font-weight: bold;
+}
+
+
+.request-card{
+    background-color: #335588;
+}
+
+
+.clipped-background::before{
+    content: '';
+    inset: 0;
+    z-index: -1;
+    position: absolute;
+    background: linear-gradient(45deg, #000 1%, #0000 30%), url("../../assets/ChatGPT Image Jul 4, 2025, 01_24_45 PM.webp");
+    background-size: "cover";
+    clip-path: polygon(0% 0%, 50% 0%, 70% 100%, 0% 100%);
+}
+
+
+input:-webkit-autofill {
+    background-color: white !important;
+    -webkit-box-shadow: 0 0 0 1000px white inset !important;
+    -webkit-text-fill-color: #000 !important;
+}
+
+
+.move-up-on-visible{
+    margin-top: 10px;
+    animation: move-up-animation 0.3s ease-in-out;
+}
+
+@keyframes move-up-animation {
+    from{
+        margin-top: 10px;
+        opacity: 0.0;
+    }
+
+    to{
+        margin-top: 0px;
+        opacity: 1.0;
+    }
+}
+
+
+.whatsapp-button{
+    background-color: transparent !important;
+    border: 3px solid #00DD00 !important;
+    color: #0D0 !important;
+    font-weight: bolder;
+    font-size: 18px;
+}
+
+.whatsapp-button:hover{
+    background-color: #00DD00 !important;
+    color: #050 !important;
+}
+
+
+.popup-delay-02{
+    transform: scale(0);
+    transition: transform 0.3s ease-in-out;
+    transition-delay: 0.2s;
+}
+
+.popup-delay-04 {
+    transform: scale(0);
+    transition: transform 0.3s ease-in-out;
+    transition-delay: 0.4s;
+}
+
+.popup-delay-06 {
+    transform: scale(0);
+    transition: transform 0.3s ease-in-out;
+    transition-delay: 0.6s;
+}
+
+.popup-delay-08 {
+    transform: scale(0);
+    transition: transform 0.3s ease-in-out;
+    transition-delay: 0.8s;
+}
+
+.delayed-popup-card{
+
+}
+
+.popup-delay-1 {
+    transform: scale(0);
+    transition: transform 0.3s ease-in-out;
+    transition-delay: 1s;
+}
+
+.popup-delay-02.show{
+    transform: scale(1.0);
+}
+.popup-delay-04.show{
+    transform: scale(1.0);
+}
+.popup-delay-06.show{
+    transform: scale(1.0);
+}
+.popup-delay-08.show{
+    transform: scale(1.0);
+}
+.popup-delay-1.show{
+    transform: scale(1.0);
+}
