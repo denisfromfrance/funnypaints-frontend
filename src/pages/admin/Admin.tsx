@@ -2,9 +2,9 @@ import { ReactElement, useEffect, useState,  useRef } from "react";
 import { Accordion, AccordionBody, AccordionHeader, ButtonGroup, Card, CardBody, CardHeader, Col, Nav, NavItem, NavLink, Row, TabContainer, TabContent, TabPane, ToggleButton } from "react-bootstrap";
 
 import "../css/style.css";
-import { ADD_NEW_CATEGORY_URL, ADD_SIZE_URL, CHANGE_PAINTING, CHANGE_REQUEST_STATUS, DELETE_CATEGORY, DELETE_MODEL_IMAGE, GET_CATEGORIES_URL, GET_REQUESTS_URL, GET_SIZES_URL, GET_STATUSES_URL, POST_WALL_IMAGES_URL, RENAME_CATEGORY, UPLOAD_SUITS } from "../../state/Constants";
+import { ADD_NEW_CATEGORY_URL, ADD_SIZE_URL, CHANGE_PAINTING, CHANGE_REQUEST_STATUS, DELETE_CATEGORY, DELETE_MODEL_IMAGE, DELETE_PREVIEW_IMAGE, GET_CATEGORIES_URL, GET_PREVIEW_IMAGE, GET_REQUESTS_URL, GET_SIZES_URL, GET_STATUSES_URL, POST_WALL_IMAGES_URL, RENAME_CATEGORY, UPLOAD_SUITS } from "../../state/Constants";
 import { GET, POST, POSTMedia } from "../../utils/Utils";
-import { Category, ModelImage, PaintingRequestStatus, Size } from "../../state/Types";
+import { Category, ModelImage, PaintingRequestStatus, Size, WallImage } from "../../state/Types";
 import { CheckCircle, ClockHistory, Folder, PencilFill, TrashFill } from "react-bootstrap-icons";
 import DialogBox from "./dialogs/Dialog";
 
@@ -70,6 +70,35 @@ export default function Admin(): ReactElement{
             console.log(response.data.message);
         });
     }
+
+
+    const [previewImages, setPreviewImages] = useState<WallImage[]>([]);
+    const getPreviewImages = async () => {
+      GET(
+        GET_PREVIEW_IMAGE,
+        (response: any) => {
+          const data = response.data;
+          setPreviewImages(data.previewImages);
+        },
+        (response: any) => {
+          console.log(response);
+        }
+      );
+    };
+
+    const deletePreviewImage = async (id: number) => {
+      POST(
+        DELETE_PREVIEW_IMAGE,
+        {imageID: id},
+        (response: any) => {
+          const data = response.data;
+          setPreviewImages(data.previewImages);
+        },
+        (response: any) => {
+          console.log(response);
+        }
+      );
+    };
 
     // const uploadModelImages = (data: any) => {
     //     POSTMedia(POST_MODEL_IMAGES_URL, data, (response: any) => {
@@ -259,7 +288,7 @@ export default function Admin(): ReactElement{
             getCategories();
             getStatuses();
             getRequests();
-
+            getPreviewImages();
             getSizes();
 
             setPendingRequests(0);
@@ -758,7 +787,7 @@ export default function Admin(): ReactElement{
         <Row className="py-5 pt-5 mt-4 vw-100 vh-100 overflow-y-scroll overflow-x-hidden">
           <TabContainer defaultActiveKey={"dashboard"}>
             <Row>
-              <Col xs={2}>
+              <Col xs={2} style={{backgroundColor: "#3300FF11"}}>
                 <Nav
                   variant="pills"
                   defaultActiveKey={"dashboard"}
@@ -771,14 +800,17 @@ export default function Admin(): ReactElement{
                     <NavLink eventKey="requests">Requests</NavLink>
                   </NavItem>
                   <NavItem>
-                    <NavLink eventKey="images">Images</NavLink>
+                    <NavLink eventKey="paints">Paints</NavLink>
+                  </NavItem>
+                  <NavItem>
+                    <NavLink eventKey="preview-images">Preview Images</NavLink>
                   </NavItem>
                   <NavItem>
                     <NavLink eventKey="customization">Customization</NavLink>
                   </NavItem>
                 </Nav>
               </Col>
-              <Col xs={10}>
+              <Col xs={10} className="ps-3">
                 <TabContent>
                   <TabPane eventKey={"dashboard"}>
                     <Col xs={12}>
@@ -989,7 +1021,7 @@ export default function Admin(): ReactElement{
                     </Col>
                   </TabPane>
 
-                  <TabPane eventKey={"images"}>
+                  <TabPane eventKey={"paints"}>
                     <Row>
                       <Col xs={2}>
                         <Row className="gap-3">
@@ -1033,7 +1065,7 @@ export default function Admin(): ReactElement{
                                 ))}
                               </select>
                             </Row>
-                            <Row>
+                            {/* <Row>
                               <input
                                 type="file"
                                 className="form-control"
@@ -1044,7 +1076,7 @@ export default function Admin(): ReactElement{
                                   }
                                 }}
                               />
-                            </Row>
+                            </Row> */}
                             <Row>
                               <button
                                 className="btn btn-primary"
@@ -1130,51 +1162,6 @@ export default function Admin(): ReactElement{
                               </button>
                             </Row>
                           </Col>
-
-                          <Col xs={12} className="rounded-2 bg-white p-3">
-                            <Row
-                              className="fs-6 fw-semibold ps-2 rounded-top-2"
-                              style={{ backgroundColor: "#5500FF33" }}
-                            >
-                              Add Image On The Wall
-                            </Row>
-                            <Row className="pt-1">
-                              <input
-                                type="file"
-                                className="form-control"
-                                multiple={true}
-                                onChange={(event) => {
-                                  const files = event.target.files;
-                                  if (files) {
-                                    setSelectedImagesOfTheWall(
-                                      Array.from(files)
-                                    );
-                                  }
-                                }}
-                              />
-                            </Row>
-                            <Row className="pt-3 justify-content-end gap-3">
-                              <button
-                                className="btn btn-primary"
-                                onClick={() => {
-                                  const formData = new FormData();
-                                  if (selectedModelImage) {
-                                    formData.append(
-                                      "modelImageID",
-                                      selectedModelImage.imageID.toString()
-                                    );
-                                  }
-
-                                  selectedImagesOfTheWall.forEach((file) => {
-                                    formData.append("wallImages", file);
-                                  });
-                                  uploadImagesOnTheWall(formData);
-                                }}
-                              >
-                                UPLOAD
-                              </button>
-                            </Row>
-                          </Col>
                         </Row>
                         <Row>
                           {showToast ? (
@@ -1238,78 +1225,166 @@ export default function Admin(): ReactElement{
                                 </Col>
                               </Row>
                             </AccordionHeader>
-                            <AccordionBody className="d-flex flex-row ps-5 pt-3 gap-3">
-                              {category.images.map((image) => (
-                                <Card
-                                  className="d-flex flex-column justify-content-start align-items-center image-card"
-                                  style={{
-                                    width: "200px",
-                                    height: "300px",
-                                    backgroundColor: "#EEEEEE",
-                                    backgroundImage: `url('${image.image}')`,
-                                    backgroundSize: "cover",
-                                    backgroundRepeat: "no-repeat",
-                                    backgroundPosition: "center",
-                                  }}
-                                >
-                                  <Row
-                                    style={{ height: "100%" }}
-                                    className="w-100 justify-content-end align-items-center"
+                            <AccordionBody className="d-flex flex-row ps-5 pt-3 ">
+                              <Row className="gap-3 flex-nowrap overflow-x-auto overflow-y-hidden">
+                                {category.images.map((image) => (
+                                  <Card
+                                    className="d-flex flex-column justify-content-start align-items-center image-card"
+                                    style={{
+                                      width: "200px",
+                                      height: "300px",
+                                      backgroundColor: "#EEEEEE",
+                                      backgroundImage: `url('${image.image}')`,
+                                      backgroundSize: "cover",
+                                      backgroundRepeat: "no-repeat",
+                                      backgroundPosition: "center",
+                                    }}
                                   >
-                                    <Col
-                                      xs={2}
-                                      className="pe-4 me-2 pt-3 d-flex flex-column justify-content-start align-items-center"
+                                    <Row
+                                      style={{ height: "100%" }}
+                                      className="w-100 justify-content-end align-items-center"
                                     >
-                                      <button
-                                        className="tools-button"
-                                        onClick={() => {
-                                          deleteModelImage(image.imageID);
-                                        }}
+                                      <Col
+                                        xs={2}
+                                        className="h-100 pe-2 me-2 pt-3 d-flex flex-column justify-content-start align-items-center"
                                       >
-                                        <TrashFill />
-                                      </button>
+                                        <button
+                                          className="tools-button"
+                                          onClick={() => {
+                                            deleteModelImage(image.imageID);
+                                          }}
+                                        >
+                                          <TrashFill />
+                                        </button>
 
-                                      <button
-                                        className="tools-button"
-                                        onClick={() => {
-                                          setSelectedModelImage(image);
+                                        <button
+                                          className="tools-button"
+                                          onClick={() => {
+                                            setSelectedModelImage(image);
 
-                                          setAddProductDialogVisibleRef(false);
-                                          setEditProductDialogBoxVisibleRef(
-                                            true
-                                          );
-                                        }}
-                                      >
-                                        <PencilFill />
-                                      </button>
-                                    </Col>
-                                  </Row>
-                                  <Row
-                                    className="pb-3 d-none align-items-end d-none"
-                                    style={{ height: "50%" }}
-                                  >
-                                    <Col
-                                      xs={12}
-                                      className="d-flex justify-content-center align-items-end"
+                                            setAddProductDialogVisibleRef(
+                                              false
+                                            );
+                                            setEditProductDialogBoxVisibleRef(
+                                              true
+                                            );
+                                          }}
+                                        >
+                                          <PencilFill />
+                                        </button>
+                                      </Col>
+                                    </Row>
+                                    <Row
+                                      className="pb-3 d-none align-items-end d-none"
+                                      style={{ height: "50%" }}
                                     >
-                                      <button
-                                        className="btn w-auto text-white add-a-preview-button"
-                                        style={{ backgroundColor: "#80F" }}
-                                        onClick={() => {
-                                          setSelectedModelImage(image);
-                                          setOpenWallImageUploadDialogBox(true);
-                                        }}
+                                      <Col
+                                        xs={12}
+                                        className="d-flex justify-content-center align-items-end"
                                       >
-                                        Add a preview
-                                      </button>
-                                    </Col>
-                                  </Row>
-                                </Card>
-                              ))}
+                                        <button
+                                          className="btn w-auto text-white add-a-preview-button"
+                                          style={{ backgroundColor: "#80F" }}
+                                          onClick={() => {
+                                            setSelectedModelImage(image);
+                                            setOpenWallImageUploadDialogBox(
+                                              true
+                                            );
+                                          }}
+                                        >
+                                          Add a preview
+                                        </button>
+                                      </Col>
+                                    </Row>
+                                  </Card>
+                                ))}
+                              </Row>
                             </AccordionBody>
                           </Accordion>
                         ))}
                       </Col>
+                    </Row>
+                  </TabPane>
+                  <TabPane eventKey={"preview-images"}>
+                    <Row>
+                      <Col xs={12} className="rounded-2 bg-white p-3">
+                        <Row className="fs-6 fw-semibold ps-2 rounded-top-2">
+                          <Col xs={12}>Add Preview Image</Col>
+                        </Row>
+                        <Row className="pt-1">
+                          <Col xs={12} md={5} lg={4} xl={3}>
+                            <input
+                              type="file"
+                              className="form-control"
+                              multiple={true}
+                              onChange={(event) => {
+                                const files = event.target.files;
+                                if (files) {
+                                  setSelectedImagesOfTheWall(Array.from(files));
+                                }
+                              }}
+                            />
+                          </Col>
+                          <Col xs={12} md={3} lg={2}>
+                            <button
+                              className="btn btn-primary"
+                              onClick={() => {
+                                const formData = new FormData();
+                                if (selectedModelImage) {
+                                  formData.append(
+                                    "modelImageID",
+                                    selectedModelImage.imageID.toString()
+                                  );
+                                }
+
+                                selectedImagesOfTheWall.forEach((file) => {
+                                  formData.append("wallImages", file);
+                                });
+                                uploadImagesOnTheWall(formData);
+                              }}
+                            >
+                              UPLOAD
+                            </button>
+                          </Col>
+                        </Row>
+                      </Col>
+                      <Row className="gap-2 gap-md-3">
+                        {previewImages?.map((image) => {
+                          return (
+                            <Card
+                              style={{
+                                width: "230px",
+                                height: "215px",
+                                backgroundRepeat: "no-repeat",
+                                backgroundImage: `URL(${image.image})`,
+                                backgroundSize: "contain",
+                              }}
+                              className="image-card"
+                            >
+                              {/* {image.image} */}
+                              <Row
+                                style={{ height: "100%" }}
+                                className="w-100 justify-content-end align-items-center"
+                              >
+                                <Col
+                                  xs={2}
+                                  className="h-100 pt-3 d-flex flex-column justify-content-start align-items-center"
+                                >
+                                  <button
+                                    style={{ backgroundColor: "#F00" }}
+                                    className="tools-button"
+                                    onClick={() => {
+                                      deletePreviewImage(image.wallImageID);
+                                    }}
+                                  >
+                                    <TrashFill />
+                                  </button>
+                                </Col>
+                              </Row>
+                            </Card>
+                          );
+                        })}
+                      </Row>
                     </Row>
                   </TabPane>
                   <TabPane eventKey="customization">
