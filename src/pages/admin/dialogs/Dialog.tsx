@@ -23,6 +23,7 @@ export default function DialogBox(props: any): ReactElement {
           <button
             className="btn btn-danger w-auto"
             onClick={() => {
+              props?.onNegativeButtonClick();
               props.setVisible(false);
             }}
           >

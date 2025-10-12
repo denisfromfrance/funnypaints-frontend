@@ -297,6 +297,7 @@ export default function Admin(): ReactElement{
                 "product-change-image-field"
               ) as HTMLInputElement
             );
+            
             newImage.files = null;
             newImage.value = "";
             setImageSelectedRef(false);
@@ -699,7 +700,7 @@ export default function Admin(): ReactElement{
                 />
               </Col>
             </Row>
-            <Row className="w-100 justify-content-center" style={{flex: 1}}>
+            <Row className="w-100 justify-content-center" style={{ flex: 1 }}>
               <label
                 id="product-change-image-field-label"
                 htmlFor="product-change-image-field"
@@ -802,7 +803,7 @@ export default function Admin(): ReactElement{
                     <input
                       id="product-change-paint-small-size"
                       type="number"
-                      defaultValue={selectedModelImage?.smallSize}
+                      defaultValue={selectedModelImage?.smallPaintOnCanvasSize}
                       className="form-control"
                     />
                   </Col>
@@ -812,7 +813,7 @@ export default function Admin(): ReactElement{
                     </label>
                     <input
                       id="product-change-paint-medium-size"
-                      defaultValue={selectedModelImage?.mediumSize}
+                      defaultValue={selectedModelImage?.mediumPaintOnCanvasSize}
                       type="number"
                       className="form-control"
                     />
@@ -823,7 +824,7 @@ export default function Admin(): ReactElement{
                     </label>
                     <input
                       id="product-change-paint-large-size"
-                      defaultValue={selectedModelImage?.largeSize}
+                      defaultValue={selectedModelImage?.largePaintOnCanvasSize}
                       type="number"
                       className="form-control"
                     />
@@ -844,7 +845,7 @@ export default function Admin(): ReactElement{
                     <input
                       id="product-change-print-metal-small-size"
                       type="number"
-                      defaultValue={selectedModelImage?.smallSize}
+                      defaultValue={selectedModelImage?.smallPrintMetalSize}
                       className="form-control"
                     />
                   </Col>
@@ -854,7 +855,7 @@ export default function Admin(): ReactElement{
                     </label>
                     <input
                       id="product-change-print-metal-medium-size"
-                      defaultValue={selectedModelImage?.mediumSize}
+                      defaultValue={selectedModelImage?.mediumPrintMetalSize}
                       type="number"
                       className="form-control"
                     />
@@ -865,7 +866,7 @@ export default function Admin(): ReactElement{
                     </label>
                     <input
                       id="product-change-print-metal-large-size"
-                      defaultValue={selectedModelImage?.largeSize}
+                      defaultValue={selectedModelImage?.largePrintMetalSize}
                       type="number"
                       className="form-control"
                     />
@@ -886,7 +887,7 @@ export default function Admin(): ReactElement{
                     <input
                       id="product-change-print-paper-small-size"
                       type="number"
-                      defaultValue={selectedModelImage?.smallSize}
+                      defaultValue={selectedModelImage?.smallPrintPaperSize}
                       className="form-control"
                     />
                   </Col>
@@ -896,7 +897,7 @@ export default function Admin(): ReactElement{
                     </label>
                     <input
                       id="product-change-print-paper-medium-size"
-                      defaultValue={selectedModelImage?.mediumSize}
+                      defaultValue={selectedModelImage?.mediumPrintPaperSize}
                       type="number"
                       className="form-control"
                     />
@@ -907,7 +908,7 @@ export default function Admin(): ReactElement{
                     </label>
                     <input
                       id="product-change-print-paper-large-size"
-                      defaultValue={selectedModelImage?.largeSize}
+                      defaultValue={selectedModelImage?.largePrintPaperSize}
                       type="number"
                       className="form-control"
                     />
