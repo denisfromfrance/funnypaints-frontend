@@ -1,27 +1,32 @@
-import {useState, type ReactElement, } from "react";
+import {useState, type ReactElement, useEffect } from "react";
 import { Navbar, NavbarBrand, Row, Col, NavbarCollapse, Nav, NavItem, NavLink, NavbarToggle, Container, Dropdown } from "react-bootstrap";
-import { Cart2, Cart3, Cart4, CartFill, EnvelopeAt, House, Telephone, Whatsapp } from "react-bootstrap-icons";
+import { Cart4, EnvelopeAt, House, Telephone, Whatsapp } from "react-bootstrap-icons";
 import { BsInstagram } from "react-icons/bs";
 import { FaBrush } from "react-icons/fa6";
 import { MdFacebook } from "react-icons/md";
 import { RiTwitterXFill } from "react-icons/ri";
 
 import "../pages/css/style.css";
-import { GET } from "../utils/Utils";
-import { GET_CART_ITEMS } from "../state/Constants";
+// import { GET } from "../utils/Utils";
+// import { GET_CART_ITEMS } from "../state/Constants";
 
 export default function UserBase(props: any): ReactElement{
 
   const [cartItems, setCartItems] = useState([]);
 
-  const getCartData = async() => {
-    const response = GET(GET_CART_ITEMS, (response: any) => {
-      if (response.data.status == "ok"){
+  // const getCartData = async() => {
+  //   const response = GET(GET_CART_ITEMS, (response: any) => {
+  //     if (response.data.status == "ok"){
 
-      }
+  //     }
 
-    }, () => {});
-  }
+  //   }, () => {});
+  // }
+
+
+  useEffect(() => {
+    setCartItems([]);
+  }, []);
 
     return (
       <>

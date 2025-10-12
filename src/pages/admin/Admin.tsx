@@ -207,7 +207,7 @@ export default function Admin(): ReactElement{
       editProductDialogBoxVisibleRef.current = data;
     }
 
-    const [productAddUpdateStatusMessage, setProductAddUpdateStatusMessage] = useState<string | null>(null);
+    // const [productAddUpdateStatusMessage, setProductAddUpdateStatusMessage] = useState<string | null>(null);
     const [selectedCategoryForNewImage, setSelectedCategoryForNewImage] = useState<number | null>(null);
     const [imageSelected, setImageSelected] = useState<boolean>(false);
     const imageSelectedRef = useRef(imageSelected);
@@ -662,7 +662,7 @@ export default function Admin(): ReactElement{
             changeSelectedModelImage(data);
           }}
         >
-          {productAddUpdateStatusMessage ? (
+          {/* {productAddUpdateStatusMessage ? (
             <Col
               xs={12}
               className="mb-3 d-flex justify-content-end align-items-center"
@@ -686,7 +686,7 @@ export default function Admin(): ReactElement{
             </Col>
           ) : (
             <></>
-          )}
+          )} */}
           <Col xs={6} className="d-flex flex-column gap-2">
             <Row>
               <Col xs={12} className="ps-0">

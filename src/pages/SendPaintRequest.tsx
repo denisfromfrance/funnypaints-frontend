@@ -1,8 +1,8 @@
-import { Card, CardBody, CardHeader, Col, Row } from "react-bootstrap";
+import { Card, CardHeader, Col, Row } from "react-bootstrap";
 import {useState, type ReactElement, useEffect} from "react";
-import { Category, ModelImage, Size, Suit, WallImage } from "../state/Types";
+import { Category, ModelImage, Suit, WallImage } from "../state/Types";
 import { GET, POSTMedia } from "../utils/Utils";
-import { GET_CATEGORIES_URL, GET_WALL_IMAGES_URL, REQUEST_ART_URL, GET_SIZES_URL, ADD_ITEMS_TO_THE_CART, GET_SUITS } from "../state/Constants";
+import { GET_CATEGORIES_URL, GET_WALL_IMAGES_URL, REQUEST_ART_URL, GET_SUITS } from "../state/Constants";
 
 import "./css/style.css";
 import { useSearchParams } from "react-router-dom";
@@ -79,19 +79,19 @@ export default function SendPaintRequest(): ReactElement{
   //   );
   // };
 
-  const addToCart = async(modelImage: Number, wallImage: Number, userSelectedImage: File) => {
-    const formData = new FormData();
-      formData.append("modelImage", modelImage.toString());
-      formData.append("wallImage", wallImage.toString());
-      formData.append("userSelectedImage", userSelectedImage);
-      POSTMedia(ADD_ITEMS_TO_THE_CART, formData, (request: any) => {
-          if (request.data.status == "ok"){
-              alert("Request made successfully!");
-          }
-      }, (request: any) => {
-          console.log(request.message);
-      })
-  }
+  // const addToCart = async(modelImage: Number, wallImage: Number, userSelectedImage: File) => {
+  //   const formData = new FormData();
+  //     formData.append("modelImage", modelImage.toString());
+  //     formData.append("wallImage", wallImage.toString());
+  //     formData.append("userSelectedImage", userSelectedImage);
+  //     POSTMedia(ADD_ITEMS_TO_THE_CART, formData, (request: any) => {
+  //         if (request.data.status == "ok"){
+  //             alert("Request made successfully!");
+  //         }
+  //     }, (request: any) => {
+  //         console.log(request.message);
+  //     })
+  // }
 
   const [suits, setSuits] = useState<Suit[]>([]);
   const getSuits = async() => {
@@ -128,6 +128,8 @@ export default function SendPaintRequest(): ReactElement{
           // getSizes();
           getSuits();
       }, 2000);
+
+      console.log(categories);
 
       return () => clearInterval(interval);
   }, []);
