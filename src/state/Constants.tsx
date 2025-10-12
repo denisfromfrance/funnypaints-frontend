@@ -18,6 +18,7 @@ export const POST_WALL_IMAGES_URL = "admin/wall-images/add";
 export const GET_WALL_IMAGES_URL = "admin/wall-images/get";
 export const GET_REQUESTS_URL = "admin/painting-requests";
 export const REQUEST_ART_URL = "/art/request"
+export const GET_SUITS = "data/suits";
 
 export const DELETE_CATEGORY = "admin/category/delete";
 export const RENAME_CATEGORY = "admin/category/rename";
@@ -39,5 +40,7 @@ export const ADD_SIZE_URL = "data/sizes/add";
 export const UPDATE_PROFILE_INFORMATION = "users/profile/update";
 export const GET_PROFILE_INFORMATION = "users/profile/get-information";
 export const UPLOAD_PROFILE_IMAGE = "users/profile/upload-profile-image";
+export const GET_CART_ITEMS = "users/cart/items/get";
+export const ADD_ITEMS_TO_THE_CART = "users/cart/add";
 
 export const CHANGE_REQUEST_STATUS = "admin/change-painting-request-status";

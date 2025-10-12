@@ -1,8 +1,8 @@
 import { Card, CardBody, CardHeader, Col, Row } from "react-bootstrap";
 import {useState, type ReactElement, useEffect} from "react";
-import { Category, ModelImage, Size, WallImage } from "../state/Types";
+import { Category, ModelImage, Size, Suit, WallImage } from "../state/Types";
 import { GET, POSTMedia } from "../utils/Utils";
-import { GET_CATEGORIES_URL, GET_WALL_IMAGES_URL, REQUEST_ART_URL, GET_SIZES_URL } from "../state/Constants";
+import { GET_CATEGORIES_URL, GET_WALL_IMAGES_URL, REQUEST_ART_URL, GET_SIZES_URL, ADD_ITEMS_TO_THE_CART, GET_SUITS } from "../state/Constants";
 
 import "./css/style.css";
 import { useSearchParams } from "react-router-dom";
@@ -62,17 +62,45 @@ export default function SendPaintRequest(): ReactElement{
       })
   }
 
-  const [selectedSize, setSelectedSize] = useState<Size | null>();
-  const [sizes, setSizes] = useState<Size[]>();
-  const getSizes = () => {
-    GET(
-      GET_SIZES_URL,
-      (response: any) => {
-        setSizes(response.data.sizes);
-      },
-      () => {}
-    );
-  };
+  // const [selectedSize, setSelectedSize] = useState<Size | null>();
+  const [selectedSize, setSelectedSize] = useState<{
+    size: string;
+    price: number | undefined;
+  } | null>();
+  // const [sizes, setSizes] = useState<Size[]>();
+  const [sizes, setSizes] = useState<{size: string, price: number | undefined}[]>();
+  // const getSizes = () => {
+  //   GET(
+  //     GET_SIZES_URL,
+  //     (response: any) => {
+  //       setSizes(response.data.sizes);
+  //     },
+  //     () => {}
+  //   );
+  // };
+
+  const addToCart = async(modelImage: Number, wallImage: Number, userSelectedImage: File) => {
+    const formData = new FormData();
+      formData.append("modelImage", modelImage.toString());
+      formData.append("wallImage", wallImage.toString());
+      formData.append("userSelectedImage", userSelectedImage);
+      POSTMedia(ADD_ITEMS_TO_THE_CART, formData, (request: any) => {
+          if (request.data.status == "ok"){
+              alert("Request made successfully!");
+          }
+      }, (request: any) => {
+          console.log(request.message);
+      })
+  }
+
+  const [suits, setSuits] = useState<Suit[]>([]);
+  const getSuits = async() => {
+    GET(GET_SUITS, (response: any) => {
+      if (response.data.status == "ok"){
+        setSuits(response.data?.suits)
+      }
+    }, () => {});
+  }
 
   const sendPaintRequest = (modelImage: Number, wallImage: Number, userSelectedImage: File) => {
       const formData = new FormData();
@@ -97,7 +125,8 @@ export default function SendPaintRequest(): ReactElement{
       const interval = setInterval(() => {
           getCategories();
           getWallImages();
-          getSizes();
+          // getSizes();
+          getSuits();
       }, 2000);
 
       return () => clearInterval(interval);
@@ -229,8 +258,9 @@ export default function SendPaintRequest(): ReactElement{
                 borderRadius: "10px",
                 overflow: "hidden",
                 backgroundRepeat: "no-repeat",
-                backgroundSize:
-                  `${540 * imagePreviewScale}px ${495 * imagePreviewScale}px`,
+                backgroundSize: `${540 * imagePreviewScale}px ${
+                  495 * imagePreviewScale
+                }px`,
                 backgroundPosition: "center",
               }}
             >
@@ -472,17 +502,83 @@ export default function SendPaintRequest(): ReactElement{
                 className="form-select"
                 onChange={(event) => {
                   const selectedValue = event.target.value;
-                  categories?.forEach((value) => {
-                    if (parseInt(selectedValue) === value.id) {
-                      setSelectedCategory(value);
-                    }
-                  });
+                  // categories?.forEach((value) => {
+                  //   if (parseInt(selectedValue) === value.id) {
+                  //     setSelectedCategory(value);
+                  //   }
+                  // });
+
+                  if (selectedValue == "paint-on-canvas") {
+                    setSizes([
+                      {
+                        size: "small",
+                        price: selectedModelImage?.smallPaintOnCanvasSize,
+                      },
+                      {
+                        size: "medium",
+                        price: selectedModelImage?.mediumPaintOnCanvasSize,
+                      },
+                      {
+                        size: "large",
+                        price: selectedModelImage?.largePaintOnCanvasSize,
+                      },
+                    ]);
+                  } else if (selectedValue == "print-on-canvas") {
+                    setSizes([
+                      {
+                        size: "small",
+                        price: selectedModelImage?.smallSize,
+                      },
+                      {
+                        size: "medium",
+                        price: selectedModelImage?.mediumSize,
+                      },
+                      {
+                        size: "large",
+                        price: selectedModelImage?.largeSize,
+                      },
+                    ]);
+                  } else if (selectedValue == "print-on-metal") {
+                    setSizes([
+                      {
+                        size: "small",
+                        price: selectedModelImage?.smallPrintMetalSize,
+                      },
+                      {
+                        size: "medium",
+                        price: selectedModelImage?.mediumPrintMetalSize,
+                      },
+                      {
+                        size: "large",
+                        price: selectedModelImage?.largePrintMetalSize,
+                      },
+                    ]);
+                  } else if (selectedValue == "print-on-paper") {
+                    setSizes([
+                      {
+                        size: "small",
+                        price: selectedModelImage?.smallPrintPaperSize,
+                      },
+                      {
+                        size: "medium",
+                        price: selectedModelImage?.mediumPrintPaperSize,
+                      },
+                      {
+                        size: "large",
+                        price: selectedModelImage?.largePrintPaperSize,
+                      },
+                    ]);
+                  }
                 }}
               >
                 <option>Select the category</option>
-                {categories?.map((category) => (
+                <option value="paint-on-canvas">Paint On Canvas</option>
+                <option value="print-on-canvas">Print On Canvas</option>
+                <option value="print-on-metal">Print On Metal</option>
+                <option value="print-on-paper">Print On Paper</option>
+                {/* {categories?.map((category) => (
                   <option value={category.id}>{category.category}</option>
-                ))}
+                ))} */}
               </select>
             </Row>
           </Col>
@@ -528,6 +624,36 @@ export default function SendPaintRequest(): ReactElement{
                 style={{
                   width: "200px",
                   border:
+                    selectedSize?.size == size.size ? "solid 3px #0055FF" : "",
+                }}
+                onClick={() => {
+                  setSelectedSize(size);
+                }}
+              >
+                <CardHeader className="justify-content-center text-center">
+                  <Row>
+                    <Col xs={6}>{size.size}</Col>
+                    <Col xs={6}>${size.price}</Col>
+                  </Row>
+                </CardHeader>
+                {/* <CardBody>
+                  <Row className="text-center justify-content-center">
+                    {size.width}
+                    {size.unit} x {size.height}
+                    {size.unit}
+                  </Row>
+                </CardBody> */}
+              </Card>
+            );
+          })}
+
+          {/* {sizes?.map((size) => {
+            return (
+              <Card
+                className=""
+                style={{
+                  width: "200px",
+                  border:
                     selectedSize?.id == size.id ? "solid 3px #0055FF" : "",
                 }}
                 onClick={() => {
@@ -549,7 +675,29 @@ export default function SendPaintRequest(): ReactElement{
                 </CardBody>
               </Card>
             );
-          })}
+          })} */}
+        </Row>
+      </Col>
+      <Col xs={12} className="px-2 px-md-5">
+        <Row className="justify-content-center">
+          <Col xs={12} md={8}>
+            <Row className="pb-2">Select the suitable suit for your animal</Row>
+            <Row className="flex-wrap gap-3">
+              {suits?.map((suit) => {
+                return (
+                  <Card
+                    style={{
+                      width: "120px",
+                      height: "120px",
+                      backgroundImage: `url(${suit.suitImage})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }}
+                  ></Card>
+                );
+              })}
+            </Row>
+          </Col>
         </Row>
       </Col>
     </Row>

@@ -7,14 +7,23 @@ export type WallImage = {
 
 
 export type ModelImage = {
-    imageID: number,
-    image: string,
-    productName: string,
-    wallImages: WallImage[],
-    smallSize?: string,
-    mediumSize?: string,
-    largeSize?: string
-}
+  imageID: number;
+  image: string;
+  productName: string;
+  wallImages: WallImage[];
+  smallSize?: number;
+  mediumSize?: number;
+  largeSize?: number;
+  smallPaintOnCanvasSize?: number,
+  mediumPaintOnCanvasSize?: number,
+  largePaintOnCanvasSize?: number,
+  smallPrintMetalSize?: number,
+  mediumPrintMetalSize?: number,
+  largePrintMetalSize?: number,
+  smallPrintPaperSize?: number,
+  mediumPrintPaperSize?: number,
+  largePrintPaperSize?: number
+};
 
 
 export type Category = {
@@ -72,4 +81,10 @@ export type UserProfileInformation = {
     city: City,
     street: string,
     profileImage: string
+}
+
+
+export type Suit = {
+    id: number,
+    suitImage: string
 }

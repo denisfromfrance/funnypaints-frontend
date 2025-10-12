@@ -1,14 +1,28 @@
-import {type ReactElement, } from "react";
-import { Navbar, NavbarBrand, Row, Col, NavbarCollapse, Nav, NavItem, NavLink, NavbarToggle, Container } from "react-bootstrap";
-import { EnvelopeAt, House, Telephone, Whatsapp } from "react-bootstrap-icons";
+import {useState, type ReactElement, } from "react";
+import { Navbar, NavbarBrand, Row, Col, NavbarCollapse, Nav, NavItem, NavLink, NavbarToggle, Container, Dropdown } from "react-bootstrap";
+import { Cart2, Cart3, Cart4, CartFill, EnvelopeAt, House, Telephone, Whatsapp } from "react-bootstrap-icons";
 import { BsInstagram } from "react-icons/bs";
 import { FaBrush } from "react-icons/fa6";
 import { MdFacebook } from "react-icons/md";
 import { RiTwitterXFill } from "react-icons/ri";
 
 import "../pages/css/style.css";
+import { GET } from "../utils/Utils";
+import { GET_CART_ITEMS } from "../state/Constants";
 
 export default function UserBase(props: any): ReactElement{
+
+  const [cartItems, setCartItems] = useState([]);
+
+  const getCartData = async() => {
+    const response = GET(GET_CART_ITEMS, (response: any) => {
+      if (response.data.status == "ok"){
+
+      }
+
+    }, () => {});
+  }
+
     return (
       <>
         <Navbar
@@ -63,6 +77,38 @@ export default function UserBase(props: any): ReactElement{
           </Container>
           <Container>
             <Row className="w-100 justify-content-end ps-4 d-none d-md-flex">
+              <Dropdown className="w-auto position-relative">
+                <Dropdown.Toggle
+                  id="cart"
+                  className="border-0"
+                  style={{ background: "transparent" }}
+                >
+                  <Cart4 color="#FFF" className="" size={28} />
+                </Dropdown.Toggle>
+                <Dropdown.Menu className="">
+                  <Dropdown.Item href="#item">Item 1</Dropdown.Item>
+                  <Dropdown.Item href="#item">Item 2</Dropdown.Item>
+                  <Dropdown.Item href="#item">Item 3</Dropdown.Item>
+                  <Row className="justify-content-center align-items-center">
+                    <Col xs={12} className="px-4">
+                      <button className="w-100 btn btn-primary">Checkout</button>
+                    </Col>
+                  </Row>
+                </Dropdown.Menu>
+                <span
+                  className="position-absolute bottom-0 end-0 me-3 d-flex justify-content-center align-items-center text-white"
+                  style={{
+                    width: "20px",
+                    height: "20px",
+                    backgroundColor: "#00AAFF",
+                    borderRadius: "10px",
+                    pointerEvents: "none",
+                    fontSize: "12px",
+                  }}
+                >
+                  {cartItems?.length}
+                </span>
+              </Dropdown>
               {props.authenticated ? (
                 <>
                   <a href="/profile" className="w-auto">
@@ -116,7 +162,10 @@ export default function UserBase(props: any): ReactElement{
                   Contact Me
                 </Row>
                 <Row className="pt-4 align-items-center justify-content-center justify-content-lg-start">
-                  <Col xs={12} className="d-flex flex-column gap-2 text-white-50">
+                  <Col
+                    xs={12}
+                    className="d-flex flex-column gap-2 text-white-50"
+                  >
                     <Row className="gap-2">
                       <Col xs={1}>
                         <EnvelopeAt color="#888" size={24} className="w-auto" />
@@ -137,7 +186,7 @@ export default function UserBase(props: any): ReactElement{
                     </Row>
                     <Row className="gap-2 justify-content-center pt-2">
                       <button className="btn whatsapp-button px-3">
-                        <Whatsapp size={24}/> WhatsApp
+                        <Whatsapp size={24} /> WhatsApp
                       </button>
                     </Row>
                   </Col>
@@ -170,7 +219,9 @@ export default function UserBase(props: any): ReactElement{
 
               <Col xs={12} md={3} lg={2}>
                 <Row className="pt-4">
-                  <button className="w-100 cta-button fs-5">Order My Painting</button>
+                  <button className="w-100 cta-button fs-5">
+                    Order My Painting
+                  </button>
                 </Row>
               </Col>
             </Row>

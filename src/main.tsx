@@ -32,7 +32,7 @@ function Application(){
         <Route path='/' element={<PublicView element={<Home />} authenticated={isAuthenticatedRef.current} setAuthenticated={setIsAuthenticatedRef}/> } />
         <Route path='/signup' element={<PublicView element={<SignUp setAuthenticated={setIsAuthenticatedRef}/>} authenticated={isAuthenticatedRef.current} setAuthenticated={setIsAuthenticatedRef}/> } />
         <Route path='/signin' element={<PublicView element={<SignIn setAuthenticated={setIsAuthenticatedRef}/>} authenticated={isAuthenticatedRef.current} setAuthenticated={setIsAuthenticatedRef}/> } />
-        <Route path='/order-an-art' element={<ProtectedView element={<SendPaintRequest />} authenticated={isAuthenticatedRef.current} setAuthenticated={setIsAuthenticatedRef}/> } />
+        <Route path='/order-an-art' element={<PublicView element={<SendPaintRequest />} authenticated={isAuthenticatedRef.current} setAuthenticated={setIsAuthenticatedRef}/> } />
         <Route path='/admin/login' element={<AdminLogin />} />
         <Route path='/admin' element={<AdminBase element={<Admin />} />} />
         <Route path='/profile' element={<ProtectedView element={<Profile />} authenticated={isAuthenticatedRef.current} setAuthenticated={setIsAuthenticatedRef} />} />

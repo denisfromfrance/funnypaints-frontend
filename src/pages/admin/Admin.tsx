@@ -1,12 +1,13 @@
-import { ReactElement, useEffect, useState,  useRef } from "react";
+import { ReactElement, useEffect, useState,  useRef, ReactNode } from "react";
 import { Accordion, AccordionBody, AccordionHeader, ButtonGroup, Card, CardBody, CardHeader, Col, Nav, NavItem, NavLink, Row, TabContainer, TabContent, TabPane, ToggleButton } from "react-bootstrap";
 
 import "../css/style.css";
 import { ADD_NEW_CATEGORY_URL, ADD_SIZE_URL, CHANGE_PAINTING, CHANGE_REQUEST_STATUS, DELETE_CATEGORY, DELETE_MODEL_IMAGE, DELETE_PREVIEW_IMAGE, GET_CATEGORIES_URL, GET_PREVIEW_IMAGE, GET_REQUESTS_URL, GET_SIZES_URL, GET_STATUSES_URL, POST_WALL_IMAGES_URL, RENAME_CATEGORY, UPLOAD_SUITS } from "../../state/Constants";
 import { GET, POST, POSTMedia } from "../../utils/Utils";
 import { Category, ModelImage, PaintingRequestStatus, Size, WallImage } from "../../state/Types";
-import { CheckCircle, ClockHistory, Folder, PencilFill, TrashFill } from "react-bootstrap-icons";
+import { CheckCircle, CheckCircleFill, ClockHistory, Folder, PencilFill, TrashFill } from "react-bootstrap-icons";
 import DialogBox from "./dialogs/Dialog";
+import Toast from "./controls/Toast";
 
 
 type PaintRequest = {
@@ -28,6 +29,9 @@ type PaintRequest = {
 export default function Admin(): ReactElement{
     const [toastText, setToastText] = useState("");
     const [showToast, setShowToast] = useState(false);
+
+    const [toast, setToast] = useState<ReactNode | null | string>();
+
 
     // const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
@@ -217,7 +221,14 @@ export default function Admin(): ReactElement{
     const deleteCategory = (categoryID: number) => {
       POST(DELETE_CATEGORY, {categoryID: categoryID}, (response: any) => {
         if(response.data.status == "ok"){
-
+          setToast(
+            <Row className="gap-3">
+              <span>
+                <CheckCircleFill color="#00FF00" />
+              </span>
+              Category deleted successfully!
+            </Row>
+          );
         }
       }, () => {});
     }
@@ -230,6 +241,14 @@ export default function Admin(): ReactElement{
         (response: any) => {
           if (response.data.status == "ok") {
             setCategoryNameEditable(false);
+            setToast(
+              <Row className="gap-3">
+                <span>
+                  <CheckCircleFill color="#00FF00" />
+                </span>
+                Category renamed successfully!
+              </Row>
+            );
           }
         },
         () => {}
@@ -241,6 +260,12 @@ export default function Admin(): ReactElement{
         DELETE_MODEL_IMAGE, {modelID: modelID},
         (response: any) => {
           if (response.data.status == "ok") {
+            setToast(
+            <Row className="gap-3">
+              <span><CheckCircleFill color="#00FF00"/></span>
+              Model image deleted successfully!
+            </Row>
+            );
           }
         },
         () => {}
@@ -255,7 +280,18 @@ export default function Admin(): ReactElement{
           if (response.data.status == "ok") {
             // setEditProductDialogBoxVisibleRef(false);
             setSelectedModelImage(null);
-            setProductAddUpdateStatusMessage("Product " + (editProductDialogBoxVisibleRef.current ? "Updated" : "Added") + " Successfully!");
+            setToast(
+              <Row className="gap-3">
+                <span>
+                  <CheckCircleFill color="#00FF00" />
+                </span>
+                {"Product " +
+                  (editProductDialogBoxVisibleRef.current
+                    ? "Updated"
+                    : "Added") +
+                  " Successfully!"}
+              </Row>
+            );
             const newImage = (
               document.getElementById(
                 "product-change-image-field"
@@ -265,10 +301,10 @@ export default function Admin(): ReactElement{
             newImage.value = "";
             setImageSelectedRef(false);
             setSelectedImage(null);
-            const timeout = setTimeout(() => {
-              setProductAddUpdateStatusMessage(null);
-            }, 3000);
-            return () => clearTimeout(timeout);
+            // const timeout = setTimeout(() => {
+            //   setProductAddUpdateStatusMessage(null);
+            // }, 3000);
+            // return () => clearTimeout(timeout);
           }
         },
         () => {}
@@ -278,10 +314,18 @@ export default function Admin(): ReactElement{
     const uploadSuits = (data: any) => {
       POSTMedia(UPLOAD_SUITS, data, (response: any) => {
         if (response.data.status == "ok"){
-          alert("Suits uploaded successfully");
+          setToast(
+            <Row className="gap-1">
+              <span className="w-auto">
+                <CheckCircleFill size={22} color="#00FF00" className="w-auto"/>
+              </span>
+              <span className="w-auto">Suits uploaded successfully!</span>
+            </Row>
+          );
         }
       }, () => {});
     }
+
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -304,6 +348,7 @@ export default function Admin(): ReactElement{
 
     return (
       <>
+        <Toast text={toast} />
         <Row
           className={
             (openWallImageUploadDialogBox ? "d-flex" : "d-none") +
@@ -423,7 +468,7 @@ export default function Admin(): ReactElement{
         </DialogBox>
 
         <DialogBox
-          size={6}
+          size={7}
           title={
             editProductDialogBoxVisibleRef.current
               ? "Edit Product"
@@ -448,12 +493,15 @@ export default function Admin(): ReactElement{
               smallSizePrice?: number;
               mediumSizePrice?: number;
               largeSizePrice?: number;
-              smallPaintSize?: number;
-              mediumPaintSize?: number;
-              largePaintSize?: number;
+              smallPaintOnCanvasSize?: number;
+              mediumPaintOnCanvasSize?: number;
+              largePaintOnCanvasSize?: number;
               smallPrintMetalSize?: number;
               mediumPrintMetalSize?: number;
               largePrintMetalSize?: number;
+              smallPrintPaperSize?: number;
+              mediumPrintPaperSize?: number;
+              largePrintPaperSize?: number;
             } = {};
 
             if (
@@ -535,6 +583,24 @@ export default function Admin(): ReactElement{
               ) as HTMLInputElement
             ).value;
 
+            const newSmallPrintPaperSize = (
+              document.getElementById(
+                "product-change-print-paper-small-size"
+              ) as HTMLInputElement
+            ).value;
+
+            const newMediumPrintPaperSize = (
+              document.getElementById(
+                "product-change-print-paper-medium-size"
+              ) as HTMLInputElement
+            ).value;
+
+            const newLargePrintPaperSize = (
+              document.getElementById(
+                "product-change-print-paper-large-size"
+              ) as HTMLInputElement
+            ).value;
+
             if (newImage) {
               if (newImage?.length > 0) {
                 data.modelImage = newImage[0];
@@ -558,15 +624,15 @@ export default function Admin(): ReactElement{
             }
 
             if (newSmallPaintSize) {
-              data.smallPaintSize = parseFloat(newSmallPaintSize);
+              data.smallPaintOnCanvasSize = parseFloat(newSmallPaintSize);
             }
 
             if (newMediumPaintSize) {
-              data.mediumPaintSize = parseFloat(newMediumPaintSize);
+              data.mediumPaintOnCanvasSize = parseFloat(newMediumPaintSize);
             }
 
             if (newLargePaintSize) {
-              data.largePaintSize = parseFloat(newLargePaintSize);
+              data.largePaintOnCanvasSize = parseFloat(newLargePaintSize);
             }
 
             if (newSmallPrintMetalSize) {
@@ -579,6 +645,18 @@ export default function Admin(): ReactElement{
 
             if (newLargePrintMetalSize) {
               data.largePrintMetalSize = parseFloat(newLargePrintMetalSize);
+            }
+
+            if (newSmallPrintPaperSize) {
+              data.smallPrintPaperSize = parseFloat(newSmallPrintPaperSize);
+            }
+
+            if (newMediumPrintPaperSize) {
+              data.mediumPrintPaperSize = parseFloat(newMediumPrintPaperSize);
+            }
+
+            if (newLargePrintPaperSize) {
+              data.largePrintPaperSize = parseFloat(newLargePrintPaperSize);
             }
 
             changeSelectedModelImage(data);
@@ -609,55 +687,9 @@ export default function Admin(): ReactElement{
           ) : (
             <></>
           )}
-          <Col xs={6}>
-            <label
-              id="product-change-image-field-label"
-              htmlFor="product-change-image-field"
-              className="w-100 h-100  d-flex flex-column justify-content-center align-items-center"
-              style={{
-                width: "200px",
-                height: "300px",
-                backgroundColor: "#EEEEEE",
-                backgroundSize: "contain",
-                backgroundRepeat: "no-repeat",
-                cursor: "pointer",
-                backgroundPosition: "center",
-                backgroundImage: `url(${
-                  selectedModelImage
-                    ? selectedModelImage?.image
-                    : selectedImage
-                    ? selectedImage
-                    : ""
-                })`,
-              }}
-            >
-              {!selectedModelImage && !selectedImage ? (
-                <>
-                  <div className="">
-                    <Folder size={42} />
-                  </div>
-                  <div className="">Click Here to select an image</div>
-                </>
-              ) : (
-                ""
-              )}
-            </label>
-            <input
-              type="file"
-              id="product-change-image-field"
-              multiple={false}
-              hidden={true}
-              onChange={(event) => {
-                const files = event.target.files;
-                if (files) {
-                  setSelectedImage(URL.createObjectURL(files[0]));
-                }
-              }}
-            />
-          </Col>
-          <Col xs={6}>
-            <Row className="gap-3">
-              <Col xs={12}>
+          <Col xs={6} className="d-flex flex-column gap-2">
+            <Row>
+              <Col xs={12} className="ps-0">
                 <label htmlFor="product-change-product-name">Name</label>
                 <input
                   id="product-change-product-name"
@@ -666,8 +698,60 @@ export default function Admin(): ReactElement{
                   className="form-control"
                 />
               </Col>
-              <Col xs={12} className="border border-1 rounded-2 pb-2">
-                <Row className="fw-semibold ps-2 pb-2">Print On Canvas</Row>
+            </Row>
+            <Row className="w-100 justify-content-center" style={{flex: 1}}>
+              <label
+                id="product-change-image-field-label"
+                htmlFor="product-change-image-field"
+                className=" d-flex justify-content-center align-items-center"
+                style={{
+                  backgroundColor: "#EEEEEE",
+                  backgroundSize: "contain",
+                  backgroundRepeat: "no-repeat",
+                  cursor: "pointer",
+                  backgroundPosition: "center",
+                  backgroundImage: `url(${
+                    selectedModelImage
+                      ? selectedModelImage?.image
+                      : selectedImage
+                      ? selectedImage
+                      : ""
+                  })`,
+                }}
+              >
+                {!selectedModelImage && !selectedImage ? (
+                  <>
+                    <div className="">
+                      <Folder size={42} />
+                    </div>
+                    <div className="">Click Here to select an image</div>
+                  </>
+                ) : (
+                  ""
+                )}
+              </label>
+              <input
+                type="file"
+                id="product-change-image-field"
+                multiple={false}
+                hidden={true}
+                onChange={(event) => {
+                  const files = event.target.files;
+                  if (files) {
+                    setSelectedImage(URL.createObjectURL(files[0]));
+                  }
+                }}
+              />
+            </Row>
+          </Col>
+          <Col xs={6}>
+            <Row className="gap-2">
+              <Col
+                xs={12}
+                style={{ backgroundColor: "#5500FF0F" }}
+                className="border border-1 rounded-2 pb-2"
+              >
+                <Row className="fw-semibold ps-2 pb-0">Print On Canvas</Row>
                 <Row>
                   <Col xs={4}>
                     <label htmlFor="product-change-small-size">
@@ -704,8 +788,12 @@ export default function Admin(): ReactElement{
                   </Col>
                 </Row>
               </Col>
-              <Col xs={12} className="border border-1 rounded-2 pb-2">
-                <Row className="fw-semibold ps-2 pb-2">Paint On Canvas</Row>
+              <Col
+                xs={12}
+                style={{ backgroundColor: "#5500FF0F" }}
+                className="border border-1 rounded-2 pb-2"
+              >
+                <Row className="fw-semibold ps-2 pb-0">Paint On Canvas</Row>
                 <Row>
                   <Col xs={4}>
                     <label htmlFor="product-change-paint-small-size">
@@ -742,8 +830,12 @@ export default function Admin(): ReactElement{
                   </Col>
                 </Row>
               </Col>
-              <Col xs={12} className="border border-1 rounded-2 pb-2">
-                <Row className="fw-semibold ps-2 pb-2">Print On Metal</Row>
+              <Col
+                xs={12}
+                style={{ backgroundColor: "#5500FF0F" }}
+                className="border border-1 rounded-2 pb-2"
+              >
+                <Row className="fw-semibold ps-2 pb-0">Print On Metal</Row>
                 <Row>
                   <Col xs={4}>
                     <label htmlFor="product-change-print-metal-small-size">
@@ -780,6 +872,48 @@ export default function Admin(): ReactElement{
                   </Col>
                 </Row>
               </Col>
+              <Col
+                xs={12}
+                style={{ backgroundColor: "#5500FF0F" }}
+                className="border border-1 rounded-2 pb-2"
+              >
+                <Row className="fw-semibold ps-2 pb-0">Print On Paper</Row>
+                <Row>
+                  <Col xs={4}>
+                    <label htmlFor="product-change-print-paper-small-size">
+                      Small Size
+                    </label>
+                    <input
+                      id="product-change-print-paper-small-size"
+                      type="number"
+                      defaultValue={selectedModelImage?.smallSize}
+                      className="form-control"
+                    />
+                  </Col>
+                  <Col xs={4}>
+                    <label htmlFor="product-change-print-paper-medium-size">
+                      Medium Size
+                    </label>
+                    <input
+                      id="product-change-print-paper-medium-size"
+                      defaultValue={selectedModelImage?.mediumSize}
+                      type="number"
+                      className="form-control"
+                    />
+                  </Col>
+                  <Col xs={4}>
+                    <label htmlFor="product-change-print-paper-large-size">
+                      Large Size
+                    </label>
+                    <input
+                      id="product-change-print-paper-large-size"
+                      defaultValue={selectedModelImage?.largeSize}
+                      type="number"
+                      className="form-control"
+                    />
+                  </Col>
+                </Row>
+              </Col>
             </Row>
           </Col>
         </DialogBox>
@@ -787,7 +921,7 @@ export default function Admin(): ReactElement{
         <Row className="py-5 pt-5 mt-4 vw-100 vh-100 overflow-y-scroll overflow-x-hidden">
           <TabContainer defaultActiveKey={"dashboard"}>
             <Row>
-              <Col xs={2} style={{backgroundColor: "#3300FF11"}}>
+              <Col xs={2} style={{ backgroundColor: "#3300FF11" }}>
                 <Nav
                   variant="pills"
                   defaultActiveKey={"dashboard"}
