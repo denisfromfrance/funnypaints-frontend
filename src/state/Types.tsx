@@ -6,23 +6,32 @@ export type WallImage = {
 }
 
 
+export type ProductVariation = {
+  variation?: Variation | null | undefined;
+  sizes?: { id?: number; price?: number; sizeObj: Size | null }[];
+};
+
+
+
 export type ModelImage = {
   imageID: number;
   image: string;
+  categoryID: number;
   productName: string;
   wallImages: WallImage[];
   smallSize?: number;
   mediumSize?: number;
   largeSize?: number;
-  smallPaintOnCanvasSize?: number,
-  mediumPaintOnCanvasSize?: number,
-  largePaintOnCanvasSize?: number,
-  smallPrintMetalSize?: number,
-  mediumPrintMetalSize?: number,
-  largePrintMetalSize?: number,
-  smallPrintPaperSize?: number,
-  mediumPrintPaperSize?: number,
-  largePrintPaperSize?: number
+  smallPaintOnCanvasSize?: number;
+  mediumPaintOnCanvasSize?: number;
+  largePaintOnCanvasSize?: number;
+  smallPrintMetalSize?: number;
+  mediumPrintMetalSize?: number;
+  largePrintMetalSize?: number;
+  smallPrintPaperSize?: number;
+  mediumPrintPaperSize?: number;
+  largePrintPaperSize?: number;
+  variations: ProductVariation[];
 };
 
 
@@ -68,7 +77,7 @@ export type Size = {
     width: number,
     height: number,
     unit: string,
-    price: number
+    price?: number
 }
 
 
@@ -87,4 +96,9 @@ export type UserProfileInformation = {
 export type Suit = {
     id: number,
     suitImage: string
+}
+
+export type Variation = {
+    id: number,
+    variation: string
 }

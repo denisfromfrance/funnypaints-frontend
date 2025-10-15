@@ -2,12 +2,13 @@ import { ReactElement, useEffect, useState,  useRef, ReactNode } from "react";
 import { Accordion, AccordionBody, AccordionHeader, ButtonGroup, Card, CardBody, CardHeader, Col, Nav, NavItem, NavLink, Row, TabContainer, TabContent, TabPane, ToggleButton } from "react-bootstrap";
 
 import "../css/style.css";
-import { ADD_NEW_CATEGORY_URL, ADD_SIZE_URL, CHANGE_PAINTING, CHANGE_REQUEST_STATUS, DELETE_CATEGORY, DELETE_MODEL_IMAGE, DELETE_PREVIEW_IMAGE, GET_CATEGORIES_URL, GET_PREVIEW_IMAGE, GET_REQUESTS_URL, GET_SIZES_URL, GET_STATUSES_URL, POST_WALL_IMAGES_URL, RENAME_CATEGORY, UPLOAD_SUITS } from "../../state/Constants";
+import { ADD_NEW_CATEGORY_URL, ADD_SIZE_URL, CHANGE_REQUEST_STATUS, DELETE_CATEGORY, DELETE_MODEL_IMAGE, DELETE_PREVIEW_IMAGE, GET_CATEGORIES_URL, GET_PREVIEW_IMAGE, GET_REQUESTS_URL, GET_SIZES_URL, GET_STATUSES_URL, POST_WALL_IMAGES_URL, RENAME_CATEGORY } from "../../state/Constants";
 import { GET, POST, POSTMedia } from "../../utils/Utils";
-import { Category, ModelImage, PaintingRequestStatus, Size, WallImage } from "../../state/Types";
-import { CheckCircle, CheckCircleFill, ClockHistory, Folder, PencilFill, TrashFill } from "react-bootstrap-icons";
-import DialogBox from "./dialogs/Dialog";
+import { Category, ModelImage, PaintingRequestStatus, Size, Variation, WallImage } from "../../state/Types";
+import { CheckCircle, CheckCircleFill, ClockHistory, PencilFill, Trash, TrashFill } from "react-bootstrap-icons";
 import Toast from "./controls/Toast";
+import AddEditProduct from "./pages/AddEditProduct";
+import Variations from "./pages/Settings/Variations";
 
 
 type PaintRequest = {
@@ -27,8 +28,8 @@ type PaintRequest = {
 
 
 export default function Admin(): ReactElement{
-    const [toastText, setToastText] = useState("");
-    const [showToast, setShowToast] = useState(false);
+    // const [toastText, setToastText] = useState("");
+    // const [showToast, setShowToast] = useState(false);
 
     const [toast, setToast] = useState<ReactNode | null | string>();
 
@@ -36,15 +37,16 @@ export default function Admin(): ReactElement{
     // const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
     const displayToast = (message: string) => {
-        setToastText(message);
-        setShowToast(true);
+      console.log(message);
+        // setToastText(message);
+        // setShowToast(true);
 
-        const timeout = setTimeout(() => {
-            setToastText("");
-            setShowToast(false);
-        }, 2000);
+        // const timeout = setTimeout(() => {
+            // setToastText("");
+            // setShowToast(false);
+        // }, 2000);
 
-        clearTimeout(timeout);
+        // clearTimeout(timeout);
     }
 
     const createCategory = async() => {
@@ -193,30 +195,30 @@ export default function Admin(): ReactElement{
 
     }
 
-    const [addProductDialogVisible, setAddProductDialogVisible] = useState(false);
-    const addProductDialogVisibleRef = useRef(addProductDialogVisible);
-    const setAddProductDialogVisibleRef = (data: boolean) => {
-      setAddProductDialogVisible(data);
-      addProductDialogVisibleRef.current = data;
-    };
+    // const [addProductDialogVisible, setAddProductDialogVisible] = useState(false);
+    // const addProductDialogVisibleRef = useRef(addProductDialogVisible);
+    // const setAddProductDialogVisibleRef = (data: boolean) => {
+    //   setAddProductDialogVisible(data);
+    //   addProductDialogVisibleRef.current = data;
+    // };
 
-    const [editProductDialogBoxVisible, setEditProductDialogBoxVisible] = useState(false);
-    const editProductDialogBoxVisibleRef = useRef(editProductDialogBoxVisible);
-    const setEditProductDialogBoxVisibleRef = (data: boolean) => {
-      setEditProductDialogBoxVisible(data);
-      editProductDialogBoxVisibleRef.current = data;
-    }
+    // const [editProductDialogBoxVisible, setEditProductDialogBoxVisible] = useState(false);
+    // const editProductDialogBoxVisibleRef = useRef(editProductDialogBoxVisible);
+    // const setEditProductDialogBoxVisibleRef = (data: boolean) => {
+    //   setEditProductDialogBoxVisible(data);
+    //   editProductDialogBoxVisibleRef.current = data;
+    // }
 
     // const [productAddUpdateStatusMessage, setProductAddUpdateStatusMessage] = useState<string | null>(null);
-    const [selectedCategoryForNewImage, setSelectedCategoryForNewImage] = useState<number | null>(null);
-    const [imageSelected, setImageSelected] = useState<boolean>(false);
-    const imageSelectedRef = useRef(imageSelected);
-    const setImageSelectedRef = (data: boolean) => {
-      setImageSelected(data);
-      imageSelectedRef.current = data;
-    }
+    // const [selectedCategoryForNewImage, setSelectedCategoryForNewImage] = useState<number | null>(null);
+    // const [imageSelected, setImageSelected] = useState<boolean>(false);
+    // const imageSelectedRef = useRef(imageSelected);
+    // const setImageSelectedRef = (data: boolean) => {
+    //   setImageSelected(data);
+    //   imageSelectedRef.current = data;
+    // }
 
-    const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    // const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
     const deleteCategory = (categoryID: number) => {
       POST(DELETE_CATEGORY, {categoryID: categoryID}, (response: any) => {
@@ -233,14 +235,14 @@ export default function Admin(): ReactElement{
       }, () => {});
     }
 
-    const [categoryNameEditable, setCategoryNameEditable] = useState(false);
+    // const [categoryNameEditable, setCategoryNameEditable] = useState(false);
     const renameCategory = (categoryID: number, name: string) => {
       POST(
         RENAME_CATEGORY,
         { categoryID: categoryID, name: name },
         (response: any) => {
           if (response.data.status == "ok") {
-            setCategoryNameEditable(false);
+            // setCategoryNameEditable(false);
             setToast(
               <Row className="gap-3">
                 <span>
@@ -272,61 +274,85 @@ export default function Admin(): ReactElement{
       );
     };
 
-    const changeSelectedModelImage = (data: any) => {
-      POSTMedia(
-        CHANGE_PAINTING,
-        data,
-        (response: any) => {
-          if (response.data.status == "ok") {
-            // setEditProductDialogBoxVisibleRef(false);
-            setSelectedModelImage(null);
-            setToast(
-              <Row className="gap-3">
-                <span>
-                  <CheckCircleFill color="#00FF00" />
-                </span>
-                {"Product " +
-                  (editProductDialogBoxVisibleRef.current
-                    ? "Updated"
-                    : "Added") +
-                  " Successfully!"}
-              </Row>
-            );
-            const newImage = (
-              document.getElementById(
-                "product-change-image-field"
-              ) as HTMLInputElement
-            );
+    // const changeSelectedModelImage = (data: any) => {
+    //   POSTMedia(
+    //     CHANGE_PAINTING,
+    //     data,
+    //     (response: any) => {
+    //       if (response.data.status == "ok") {
+    //         // setEditProductDialogBoxVisibleRef(false);
+    //         setSelectedModelImage(null);
+    //         setToast(
+    //           <Row className="gap-3">
+    //             <span>
+    //               <CheckCircleFill color="#00FF00" />
+    //             </span>
+    //             {"Product " +
+    //               (editProductDialogBoxVisibleRef.current
+    //                 ? "Updated"
+    //                 : "Added") +
+    //               " Successfully!"}
+    //           </Row>
+    //         );
+    //         const newImage = (
+    //           document.getElementById(
+    //             "product-change-image-field"
+    //           ) as HTMLInputElement
+    //         );
             
-            newImage.files = null;
-            newImage.value = "";
-            setImageSelectedRef(false);
-            setSelectedImage(null);
-            // const timeout = setTimeout(() => {
-            //   setProductAddUpdateStatusMessage(null);
-            // }, 3000);
-            // return () => clearTimeout(timeout);
-          }
+    //         newImage.files = null;
+    //         newImage.value = "";
+    //         setImageSelectedRef(false);
+    //         setSelectedImage(null);
+    //         // const timeout = setTimeout(() => {
+    //         //   setProductAddUpdateStatusMessage(null);
+    //         // }, 3000);
+    //         // return () => clearTimeout(timeout);
+    //       }
+    //     },
+    //     () => {}
+    //   );
+    // }
+
+    // const uploadSuits = (data: any) => {
+    //   POSTMedia(UPLOAD_SUITS, data, (response: any) => {
+    //     if (response.data.status == "ok"){
+    //       setToast(
+    //         <Row className="gap-1">
+    //           <span className="w-auto">
+    //             <CheckCircleFill size={22} color="#00FF00" className="w-auto"/>
+    //           </span>
+    //           <span className="w-auto">Suits uploaded successfully!</span>
+    //         </Row>
+    //       );
+    //     }
+    //   }, () => {});
+    // }
+
+    const [variations, setVariations] = useState<Variation[]>();
+    const getVariations = async () => {
+      GET(
+        "admin/product/variations",
+        (response: any) => {
+          setVariations(response.data.variations);
         },
         () => {}
       );
+    };
+
+    const deleteSize = async(id: number) => {
+      POST("admin/size/delete", {sizeID: id}, () => {
+        
+      }, () => {
+
+      })
     }
 
-    const uploadSuits = (data: any) => {
-      POSTMedia(UPLOAD_SUITS, data, (response: any) => {
-        if (response.data.status == "ok"){
-          setToast(
-            <Row className="gap-1">
-              <span className="w-auto">
-                <CheckCircleFill size={22} color="#00FF00" className="w-auto"/>
-              </span>
-              <span className="w-auto">Suits uploaded successfully!</span>
-            </Row>
-          );
-        }
-      }, () => {});
-    }
+    const [selectedCategory, setSelectedCategory] = useState<Category|null>(null);
+    const [selectedCategoryForFetchingData, setSelectedCategoryForFetchingData] = useState<Category | null>(null);
+    // const [productToEdit, setProductToEdit] = useState<ModelImage|null>(null);
 
+    const [addProduct, setAddProduct] = useState<boolean>(false);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -335,6 +361,7 @@ export default function Admin(): ReactElement{
             getRequests();
             getPreviewImages();
             getSizes();
+            getVariations();
 
             setPendingRequests(0);
             requests?.forEach(request => {
@@ -353,7 +380,7 @@ export default function Admin(): ReactElement{
         <Row
           className={
             (openWallImageUploadDialogBox ? "d-flex" : "d-none") +
-            " justify-content-center align-items-center position-fixed top-0 start-0 vh-100 vw-100"
+            " justify-content-center align-items-center position-fixed top-0 start-0 vh-100 w-100"
           }
           style={{ zIndex: 100, backgroundColor: "#000A" }}
         >
@@ -404,521 +431,6 @@ export default function Admin(): ReactElement{
           </Col>
         </Row>
 
-        <DialogBox
-          title="Add Size"
-          positiveText="Add"
-          visible={addPaintingSizeDialogBoxVisibilityRef.current}
-          setVisible={setAddPaintingSizeDialogBoxVisibilityRef}
-          onPositiveButtonClicked={() => {
-            const size = (
-              document.getElementById("painting-size") as HTMLInputElement
-            ).value;
-            const width = (
-              document.getElementById("painting-width") as HTMLInputElement
-            ).value;
-            const height = (
-              document.getElementById("painting-height") as HTMLInputElement
-            ).value;
-            const unit = (
-              document.getElementById("painting-size-unit") as HTMLInputElement
-            ).value;
-            const price = (
-              document.getElementById("painting-price") as HTMLInputElement
-            ).value;
-            addSize(
-              size,
-              parseFloat(width),
-              parseFloat(height),
-              unit,
-              parseFloat(price)
-            );
-          }}
-        >
-          <Col xs={12}>
-            <label htmlFor="painting-size">size</label>
-            <input id="painting-size" type="text" className="form-control" />
-          </Col>
-          <Col xs={6}>
-            <label htmlFor="painting-width">width</label>
-            <input id="painting-width" type="number" className="form-control" />
-          </Col>
-          <Col xs={6}>
-            <label htmlFor="painting-height">height</label>
-            <input
-              id="painting-height"
-              type="number"
-              className="form-control"
-            />
-          </Col>
-          <Col xs={12}>
-            <label className="painting-size-unit">Unit</label>
-            <select id="painting-size-unit" className=" form-select">
-              <option value="cm">CM</option>
-              <option value="ft">feet</option>
-              <option value="inches">Inches</option>
-            </select>
-          </Col>
-          <Col xs={12}>
-            <label htmlFor="painting-price">Price</label>
-            <input
-              type="number"
-              id="painting-price"
-              className=" form-control"
-            />
-          </Col>
-        </DialogBox>
-
-        <DialogBox
-          size={7}
-          title={
-            editProductDialogBoxVisibleRef.current
-              ? "Edit Product"
-              : "Add Product"
-          }
-          positiveText="Apply Changes"
-          visible={
-            editProductDialogBoxVisibleRef.current ||
-            addProductDialogVisibleRef.current
-          }
-          setVisible={
-            editProductDialogBoxVisibleRef.current
-              ? setEditProductDialogBoxVisibleRef
-              : setAddProductDialogVisibleRef
-          }
-          onPositiveButtonClicked={() => {
-            const data: {
-              modelImageID?: number;
-              categoryID?: number;
-              modelImage?: File;
-              name?: string;
-              smallSizePrice?: number;
-              mediumSizePrice?: number;
-              largeSizePrice?: number;
-              smallPaintOnCanvasSize?: number;
-              mediumPaintOnCanvasSize?: number;
-              largePaintOnCanvasSize?: number;
-              smallPrintMetalSize?: number;
-              mediumPrintMetalSize?: number;
-              largePrintMetalSize?: number;
-              smallPrintPaperSize?: number;
-              mediumPrintPaperSize?: number;
-              largePrintPaperSize?: number;
-            } = {};
-
-            if (
-              !addProductDialogVisibleRef.current &&
-              editProductDialogBoxVisibleRef.current
-            ) {
-              if (selectedModelImage) {
-                data.modelImageID = selectedModelImage?.imageID;
-              }
-            } else {
-              if (selectedCategoryForNewImage) {
-                data.categoryID = selectedCategoryForNewImage;
-              }
-            }
-
-            const newImage = (
-              document.getElementById(
-                "product-change-image-field"
-              ) as HTMLInputElement
-            ).files;
-
-            const newName = (
-              document.getElementById(
-                "product-change-product-name"
-              ) as HTMLInputElement
-            ).value;
-
-            const newSmallSizePrice = (
-              document.getElementById(
-                "product-change-small-size"
-              ) as HTMLInputElement
-            ).value;
-
-            const newMediumSizePrice = (
-              document.getElementById(
-                "product-change-medium-size"
-              ) as HTMLInputElement
-            ).value;
-
-            const newLargeSizePrice = (
-              document.getElementById(
-                "product-change-large-size"
-              ) as HTMLInputElement
-            ).value;
-
-            const newSmallPaintSize = (
-              document.getElementById(
-                "product-change-paint-small-size"
-              ) as HTMLInputElement
-            ).value;
-
-            const newMediumPaintSize = (
-              document.getElementById(
-                "product-change-paint-medium-size"
-              ) as HTMLInputElement
-            ).value;
-
-            const newLargePaintSize = (
-              document.getElementById(
-                "product-change-paint-large-size"
-              ) as HTMLInputElement
-            ).value;
-
-            const newSmallPrintMetalSize = (
-              document.getElementById(
-                "product-change-print-metal-small-size"
-              ) as HTMLInputElement
-            ).value;
-
-            const newMediumPrintMetalSize = (
-              document.getElementById(
-                "product-change-print-metal-medium-size"
-              ) as HTMLInputElement
-            ).value;
-
-            const newLargePrintMetalSize = (
-              document.getElementById(
-                "product-change-print-metal-large-size"
-              ) as HTMLInputElement
-            ).value;
-
-            const newSmallPrintPaperSize = (
-              document.getElementById(
-                "product-change-print-paper-small-size"
-              ) as HTMLInputElement
-            ).value;
-
-            const newMediumPrintPaperSize = (
-              document.getElementById(
-                "product-change-print-paper-medium-size"
-              ) as HTMLInputElement
-            ).value;
-
-            const newLargePrintPaperSize = (
-              document.getElementById(
-                "product-change-print-paper-large-size"
-              ) as HTMLInputElement
-            ).value;
-
-            if (newImage) {
-              if (newImage?.length > 0) {
-                data.modelImage = newImage[0];
-              }
-            }
-
-            if (newName) {
-              data.name = newName;
-            }
-
-            if (newSmallSizePrice) {
-              data.smallSizePrice = parseFloat(newSmallSizePrice);
-            }
-
-            if (newMediumSizePrice) {
-              data.mediumSizePrice = parseFloat(newMediumSizePrice);
-            }
-
-            if (newLargeSizePrice) {
-              data.largeSizePrice = parseFloat(newLargeSizePrice);
-            }
-
-            if (newSmallPaintSize) {
-              data.smallPaintOnCanvasSize = parseFloat(newSmallPaintSize);
-            }
-
-            if (newMediumPaintSize) {
-              data.mediumPaintOnCanvasSize = parseFloat(newMediumPaintSize);
-            }
-
-            if (newLargePaintSize) {
-              data.largePaintOnCanvasSize = parseFloat(newLargePaintSize);
-            }
-
-            if (newSmallPrintMetalSize) {
-              data.smallPrintMetalSize = parseFloat(newSmallPrintMetalSize);
-            }
-
-            if (newMediumPrintMetalSize) {
-              data.mediumPrintMetalSize = parseFloat(newMediumPrintMetalSize);
-            }
-
-            if (newLargePrintMetalSize) {
-              data.largePrintMetalSize = parseFloat(newLargePrintMetalSize);
-            }
-
-            if (newSmallPrintPaperSize) {
-              data.smallPrintPaperSize = parseFloat(newSmallPrintPaperSize);
-            }
-
-            if (newMediumPrintPaperSize) {
-              data.mediumPrintPaperSize = parseFloat(newMediumPrintPaperSize);
-            }
-
-            if (newLargePrintPaperSize) {
-              data.largePrintPaperSize = parseFloat(newLargePrintPaperSize);
-            }
-
-            changeSelectedModelImage(data);
-          }}
-        >
-          {/* {productAddUpdateStatusMessage ? (
-            <Col
-              xs={12}
-              className="mb-3 d-flex justify-content-end align-items-center"
-            >
-              {productAddUpdateStatusMessage ==
-              "Product Added Successfully!" ? (
-                <span
-                  className="p-3 rounded-2"
-                  style={{ backgroundColor: "#00FF00AA" }}
-                >
-                  {productAddUpdateStatusMessage}
-                </span>
-              ) : (
-                <span
-                  className="p-3 rounded-2"
-                  style={{ backgroundColor: "#FF0000AA" }}
-                >
-                  {productAddUpdateStatusMessage}
-                </span>
-              )}
-            </Col>
-          ) : (
-            <></>
-          )} */}
-          <Col xs={6} className="d-flex flex-column gap-2">
-            <Row>
-              <Col xs={12} className="ps-0">
-                <label htmlFor="product-change-product-name">Name</label>
-                <input
-                  id="product-change-product-name"
-                  type="text"
-                  defaultValue={selectedModelImage?.productName}
-                  className="form-control"
-                />
-              </Col>
-            </Row>
-            <Row className="w-100 justify-content-center" style={{ flex: 1 }}>
-              <label
-                id="product-change-image-field-label"
-                htmlFor="product-change-image-field"
-                className=" d-flex justify-content-center align-items-center"
-                style={{
-                  backgroundColor: "#EEEEEE",
-                  backgroundSize: "contain",
-                  backgroundRepeat: "no-repeat",
-                  cursor: "pointer",
-                  backgroundPosition: "center",
-                  backgroundImage: `url(${
-                    selectedModelImage
-                      ? selectedModelImage?.image
-                      : selectedImage
-                      ? selectedImage
-                      : ""
-                  })`,
-                }}
-              >
-                {!selectedModelImage && !selectedImage ? (
-                  <>
-                    <div className="">
-                      <Folder size={42} />
-                    </div>
-                    <div className="">Click Here to select an image</div>
-                  </>
-                ) : (
-                  ""
-                )}
-              </label>
-              <input
-                type="file"
-                id="product-change-image-field"
-                multiple={false}
-                hidden={true}
-                onChange={(event) => {
-                  const files = event.target.files;
-                  if (files) {
-                    setSelectedImage(URL.createObjectURL(files[0]));
-                  }
-                }}
-              />
-            </Row>
-          </Col>
-          <Col xs={6}>
-            <Row className="gap-2">
-              <Col
-                xs={12}
-                style={{ backgroundColor: "#5500FF0F" }}
-                className="border border-1 rounded-2 pb-2"
-              >
-                <Row className="fw-semibold ps-2 pb-0">Print On Canvas</Row>
-                <Row>
-                  <Col xs={4}>
-                    <label htmlFor="product-change-small-size">
-                      Small Size
-                    </label>
-                    <input
-                      id="product-change-small-size"
-                      type="number"
-                      defaultValue={selectedModelImage?.smallSize}
-                      className="form-control"
-                    />
-                  </Col>
-                  <Col xs={4}>
-                    <label htmlFor="product-change-medium-size">
-                      Medium Size
-                    </label>
-                    <input
-                      id="product-change-medium-size"
-                      defaultValue={selectedModelImage?.mediumSize}
-                      type="number"
-                      className="form-control"
-                    />
-                  </Col>
-                  <Col xs={4}>
-                    <label htmlFor="product-change-large-size">
-                      Large Size
-                    </label>
-                    <input
-                      id="product-change-large-size"
-                      defaultValue={selectedModelImage?.largeSize}
-                      type="number"
-                      className="form-control"
-                    />
-                  </Col>
-                </Row>
-              </Col>
-              <Col
-                xs={12}
-                style={{ backgroundColor: "#5500FF0F" }}
-                className="border border-1 rounded-2 pb-2"
-              >
-                <Row className="fw-semibold ps-2 pb-0">Paint On Canvas</Row>
-                <Row>
-                  <Col xs={4}>
-                    <label htmlFor="product-change-paint-small-size">
-                      Small Size
-                    </label>
-                    <input
-                      id="product-change-paint-small-size"
-                      type="number"
-                      defaultValue={selectedModelImage?.smallPaintOnCanvasSize}
-                      className="form-control"
-                    />
-                  </Col>
-                  <Col xs={4}>
-                    <label htmlFor="product-change-paint-medium-size">
-                      Medium Size
-                    </label>
-                    <input
-                      id="product-change-paint-medium-size"
-                      defaultValue={selectedModelImage?.mediumPaintOnCanvasSize}
-                      type="number"
-                      className="form-control"
-                    />
-                  </Col>
-                  <Col xs={4}>
-                    <label htmlFor="product-change-paint-large-size">
-                      Large Size
-                    </label>
-                    <input
-                      id="product-change-paint-large-size"
-                      defaultValue={selectedModelImage?.largePaintOnCanvasSize}
-                      type="number"
-                      className="form-control"
-                    />
-                  </Col>
-                </Row>
-              </Col>
-              <Col
-                xs={12}
-                style={{ backgroundColor: "#5500FF0F" }}
-                className="border border-1 rounded-2 pb-2"
-              >
-                <Row className="fw-semibold ps-2 pb-0">Print On Metal</Row>
-                <Row>
-                  <Col xs={4}>
-                    <label htmlFor="product-change-print-metal-small-size">
-                      Small Size
-                    </label>
-                    <input
-                      id="product-change-print-metal-small-size"
-                      type="number"
-                      defaultValue={selectedModelImage?.smallPrintMetalSize}
-                      className="form-control"
-                    />
-                  </Col>
-                  <Col xs={4}>
-                    <label htmlFor="product-change-print-metal-medium-size">
-                      Medium Size
-                    </label>
-                    <input
-                      id="product-change-print-metal-medium-size"
-                      defaultValue={selectedModelImage?.mediumPrintMetalSize}
-                      type="number"
-                      className="form-control"
-                    />
-                  </Col>
-                  <Col xs={4}>
-                    <label htmlFor="product-change-print-metal-large-size">
-                      Large Size
-                    </label>
-                    <input
-                      id="product-change-print-metal-large-size"
-                      defaultValue={selectedModelImage?.largePrintMetalSize}
-                      type="number"
-                      className="form-control"
-                    />
-                  </Col>
-                </Row>
-              </Col>
-              <Col
-                xs={12}
-                style={{ backgroundColor: "#5500FF0F" }}
-                className="border border-1 rounded-2 pb-2"
-              >
-                <Row className="fw-semibold ps-2 pb-0">Print On Paper</Row>
-                <Row>
-                  <Col xs={4}>
-                    <label htmlFor="product-change-print-paper-small-size">
-                      Small Size
-                    </label>
-                    <input
-                      id="product-change-print-paper-small-size"
-                      type="number"
-                      defaultValue={selectedModelImage?.smallPrintPaperSize}
-                      className="form-control"
-                    />
-                  </Col>
-                  <Col xs={4}>
-                    <label htmlFor="product-change-print-paper-medium-size">
-                      Medium Size
-                    </label>
-                    <input
-                      id="product-change-print-paper-medium-size"
-                      defaultValue={selectedModelImage?.mediumPrintPaperSize}
-                      type="number"
-                      className="form-control"
-                    />
-                  </Col>
-                  <Col xs={4}>
-                    <label htmlFor="product-change-print-paper-large-size">
-                      Large Size
-                    </label>
-                    <input
-                      id="product-change-print-paper-large-size"
-                      defaultValue={selectedModelImage?.largePrintPaperSize}
-                      type="number"
-                      className="form-control"
-                    />
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-          </Col>
-        </DialogBox>
-
         <Row className="py-5 pt-5 mt-4 vw-100 vh-100 overflow-y-scroll overflow-x-hidden">
           <TabContainer defaultActiveKey={"dashboard"}>
             <Row>
@@ -941,7 +453,7 @@ export default function Admin(): ReactElement{
                     <NavLink eventKey="preview-images">Preview Images</NavLink>
                   </NavItem>
                   <NavItem>
-                    <NavLink eventKey="customization">Customization</NavLink>
+                    <NavLink eventKey="customization">Settings</NavLink>
                   </NavItem>
                 </Nav>
               </Col>
@@ -1158,6 +670,164 @@ export default function Admin(): ReactElement{
 
                   <TabPane eventKey={"paints"}>
                     <Row>
+                      <Col
+                        xs={12}
+                        className={
+                          (addProduct ? "d-flex" : "d-none") +
+                          " w-100 flex-column"
+                        }
+                      >
+                        <AddEditProduct
+                          categories={categories}
+                          selectedModelImage={selectedModelImage}
+                          setAddProduct={setAddProduct}
+                          variations={variations}
+                          sizes={sizes}
+                        />
+                      </Col>
+                      <Col
+                        xs={12}
+                        className={
+                          (addProduct ? "d-none" : "d-flex") + " flex-column"
+                        }
+                      >
+                        <Row className="rounded-2 top-form py-1">
+                          <Col xs={4}>
+                            <select
+                              id="selected-category-for-preview"
+                              className="form-select"
+                              onClick={(event) => {
+                                const selectedCategory = (
+                                  event.target as HTMLInputElement
+                                ).value;
+
+                                let categorySelected = null;
+
+                                categories?.forEach((category) => {
+                                  if (category?.category == selectedCategory) {
+                                    categorySelected = category;
+                                    return;
+                                  }
+                                });
+
+                                setSelectedCategoryForFetchingData(
+                                  categorySelected
+                                );
+                              }}
+                            >
+                              {categories?.map((category) => {
+                                return (
+                                  <option value={category.category}>
+                                    {category.category}
+                                  </option>
+                                );
+                              })}
+                            </select>
+                          </Col>
+                          <Col xs={3}>
+                            <button
+                              className="btn btn-success"
+                              onClick={() => {
+                                setAddProduct(true);
+                              }}
+                            >
+                              Add a new product
+                            </button>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col xs={12} className="">
+                            <table className="table table-striped">
+                              <thead>
+                                <th className="py-3">Product Image</th>
+                                <th className="py-3">Product Name</th>
+                                <th className="py-3">
+                                  Product Variations
+                                </th>
+                                <th className="py-3"></th>
+                              </thead>
+                              <tbody>
+                                {selectedCategoryForFetchingData?.images.map(
+                                  (image) => {
+                                    return (
+                                      <tr className="">
+                                        <td className="d-flex justify-content-start">
+                                          <img
+                                            src={image.image}
+                                            style={{
+                                              width: "100px",
+                                              height: "auto",
+                                            }}
+                                          />
+                                        </td>
+                                        <td className="paragraph">
+                                          {image.productName}
+                                        </td>
+                                        <td className="">
+                                          {/* <Row className="text-wrap overflow-x-scroll" style={{ width: "400px" }}>
+                                            {JSON.stringify(image)}
+                                          </Row> */}
+                                          {image?.variations?.length
+                                            ? image?.variations?.length
+                                            : 0}{" "}
+                                          Variations
+                                          {/* {image?.variations?.map(
+                                            (variation) => {
+                                              return (
+                                                <span className="d-block">
+                                                  {variation?.variation?.variation}
+                                                  <span className="d-block">
+                                                    {variation?.sizes?.map(size => {
+                                                      return <span className="d-inline-block">
+                                                        <span className="d-block">
+                                                          {size.sizeObj?.width}{size.sizeObj?.unit} x {size.sizeObj?.height}{size.sizeObj?.unit}
+                                                        </span>
+                                                        <span className="d-block">{size.price}</span>
+                                                        </span>
+                                                    })}
+                                                  </span>
+                                                </span>
+                                              );
+                                            }
+                                          )} */}
+                                        </td>
+                                        <td className="">
+                                          <div className="d-flex w-100 h-100 justify-content-end align-items-center">
+                                            <button
+                                              className="btn btn-outline-primary px-2 align-self-end"
+                                              onClick={() => {
+                                                setSelectedModelImage(image);
+                                                // setProductToEdit(image);
+                                                setAddProduct(true);
+                                              }}
+                                            >
+                                              <PencilFill size={14} />
+                                            </button>
+
+                                            <button
+                                              className="btn btn-outline-danger px-2 align-self-end"
+                                              onClick={() => {
+                                                deleteModelImage(image.imageID);
+                                                // setProductToEdit(image);
+                                                // setAddProduct(true);
+                                              }}
+                                            >
+                                              <Trash size={14} />
+                                            </button>
+                                          </div>
+                                        </td>
+                                      </tr>
+                                    );
+                                  }
+                                )}
+                              </tbody>
+                            </table>
+                          </Col>
+                        </Row>
+                      </Col>
+                    </Row>
+
+                    {/* <Row>
                       <Col xs={2}>
                         <Row className="gap-3">
                           <Col xs={12} className="d-flex flex-column gap-1">
@@ -1199,8 +869,8 @@ export default function Admin(): ReactElement{
                                   </option>
                                 ))}
                               </select>
-                            </Row>
-                            {/* <Row>
+                            </Row> */}
+                    {/* <Row>
                               <input
                                 type="file"
                                 className="form-control"
@@ -1212,7 +882,7 @@ export default function Admin(): ReactElement{
                                 }}
                               />
                             </Row> */}
-                            <Row>
+                    {/* <Row>
                               <button
                                 className="btn btn-primary"
                                 onClick={() => {
@@ -1297,8 +967,8 @@ export default function Admin(): ReactElement{
                               </button>
                             </Row>
                           </Col>
-                        </Row>
-                        <Row>
+                        </Row> */}
+                    {/* <Row>
                           {showToast ? (
                             <span className="toast p-2 rounded-2">
                               {toastText}
@@ -1306,8 +976,8 @@ export default function Admin(): ReactElement{
                           ) : (
                             <></>
                           )}
-                        </Row>
-                      </Col>
+                        </Row> */}
+                    {/* </Col>
                       <Col xs={10} className="pt-3 ps-5">
                         {categories?.map((category) => (
                           <Accordion className="rounded-3">
@@ -1438,11 +1108,15 @@ export default function Admin(): ReactElement{
                           </Accordion>
                         ))}
                       </Col>
-                    </Row>
+                    </Row> */}
                   </TabPane>
                   <TabPane eventKey={"preview-images"}>
                     <Row>
-                      <Col xs={12} className="rounded-2 bg-white p-3">
+                      <Col
+                        xs={12}
+                        className="rounded-2 bg-white p-3 ps-5"
+                        style={{ borderBottom: "2px solid #DDD" }}
+                      >
                         <Row className="fs-6 fw-semibold ps-2 rounded-top-2">
                           <Col xs={12}>Add Preview Image</Col>
                         </Row>
@@ -1483,13 +1157,13 @@ export default function Admin(): ReactElement{
                           </Col>
                         </Row>
                       </Col>
-                      <Row className="gap-2 gap-md-3">
+                      <Row className="gap-2 gap-md-3 justify-content-start pt-3 ps-5">
                         {previewImages?.map((image) => {
                           return (
                             <Card
                               style={{
-                                width: "230px",
-                                height: "215px",
+                                width: "220px",
+                                height: "205px",
                                 backgroundRepeat: "no-repeat",
                                 backgroundImage: `URL(${image.image})`,
                                 backgroundSize: "contain",
@@ -1523,63 +1197,312 @@ export default function Admin(): ReactElement{
                     </Row>
                   </TabPane>
                   <TabPane eventKey="customization">
-                    <Row className="pt-4 px-5" style={{ minHeight: "300px" }}>
-                      <Col
-                        xs={12}
-                        md={6}
-                        lg={4}
-                        className="rounded-2 px-3 py-2"
-                        style={{ backgroundColor: "#BBAAFF33" }}
-                      >
-                        <Row className="px-3">
-                          <Col
-                            xs={6}
-                            md={8}
-                            xl={10}
-                            className="fs-3 fw-bold ps-0"
-                          >
-                            Paint Sizes
-                          </Col>
-                          <Col xs={6} md={4} xl={2} className="">
-                            <button
-                              className="btn btn-primary"
-                              onClick={() => {
-                                setAddPaintingSizeDialogBoxVisibilityRef(true);
+                    <Row className="pt-4 px-5">
+                      <TabContainer defaultActiveKey={"categories"}>
+                        <Nav variant="underline">
+                          <Nav.Item>
+                            <Nav.Link eventKey={"categories"}>
+                              Categories
+                            </Nav.Link>
+                          </Nav.Item>
+                          <Nav.Item>
+                            <Nav.Link eventKey={"sizes"}>Sizes</Nav.Link>
+                          </Nav.Item>
+                          <Nav.Item>
+                            <Nav.Link eventKey={"variations"}>
+                              Product Variations
+                            </Nav.Link>
+                          </Nav.Item>
+                        </Nav>
+
+                        <TabContent className="pt-4">
+                          <TabPane eventKey={"categories"}>
+                            <Row
+                              className="pb-2"
+                              style={{ borderBottom: "2px solid #DDD" }}
+                            >
+                              <Col xs={5} className="d-flex flex-column ps-0">
+                                <input
+                                  type="text"
+                                  id="category-name-field"
+                                  className="form-control"
+                                  placeholder="New category name"
+                                />
+                              </Col>
+                              <Col xs={3}>
+                                <button className="btn btn-success" onClick={() => {
+                                  createCategory();
+                                }}>ADD</button>
+                              </Col>
+                            </Row>
+                            <Row className="gap-2 pt-2 justify-content-evenly h-100">
+                              <Col
+                                xs={12}
+                                md={8}
+                                className="pe-4"
+                                style={{ borderRight: "2px solid #DDD" }}
+                              >
+                                <Row>
+                                  <Col
+                                    xs={12}
+                                    className="d-flex flex-column gap-1"
+                                  >
+                                    {categories?.map((categoryItem) => {
+                                      return (
+                                        <Row
+                                          className="px-2 py-3 rounded-2"
+                                          style={{
+                                            backgroundColor: selectedCategory
+                                              ? categoryItem.id ==
+                                                selectedCategory?.id
+                                                ? "#5500FF10"
+                                                : "#5500FF05"
+                                              : "#5500FF05",
+                                          }}
+                                          onClick={() => {
+                                            setSelectedCategory(categoryItem);
+                                          }}
+                                        >
+                                          <Col xs={8}>
+                                            {categoryItem.category}
+                                          </Col>
+                                          <Col
+                                            xs={4}
+                                            className="d-flex justify-content-end"
+                                          >
+                                            <button
+                                              className="btn btn-outline-danger py-1 px-2 m-0"
+                                              onClick={() => {
+                                                deleteCategory(categoryItem.id);
+                                                setSelectedCategory(null);
+                                              }}
+                                            >
+                                              <Trash
+                                                size={12}
+                                                className="w-auto"
+                                              />
+                                            </button>
+                                          </Col>
+                                        </Row>
+                                      );
+                                    })}
+                                  </Col>
+                                </Row>
+                              </Col>
+                              <Col xs={12} md={3} className=" flex-grow-1 ps-4">
+                                <Row className="pb-2">Category Name</Row>
+                                <Row>
+                                  <input
+                                    type="text"
+                                    className="form-control"
+                                    id="edit-category-name"
+                                    defaultValue={selectedCategory?.category}
+                                  />
+                                </Row>
+                                <Row className="justify-content-end pt-3">
+                                  <button
+                                    className="btn btn-primary w-auto"
+                                    onClick={() => {
+                                      const newCategoryName =
+                                        document.getElementById(
+                                          "edit-category-name"
+                                        ) as HTMLInputElement;
+                                      if (selectedCategory) {
+                                        renameCategory(
+                                          selectedCategory?.id,
+                                          newCategoryName.value
+                                        );
+                                      }
+                                    }}
+                                  >
+                                    Save Changes
+                                  </button>
+                                </Row>
+                              </Col>
+                            </Row>
+                          </TabPane>
+
+                          <TabPane eventKey={"sizes"}>
+                            <Row
+                              className="pb-2 px-2 pt-2 rounded-2"
+                              style={{
+                                borderBottom: "2px solid #DDD",
+                                backgroundColor: "#5500FF10",
                               }}
                             >
-                              ADD
-                            </button>
-                          </Col>
-                        </Row>
-                        <Row className=" pt-2">
-                          <hr style={{ width: "100%" }} />
-                        </Row>
-                        <Row className="ps-4">
-                          {sizes?.map((size) => {
-                            return (
-                              <Row
-                                className="rounded-2"
-                                style={{ backgroundColor: "#FFFFFF" }}
+                              <Col xs={3}>
+                                <label htmlFor="painting-size">size</label>
+                                <input
+                                  id="painting-size"
+                                  type="text"
+                                  className="form-control"
+                                />
+                              </Col>
+                              <Col xs={1}>
+                                <label htmlFor="painting-width">width</label>
+                                <input
+                                  id="painting-width"
+                                  type="number"
+                                  className="form-control"
+                                />
+                              </Col>
+                              <Col xs={1}>
+                                <label htmlFor="painting-height">height</label>
+                                <input
+                                  id="painting-height"
+                                  type="number"
+                                  className="form-control"
+                                />
+                              </Col>
+                              <Col xs={2}>
+                                <label className="painting-size-unit">
+                                  Unit
+                                </label>
+                                <select
+                                  id="painting-size-unit"
+                                  className=" form-select"
+                                >
+                                  <option value="cm">CM</option>
+                                  <option value="ft">feet</option>
+                                  <option value="inches">Inches</option>
+                                </select>
+                              </Col>
+                              <Col xs={2}>
+                                <label htmlFor="painting-price">Price</label>
+                                <input
+                                  type="number"
+                                  id="painting-price"
+                                  className=" form-control"
+                                />
+                              </Col>
+                              <Col xs={2} className="d-flex align-items-end">
+                                <button
+                                  className="btn btn-success"
+                                  onClick={() => {
+                                    const size = (
+                                      document.getElementById(
+                                        "painting-size"
+                                      ) as HTMLInputElement
+                                    ).value;
+                                    const width = (
+                                      document.getElementById(
+                                        "painting-width"
+                                      ) as HTMLInputElement
+                                    ).value;
+                                    const height = (
+                                      document.getElementById(
+                                        "painting-height"
+                                      ) as HTMLInputElement
+                                    ).value;
+                                    const unit = (
+                                      document.getElementById(
+                                        "painting-size-unit"
+                                      ) as HTMLInputElement
+                                    ).value;
+                                    const price = (
+                                      document.getElementById(
+                                        "painting-price"
+                                      ) as HTMLInputElement
+                                    ).value;
+
+                                    addSize(
+                                      size ? size : "",
+                                      parseFloat(width),
+                                      parseFloat(height),
+                                      unit,
+                                      price ? parseFloat(price) : 0
+                                    );
+                                  }}
+                                >
+                                  ADD
+                                </button>
+                              </Col>
+                            </Row>
+                            <Row className="pt-2">
+                              <Col
+                                xs={8}
+                                style={{ borderRight: "2px solid #DDD" }}
                               >
-                                <Col xs={12} className="fs-5 pt-2">
-                                  {size.size}
-                                </Col>
-                                <Col xs={12}>
-                                  <hr className="" />
-                                </Col>
-                                <Col xs={6} className="pb-2">
-                                  {size.width}
-                                  {size.unit} x {size.height}
-                                  {size.unit}
-                                </Col>
-                                <Col xs={6} className="pb-2">
-                                  ${size.price}
-                                </Col>
-                              </Row>
-                            );
-                          })}
-                        </Row>
-                      </Col>
+                                <table className="table table-striped table-hover">
+                                  <thead>
+                                    <tr>
+                                      <th>Size</th>
+                                      <th>Dimension</th>
+                                      <th>Price</th>
+                                      <th></th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {sizes?.map((size) => {
+                                      return (
+                                        <tr>
+                                          <td>{size.size}</td>
+                                          <td>
+                                            {size.width}
+                                            {size.unit} x {size.height}
+                                            {size.unit}
+                                          </td>
+                                          <td>${size.price}</td>
+                                          <td>
+                                            <button className="btn btn-outline-danger" onClick={() => {
+                                              deleteSize(size.id);
+                                            }}>
+                                              <Trash />
+                                            </button>
+                                          </td>
+                                        </tr>
+                                      );
+                                    })}
+                                  </tbody>
+                                </table>
+                              </Col>
+                            </Row>
+                          </TabPane>
+
+                          <TabPane eventKey={"variations"}>
+                            <Variations variations={variations} />
+                          </TabPane>
+
+                          <TabPane>
+                            <Row>
+                              <Col
+                                xs={12}
+                                md={6}
+                                lg={4}
+                                className="rounded-2 px-3 py-2"
+                                style={{ backgroundColor: "#BBAAFF33" }}
+                              >
+                                <Row className="px-3">
+                                  <Col
+                                    xs={6}
+                                    md={8}
+                                    xl={10}
+                                    className="fs-3 fw-bold ps-0"
+                                  >
+                                    Paint Sizes
+                                  </Col>
+                                  <Col xs={6} md={4} xl={2} className="">
+                                    <button
+                                      className="btn btn-primary"
+                                      onClick={() => {
+                                        setAddPaintingSizeDialogBoxVisibilityRef(
+                                          true
+                                        );
+                                      }}
+                                    >
+                                      ADD
+                                    </button>
+                                  </Col>
+                                </Row>
+                                <Row className=" pt-2">
+                                  <hr style={{ width: "100%" }} />
+                                </Row>
+                                <Row className="ps-4"></Row>
+                              </Col>
+                            </Row>
+                          </TabPane>
+                        </TabContent>
+                      </TabContainer>
                     </Row>
                   </TabPane>
                 </TabContent>

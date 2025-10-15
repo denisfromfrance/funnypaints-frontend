@@ -96,7 +96,9 @@ export default function UserBase(props: any): ReactElement{
                   <Dropdown.Item href="#item">Item 3</Dropdown.Item>
                   <Row className="justify-content-center align-items-center">
                     <Col xs={12} className="px-4">
-                      <button className="w-100 btn btn-primary">Checkout</button>
+                      <button className="w-100 btn btn-primary">
+                        Checkout
+                      </button>
                     </Col>
                   </Row>
                 </Dropdown.Menu>
@@ -137,11 +139,11 @@ export default function UserBase(props: any): ReactElement{
           </Container>
         </Navbar>
         {props.element}
-        <Row className="bg-dark px-2 px-md-5">
+        <Row className="bg-dark px-2 px-md-5" id="footer">
           <Col xs={12} className="">
             <Row className="px-5 py-5 justify-content-center justify-content-lg-start gap-5">
               <Col xs={12} md={3} lg={2}>
-                <Row className="text-white-50 fs-4 justify-content-center justify-content-lg-start">
+                <Row className="text-white-50 heading-5 justify-content-center justify-content-lg-start">
                   Quick links
                 </Row>
                 <Row className="pt-4">
@@ -163,7 +165,7 @@ export default function UserBase(props: any): ReactElement{
               </Col>
 
               <Col xs={12} md={3} lg={2}>
-                <Row className="text-white-50 fs-4 justify-content-center justify-content-lg-start">
+                <Row className="text-white-50 heading-5 justify-content-center justify-content-lg-start">
                   Contact Me
                 </Row>
                 <Row className="pt-4 align-items-center justify-content-center justify-content-lg-start">
@@ -172,22 +174,28 @@ export default function UserBase(props: any): ReactElement{
                     className="d-flex flex-column gap-2 text-white-50"
                   >
                     <Row className="gap-2">
-                      <Col xs={1}>
+                      <Col xs={1} className="">
                         <EnvelopeAt color="#888" size={24} className="w-auto" />
                       </Col>
-                      <Col xs={10}>denismarcparet@gmail.com</Col>
+                      <Col xs={10} className="text">
+                        denismarcparet@gmail.com
+                      </Col>
                     </Row>
                     <Row className="gap-2">
                       <Col xs={1}>
                         <Telephone color="#888" size={24} className="w-auto" />
                       </Col>
-                      <Col xs={10}>12345356</Col>
+                      <Col xs={10} className="text">
+                        12345356
+                      </Col>
                     </Row>
                     <Row className="gap-2">
                       <Col xs={1}>
                         <House color="#888" size={24} className="w-auto" />
                       </Col>
-                      <Col xs={10}>Address</Col>
+                      <Col xs={10} className="text">
+                        Address
+                      </Col>
                     </Row>
                     <Row className="gap-2 justify-content-center pt-2">
                       <button className="btn whatsapp-button px-3">
@@ -199,7 +207,7 @@ export default function UserBase(props: any): ReactElement{
               </Col>
 
               <Col xs={12} md={3} lg={2}>
-                <Row className="text-white-50 fs-4 justify-content-center justify-content-lg-start">
+                <Row className="text-white-50 heading-5 justify-content-center justify-content-lg-start">
                   Social Media Links
                 </Row>
                 <Row className="pt-4 align-items-center justify-content-center justify-content-lg-start">
@@ -210,7 +218,7 @@ export default function UserBase(props: any): ReactElement{
               </Col>
 
               <Col xs={12} md={3} lg={2}>
-                <Row className="text-white-50 fs-4 justify-content-center justify-content-lg-start">
+                <Row className="text-white-50 heading-5 justify-content-center justify-content-lg-start">
                   Legal
                 </Row>
                 <Row className="pt-4">
@@ -224,9 +232,11 @@ export default function UserBase(props: any): ReactElement{
 
               <Col xs={12} md={3} lg={2}>
                 <Row className="pt-4">
-                  <button className="w-100 cta-button fs-5">
-                    Order My Painting
-                  </button>
+                  <a href="/#categories">
+                    <button className="w-100 cta-button fs-5">
+                      Order My Painting
+                    </button>
+                  </a>
                 </Row>
               </Col>
             </Row>

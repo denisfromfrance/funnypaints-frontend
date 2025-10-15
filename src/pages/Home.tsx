@@ -1,5 +1,5 @@
 import {useEffect, type ReactElement, useState } from "react";
-import { Accordion, AccordionBody, AccordionHeader, Card, CardBody, CardHeader, Col, Nav, Row, TabContainer, TabContent, TabPane } from "react-bootstrap";
+import { Accordion, AccordionBody, AccordionHeader, Card, CardBody, CardHeader, Col, Row } from "react-bootstrap";
 
 import ArtistImage from "../assets/291359624_129762163076826_7279871603601454790_n.jpg";
 import HeroSectionBackground from "../assets/ChatGPT Image Jun 28, 2025, 04_52_52 PM.webp";
@@ -70,7 +70,7 @@ export default function Home() : ReactElement{
     return (
       <Row className="pt-5 mt-2 mt-md-3">
         <Col xs={12} className="px-0">
-          <section
+          <Row
             className="py-5"
             style={{
               backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.5)), url('${HeroSectionBackground}')`,
@@ -79,20 +79,21 @@ export default function Home() : ReactElement{
               backgroundRepeat: "no-repeat",
             }}
           >
+            <Col xs={12}>
             <Row className="justify-content-center">
-              <Col xs={11} md={8} xl={6} xxl={4}>
-                <Row className="fs-1 fw-bold justify-content-center text-center py-3 text-white">
+              <Col xs={11} md={8} xl={7}>
+                <Row className="heading-1 fw-bold justify-content-center text-center py-3 text-white">
                   "Turn Your Favorite Photo into a Hand-Drawn Masterpiece"
                 </Row>
 
-                <Row className="d-flex d-md-none fs-4 fw-semibold justify-content-center text-center py-3 text-white">
+                <Row className="heading-5 fw-semibold justify-content-center text-center py-4 text-white">
                   "Upload a photo and receive a custom drawing crafted just for
                   you by a professional artist."
                 </Row>
-                <Row className="d-none d-md-flex fs-3 fw-semibold justify-content-center text-center py-3 text-white">
+                {/* <Row className="d-none d-md-flex fs-3 fw-semibold justify-content-center text-center py-3 text-white">
                   "Upload a photo and receive a custom drawing crafted just for
                   you by a professional artist."
-                </Row>
+                </Row> */}
 
                 <Row className="justify-content-center text-center pb-5 text-white">
                   <Col
@@ -100,7 +101,7 @@ export default function Home() : ReactElement{
                     lg={6}
                     className="d-flex justify-content-center text-center py-3"
                   >
-                    <a href="/order-an-art">
+                    <a href="#categories">
                       <button className="cta-button fs-4">
                         Request a Drawing
                       </button>
@@ -109,6 +110,7 @@ export default function Home() : ReactElement{
                 </Row>
               </Col>
             </Row>
+
             <Row className="justify-content-center pt-4 text-white">
               <Col
                 xs={12}
@@ -128,15 +130,15 @@ export default function Home() : ReactElement{
                 ></div>
               </Col>
               <Col
-                xs={12}
+                xs={10}
                 lg={7}
-                xxl={4}
-                className="d-flex flex-column justf-items-center text-left pt-3 fs-5"
+                xxl={3}
+                className="d-flex flex-column justify-content-center text-left pt-3 fs-5"
               >
-                <Row className="fs-1 fw-bold pb-4 justify-content-center justify-content-lg-start">
+                <Row className="heading-5 fw-bold pb-4 justify-content-center justify-content-lg-start">
                   Meet the Artist
                 </Row>
-                <Row className="flex-column justify-content-center justify-content-center justify-content-lg-start text-center text-lg-start pb-5 pb-lg-1">
+                <Row className="flex-column justify-content-center justify-content-center justify-content-lg-start text-center text-lg-start pb-5 pb-lg-1 paragraph">
                   "Hi, I'm Denis Mark, a passionate artist with a love for
                   capturing life's moments in pencil and brush. With over [X
                   years] of experience, I've transformed hundreds of photos into
@@ -144,16 +146,20 @@ export default function Home() : ReactElement{
                 </Row>
               </Col>
             </Row>
-            <Row className="py-0 position-relative pb-5">
-              <svg viewBox={"0, 0 500 80"} className="p-0 position-absolute top-0 start-0">
+            <Row className="py-0 position-relative pb-5 bottom-0">
+              <svg
+                viewBox={"0, 0 500 100"}
+                className="p-0 position-absolute top-0 start-0"
+              >
                 <path
                   d="M0,0 C50,80 170,5 250,10 300,10 400,40 500,0 L500,0 500,50 0,50 Z"
                   fill="#000"
                   stroke="#000"
                 />
               </svg>
-            </Row> 
-          </section>
+            </Row>
+            </Col>
+          </Row>
 
           {/* <section className="px-5 py-2 py-xxl-5">
             <Row className="justify-content-center pt-4">
@@ -192,196 +198,259 @@ export default function Home() : ReactElement{
               </Col>
             </Row>
           </section> */}
-
-          <section className="bg-black text-white pt-0 position-relative">
+          <Row className="bg-black text-white pt-5 position-relative">
             <Col xs={12}>
-              <Row className=" justify-content-center">
-                <Col xs={12} md={10} className=" align-self-center">
-                  <Row className="fs-1 fw-bold ps-5 pb-4 justify-content-center">
-                    How It Works
-                  </Row>
-                  <Row className="gap-1 flex-wrap justify-content-center px-5 pb-5">
-                    <Card
-                      style={{ width: "300px" }}
-                      className="py-3 px-4 m-3 step-card delayed-popup-card popup-delay-02"
-                    >
-                      <Row className="justify-content-center fs-3">1</Row>
-                      <Row
-                        className="justify-content-center text-center"
-                        style={{ fontSize: "18px" }}
+            <Row className=" justify-content-center">
+              <Col xs={12} md={10}>
+                <Row className="heading-3 fw-bold pb-4 justify-content-center">
+                  How It Works
+                </Row>
+                <Row className="gap-1 flex-wrap justify-content-center px-5 px-lg-0 pb-5">
+                  <Card
+                    style={{}}
+                    className="card-20 py-3 px-4 m-3 step-card delayed-popup-card popup-delay-02"
+                  >
+                    <Row className="justify-content-center heading-4 pb-2">1</Row>
+                    <Row className="justify-content-center">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#FFF"
+                        stroke-width="1"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        style={{ width: "100px", height: "100px" }}
                       >
-                        Visit the Ordering Page
-                      </Row>
-                      <Row className="justify-content-center pt-3">
+                        <path d="M6 2l1 4h10l1-4z"></path>
+                        <path d="M3 6h18v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <path d="M9 10a3 3 0 0 0 6 0"></path>
+                      </svg>
+                    </Row>
+                    <Row
+                      className="paragraph pt-3 justify-content-center text-center"
+                      style={{}}
+                    >
+                      Select Product
+                    </Row>
+                    <Row className="justify-content-center pt-3">
+                      <a
+                        href="#categories text-decoration-none"
+                        className="w-auto"
+                      >
                         <button
                           className="btn w-auto"
-                          style={{ background: "#FF8800" }}
+                          style={{ background: "#FF8800", color: "#551100" }}
                         >
-                          Visit &gt;&gt;{" "}
+                          Select &gt;&gt;{" "}
                         </button>
-                      </Row>
-                    </Card>
-                    <Card
-                      style={{ width: "300px" }}
-                      className="py-3 px-4 m-3 step-card delayed-popup-card popup-delay-04"
-                    >
-                      <Row className="justify-content-center fs-3">2</Row>
-                      <Row
-                        className="justify-content-center text-center"
-                        style={{ fontSize: "18px" }}
+                      </a>
+                    </Row>
+                  </Card>
+                  <Card
+                    style={{}}
+                    className="card-20 py-3 px-4 m-3 step-card delayed-popup-card popup-delay-04"
+                  >
+                    <Row className="justify-content-center heading-4 pb-2">2</Row>
+                    <Row className="justify-content-center">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#FFF"
+                        stroke-width="1"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        style={{ width: "100px", height: "100px" }}
                       >
-                        Upload Your Photo - Choose the image you want drawn.
-                      </Row>
-                    </Card>
+                        <path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"></path>
+                        <path d="M12 12v9"></path>
+                        <path d="M8 16l4-4 4 4"></path>
+                      </svg>
+                    </Row>
+                    <Row
+                      className="paragraph pt-3 justify-content-center text-center"
+                      style={{}}
+                    >
+                      Upload Your Photo - Choose the image you want drawn.
+                    </Row>
+                  </Card>
 
-                    <Card
-                      style={{ width: "300px" }}
-                      className="py-3 px-4 m-3 step-card delayed-popup-card popup-delay-06"
-                    >
-                      <Row className="justify-content-center fs-3">3</Row>
-                      <Row
-                        className="justify-content-center text-center"
-                        style={{ fontSize: "18px" }}
+                  <Card
+                    style={{}}
+                    className="card-20 py-3 px-4 m-3 step-card delayed-popup-card popup-delay-06"
+                  >
+                    <Row className="justify-content-center heading-4 pb-2">3</Row>
+                    <Row className="justify-content-center">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#FFF"
+                        stroke-width="1"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        style={{ width: "100px", height: "100px" }}
                       >
-                        Customize - Select drawing style, size, and delivery
-                        format (digital/physical).
-                      </Row>
-                    </Card>
+                        <line x1="4" y1="21" x2="4" y2="14"></line>
+                        <line x1="4" y1="10" x2="4" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12" y2="3"></line>
+                        <line x1="20" y1="21" x2="20" y2="16"></line>
+                        <line x1="20" y1="12" x2="20" y2="3"></line>
+                        <line x1="1" y1="14" x2="7" y2="14"></line>
+                        <line x1="9" y1="8" x2="15" y2="8"></line>
+                        <line x1="17" y1="16" x2="23" y2="16"></line>
+                      </svg>
+                    </Row>
+                    <Row
+                      className="paragraph pt-3 justify-content-center text-center"
+                      style={{}}
+                    >
+                      Customize - Select drawing style, size, and delivery
+                      format (digital/physical).
+                    </Row>
+                  </Card>
 
-                    <Card
-                      style={{ width: "300px" }}
-                      className="py-3 px-4 m-3 step-card delayed-popup-card popup-delay-08"
-                    >
-                      <Row className="justify-content-center fs-3">4</Row>
-                      <Row
-                        className="justify-content-center text-center"
-                        style={{ fontSize: "18px" }}
+                  <Card
+                    style={{}}
+                    className="card-20 py-3 px-4 m-3 step-card delayed-popup-card popup-delay-08"
+                  >
+                    <Row className="justify-content-center heading-4 pb-2">4</Row>
+                    <Row className="justify-content-center">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#FFF"
+                        stroke-width="1"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        style={{ width: "100px", height: "100px" }}
                       >
-                        Get It Drawn - The artist begins crafting your artwork.
-                      </Row>
-                    </Card>
+                        <line x1="4" y1="21" x2="4" y2="14"></line>
+                        <line x1="4" y1="10" x2="4" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12" y2="3"></line>
+                        <line x1="20" y1="21" x2="20" y2="16"></line>
+                        <line x1="20" y1="12" x2="20" y2="3"></line>
+                        <line x1="1" y1="14" x2="7" y2="14"></line>
+                        <line x1="9" y1="8" x2="15" y2="8"></line>
+                        <line x1="17" y1="16" x2="23" y2="16"></line>
+                      </svg>
+                    </Row>
+                    <Row
+                      className="paragraph pt-3 justify-content-center text-center"
+                      style={{}}
+                    >
+                      Get It Drawn - The artist begins crafting your artwork.
+                    </Row>
+                  </Card>
 
-                    <Card
-                      style={{ width: "300px" }}
-                      className="py-3 px-4 m-3 step-card delayed-popup-card popup-delay-1"
-                    >
-                      <Row className="justify-content-center fs-3">5</Row>
-                      <Row
-                        className="justify-content-center text-center"
-                        style={{ fontSize: "18px" }}
+                  <Card
+                    style={{}}
+                    className="card-20 py-3 px-4 m-3 step-card delayed-popup-card popup-delay-1"
+                  >
+                    <Row className="justify-content-center heading-4 pb-2">5</Row>
+                    <Row className="justify-content-center">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#FFF"
+                        stroke-width="1"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        style={{ width: "100px", height: "100px" }}
                       >
-                        Receive Your Artwork - Delivered within [X] days via
-                        email or shipping.
-                      </Row>
-                    </Card>
-                  </Row>
-                  <Row className="justify-content-center pb-5">
-                    <a href="/order-an-art" className="w-auto">
-                      <button className="cta-button fs-4">
-                        Request a Drawing
-                      </button>
-                    </a>
-                  </Row>
-                </Col>
-              </Row>
+                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4a2 2 0 0 0 1-1.73z"></path>
+                        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                      </svg>
+                    </Row>
+                    <Row
+                      className="paragraph pt-3 justify-content-center text-center"
+                      style={{}}
+                    >
+                      Receive Your Artwork - Delivered within [X] days via email
+                      or shipping.
+                    </Row>
+                  </Card>
+                </Row>
+                <Row className="justify-content-center pb-5">
+                  <a href="#categories" className="w-auto">
+                    <button className="cta-button fs-4">
+                      Request a Drawing
+                    </button>
+                  </a>
+                </Row>
+              </Col>
+            </Row>
             </Col>
-          </section>
-
-          <section className="px-5 py-5">
-            <TabContainer
-              defaultActiveKey={
-                categories
-                  ? categories?.length > 0
-                    ? categories[0].category
-                    : ""
-                  : ""
-              }
-            >
-              <Row className=" justify-content-center pb-3 fs-3 fw-bold">
-                Explore Categories
-              </Row>
-              <Row className="justify-content-center text-center py-4">
-                <Col xs={10} md={8} lg={6}>
-                  Every painting tells a unique story. Explore our categories to
-                  find the style that speaks to your heart - and let us bring it
-                  to life on canvas.
-                </Col>
-              </Row>
-              <Row className=" justify-content-center pb-3">
-                <Nav
-                  variant="underline"
-                  className="fs-5 justify-content-center"
-                >
-                  {categories?.map((category) => {
-                    return (
-                      <Nav.Item className="w-auto">
-                        <Nav.Link eventKey={category.category}>
-                          {category.category}
-                        </Nav.Link>
-                      </Nav.Item>
-                    );
-                  })}
-                </Nav>
-              </Row>
-
-              <Row>
+          </Row>
+          <Row className="px-5 py-5" id="#categories">
+            <Col xs={12}>
+            <Row className=" justify-content-center pb-3 heading-4 fw-bold">
+              Explore Categories
+            </Row>
+            <Row className="justify-content-center text-center py-4 paragraph">
+              <Col xs={10} md={8} xxl={6}>
+                Every painting tells a unique story. Explore our categories to
+                find the style that speaks to your heart - and let us bring it
+                to life on canvas.
+              </Col>
+            </Row>
+            <Row className=" justify-content-center">
+              <Col xs={12} md={10} lg={8} xxl={8}>
                 {categories?.map((category) => {
-                  return (
-                    <Col xs={12}>
-                      <TabContent>
-                        <TabPane eventKey={category.category}>
-                          <Row>
-                            {category.images.map((image) => {
-                              return (
-                                <Card
-                                  style={{
-                                    width: "200px",
-                                    height: "300px",
-                                    color: "#FFF",
-                                    backgroundColor: "#EEEEEE",
-                                    backgroundImage: `url(${image.image})`,
-                                    backgroundSize: "cover",
-                                    backgroundRepeat: "no-repeat",
-                                    backgroundClip: "padding-box",
-                                    cursor: "pointer",
-                                  }}
-                                  className="d-flex flex-column justify-content-end pb-2"
-                                  onClick={() => {
-                                    navigate(
-                                      `/order-an-art?category=${category.category}&product=${image?.productName}`
-                                    );
-                                  }}
-                                >
-                                  <button
-                                    className="btn btn-primary"
-                                    onClick={() => {
-                                      navigate(
-                                        `/order-an-art?category=${category.category}&product=${image?.productName}`
-                                      );
-                                    }}
-                                  >
-                                    Order
-                                  </button>
-                                </Card>
-                              );
-                            })}
-                          </Row>
-                        </TabPane>
-                      </TabContent>
-                    </Col>
-                  );
+                  if (category.images && category.images.length > 0) {
+                    return (
+                      <>
+                        <Row className="heading-4 py-3 fw-bold">
+                          {category.category}
+                        </Row>
+                        <Row className="gap-2 gap-md-3 gap-lg-4 flex-nowrap overflow-x-auto overflow-y-hidden">
+                          {category.images.map((image) => {
+                            return (
+                              <Card
+                                style={{
+                                  width: "200px",
+                                  height: "300px",
+                                  color: "#FFF",
+                                  backgroundColor: "#EEEEEE",
+                                  backgroundImage: `url(${image.image})`,
+                                  backgroundSize: "cover",
+                                  backgroundRepeat: "no-repeat",
+                                  backgroundClip: "padding-box",
+                                  cursor: "pointer",
+                                }}
+                                className="d-flex flex-column justify-content-end pb-2"
+                                onClick={() => {
+                                  navigate(
+                                    `/order-an-art?category=${category.category}&product=${image?.productName}`
+                                  );
+                                }}
+                              ></Card>
+                            );
+                          })}
+                        </Row>
+                      </>
+                    );
+                  }
                 })}
-              </Row>
-            </TabContainer>
-          </section>
+              </Col>
+            </Row>
+            </Col>
+          </Row>
 
-          <section
+          <Row
             className="overflow-hidden position-relative"
             style={{
               background:
                 "linear-gradient(#000000EE, #000000EE), linear-gradient(45deg, #AA33FF 10%, #8822FF 40%, #000022 80%)",
             }}
           >
+            <Col xs={12}>
             <Row className="position-absolute w-50">
               <svg viewBox="0 0 800 600" className="">
                 <path
@@ -390,7 +459,7 @@ export default function Home() : ReactElement{
                 />
               </svg>
             </Row>
-            <Row className="justify-content-center pt-5">
+            <Row className="justify-content-center py-5">
               <Col xs={10}>
                 <Row className="flex-column-reverse flex-md-row justify-content-center justify-content-lg-start">
                   <Col xs={12} lg={6}>
@@ -451,9 +520,9 @@ export default function Home() : ReactElement{
                     className="d-flex flex-column justify-content-start align-items-center fs-4 text-white text-center pb-4 px-2 px-md-0"
                     style={{}}
                   >
-                    <Row className="fs-1 fw-bold pb-4">
+                    <Row className="fw-bold pb-4">
                       <Col xs={12} style={{ zIndex: 100 }}>
-                        <span className=" text-white">Gallery</span>
+                        <span className=" text-white heading-5">Gallery</span>
                         <hr
                           style={{
                             border: "solid",
@@ -464,17 +533,7 @@ export default function Home() : ReactElement{
                       </Col>
                     </Row>
                     <Row className="px-2 px-md-5 fs-5">
-                      <p className="d-none d-md-flex">
-                        Each stroke tells a story, and every canvas captures a
-                        moment. Explore the gallery to see a collection of
-                        hand-drawn and digitally painted artworks, created with
-                        heart and imagination. Whether it's portraits,
-                        landscapes, or abstract expressions—these pieces reflect
-                        the journey, passion, and creativity behind every
-                        request.
-                      </p>
-
-                      <p className="d-flex d-md-none fs-6">
+                      <p className="paragraph">
                         Each stroke tells a story, and every canvas captures a
                         moment. Explore the gallery to see a collection of
                         hand-drawn and digitally painted artworks, created with
@@ -488,7 +547,7 @@ export default function Home() : ReactElement{
                 </Row>
               </Col>
             </Row>
-            <Row className="position-relative">
+            {/* <Row className="position-relative">
               <svg viewBox="0 0 500 30">
                 <defs>
                   <linearGradient
@@ -511,101 +570,105 @@ export default function Home() : ReactElement{
                   stroke="#FFF"
                 />
               </svg>
-            </Row>
-          </section>
-
+            </Row> */}
+            </Col>
+          </Row>
           <Row className="justify-content-center bg-white pb-5 px-md-5">
             <Col
               xs={10}
               lg={12}
-              className=" ms-0 py-2 px-3 px-md-5 overflow-x-hidden"
+              className=" ms-0 py-5 px-3 px-md-5 overflow-x-hidden"
             >
-              <Row className="fs-1 fw-bold pb-4 justify-content-center text-center text-md-start">
+              <Row className="heading-4 fw-bold pb-4 justify-content-center text-center text-md-start">
                 What Customers Say
               </Row>
-              <Row className="overflow-x-auto overflow-y-hidden flex-nowrap gap-3 px-3 px-md-5 pb-3">
-                <Card
-                  style={{ width: "300px" }}
-                  className="rounded-2 review-card p-3"
-                >
-                  <Row className="fw-semibold px-2">
-                    Emily Carter ⭐⭐⭐⭐⭐
-                    <hr />
-                  </Row>
-                  <Row className="pt-3 px-3">
-                    “Absolutely stunning work! I ordered a portrait of my
-                    grandparents, and it brought tears to my eyes. The detail
-                    and care were incredible.”
-                  </Row>
-                </Card>
-                <Card
-                  style={{ width: "300px" }}
-                  className="rounded-2 review-card p-3"
-                >
-                  <Row className="fw-semibold px-2">
-                    James Walker ⭐⭐⭐⭐⭐
-                    <hr />
-                  </Row>
-                  <Row className="pt-3 px-3">
-                    “From start to finish, the process was smooth and
-                    professional. The final painting was even better than I
-                    expected — truly a work of art.”
-                  </Row>
-                </Card>
-                <Card
-                  style={{ width: "300px" }}
-                  className="rounded-2 review-card p-3"
-                >
-                  <Row className="fw-semibold px-2">
-                    Olivia Bennett ⭐⭐⭐⭐⭐
-                    <hr />
-                  </Row>
-                  <Row className="pt-3 px-3">
-                    “I gave a rough idea, and the artist brought it to life
-                    beautifully. It now hangs in my bedroom and makes me smile
-                    every day.”
-                  </Row>
-                </Card>
-                <Card
-                  style={{ width: "300px" }}
-                  className="rounded-2 review-card p-3"
-                >
-                  <Row className="fw-semibold px-2">
-                    Michael Thompson ⭐⭐⭐⭐⭐
-                    <hr />
-                  </Row>
-                  <Row className="pt-3 px-3">
-                    “Incredible talent! I’ve commissioned several pieces and
-                    each one has been unique, expressive, and full of life.”
-                  </Row>
-                </Card>
+              <Row className="justify-content-center">
+                <Col xs={12} md={10} lg={8}>
+                  <Row className="overflow-x-auto overflow-y-hidden flex-nowrap gap-3 py-4 px-3 px-md-5 pb-3">
+                    <Card
+                      style={{ width: "300px" }}
+                      className="rounded-2 review-card p-3"
+                    >
+                      <Row className="fw-semibold px-2 heading-6">
+                        Emily Carter ⭐⭐⭐⭐⭐
+                        <hr />
+                      </Row>
+                      <Row className="pt-3 px-3 paragraph">
+                        “Absolutely stunning work! I ordered a portrait of my
+                        grandparents, and it brought tears to my eyes. The
+                        detail and care were incredible.”
+                      </Row>
+                    </Card>
+                    <Card
+                      style={{ width: "300px" }}
+                      className="rounded-2 review-card p-3"
+                    >
+                      <Row className="fw-semibold px-2 heading-6">
+                        James Walker ⭐⭐⭐⭐⭐
+                        <hr />
+                      </Row>
+                      <Row className="pt-3 px-3 paragraph">
+                        “From start to finish, the process was smooth and
+                        professional. The final painting was even better than I
+                        expected — truly a work of art.”
+                      </Row>
+                    </Card>
+                    <Card
+                      style={{ width: "300px" }}
+                      className="rounded-2 review-card p-3"
+                    >
+                      <Row className="fw-semibold px-2 heading-6">
+                        Olivia Bennett ⭐⭐⭐⭐⭐
+                        <hr />
+                      </Row>
+                      <Row className="pt-3 px-3 paragraph">
+                        “I gave a rough idea, and the artist brought it to life
+                        beautifully. It now hangs in my bedroom and makes me
+                        smile every day.”
+                      </Row>
+                    </Card>
+                    <Card
+                      style={{ width: "300px" }}
+                      className="rounded-2 review-card p-3"
+                    >
+                      <Row className="fw-semibold px-2 heading-6">
+                        Michael Thompson ⭐⭐⭐⭐⭐
+                        <hr />
+                      </Row>
+                      <Row className="pt-3 px-3 paragraph">
+                        “Incredible talent! I’ve commissioned several pieces and
+                        each one has been unique, expressive, and full of life.”
+                      </Row>
+                    </Card>
 
-                <Card
-                  style={{ width: "300px" }}
-                  className="rounded-2 review-card p-3"
-                >
-                  <Row className="fw-semibold px-2">
-                    Sophia Mitchell ⭐⭐⭐⭐⭐
-                    <hr />
+                    <Card
+                      style={{ width: "300px" }}
+                      className="rounded-2 review-card p-3"
+                    >
+                      <Row className="fw-semibold px-2 heading-6">
+                        Sophia Mitchell ⭐⭐⭐⭐⭐
+                        <hr />
+                      </Row>
+                      <Row className="pt-3 px-3 paragraph">
+                        “The colors, the texture, the emotion — everything about
+                        the painting was just perfect. Highly recommended for
+                        anyone looking for custom art.”
+                      </Row>
+                    </Card>
                   </Row>
-                  <Row className="pt-3 px-3">
-                    “The colors, the texture, the emotion — everything about the
-                    painting was just perfect. Highly recommended for anyone
-                    looking for custom art.”
-                  </Row>
-                </Card>
+                </Col>
               </Row>
             </Col>
           </Row>
-
-          <section className="py-4 bg-white px-3 px-md-5">
+          <Row className="py-4 bg-white px-3 px-md-5">
+            <Col xs={12}>
             <Row className="justify-content-center align-items-center px-5">
               <Col xs={12} md={6}>
-                <Row className="justify-content-center fs-1 fw-bold pb-4 text-center text-xxl-start">
+                <Row className="justify-content-center heading-5 fw-bold pb-4 text-center text-xxl-start">
                   Ready to Get Your Photo Drawn?
                 </Row>
 
-                <Row className="justify-content-center text-center">
+                <Row className="justify-content-center text-center paragraph">
                   Upload your favorite photo now and receive a custom piece of
                   art you'll cherish forever.
                 </Row>
@@ -617,16 +680,17 @@ export default function Home() : ReactElement{
                 </Row>
               </Col>
             </Row>
-          </section>
-
-          <section className="py-4 bg-white" id="painting-size-container">
+            </Col>
+          </Row>
+          <Row className="py-4 bg-white" id="painting-size-container">
+            <Col xs={12}>
             {/* <svg viewBox="0 0 500 47" style={{width: "100%", height: "100%"}} className="position-absolute">
                         <rect x={0} y={2} width={30} height={7} fill="#0033FF" rx={3.5} transform="rotate(135 0 47)"/>
                         <rect x={0} y={14} width={60} height={7} fill="#0033FF" rx={3.5} transform="rotate(135 12 47)"/>
                         <rect x={0} y={26} width={100} height={7} fill="#0033FF" rx={3.5} transform="rotate(135 24 47)"/>
                         <rect x={0} y={38} width={40} height={7} fill="#0033FF" rx={3.5} transform="rotate(135 36 47)"/>
                     </svg> */}
-            <Row className="fs-1 fw-bold pb-4 justify-content-center text-center text-md-start">
+            <Row className="heading-5 fw-bold pb-4 justify-content-center text-center text-md-start">
               Simple & Transparent Pricing
             </Row>
             <Row className="flex-column flex-lg-row align-items-center justify-content-center gap-3">
@@ -655,9 +719,9 @@ export default function Home() : ReactElement{
                 );
               })}
             </Row>
-          </section>
-
-          <section
+            </Col>
+          </Row>
+          <Row
             className="pb-4"
             style={{
               backgroundImage: `linear-gradient(0deg, #0005, #0005), url('${ContactAndFAQsBackroundImage}')`,
@@ -665,36 +729,45 @@ export default function Home() : ReactElement{
               backgroundRepeat: "no-repeat, no-repeat",
             }}
           >
+            <Col xs={12}>
             <Row>
               <svg viewBox="0 0 500 80">
                 <path d="M0,0 C180,40 320,40 500,0" fill="white" />
               </svg>
             </Row>
             <Row className="justify-content-center gap-3 px-4 px-md-5">
-              <Col xs={12} md={10} lg={6}>
-                <Row className="fs-1 fw-bolder text-white justify-content-center text-center text-md-start">
+              <Col xs={12} md={10} lg={6} xxl={4}>
+                <Row className="heading-4 fw-bolder text-white justify-content-center text-center text-md-start">
                   FAQs
                 </Row>
                 <Accordion>
                   <AccordionHeader>
-                    What photo formats do you accept?
+                    <span className="heading-6">
+                      What photo formats do you accept?
+                    </span>
                   </AccordionHeader>
                   <AccordionBody>Content</AccordionBody>
                 </Accordion>
 
                 <Accordion>
-                  <AccordionHeader>How long does it take?</AccordionHeader>
-                  <AccordionBody>Content</AccordionBody>
-                </Accordion>
-
-                <Accordion>
-                  <AccordionHeader>Can I request revisions?</AccordionHeader>
+                  <AccordionHeader>
+                    <span className="heading-6">How long does it take?</span>
+                    </AccordionHeader>
                   <AccordionBody>Content</AccordionBody>
                 </Accordion>
 
                 <Accordion>
                   <AccordionHeader>
-                    How is the artwork delivered?
+                    <span className="heading-6">Can I request revisions?</span>
+                    </AccordionHeader>
+                  <AccordionBody>Content</AccordionBody>
+                </Accordion>
+
+                <Accordion>
+                  <AccordionHeader>
+                    <span className="heading-6">
+                      How is the artwork delivered?
+                    </span>
                   </AccordionHeader>
                   <AccordionBody>Content</AccordionBody>
                 </Accordion>
@@ -702,8 +775,8 @@ export default function Home() : ReactElement{
             </Row>
 
             <Row className="justify-content-center pt-5">
-              <Col xs={9} lg={5} className="d-flex flex-column gap-3">
-                <Row className="fs-1 fw-bolder text-white text-center text-md-start justify-content-center">
+              <Col xs={9} lg={5} xxl={4} className="d-flex flex-column gap-3">
+                <Row className="heading-4 fw-bolder text-white text-center text-md-start justify-content-center">
                   Contact Form
                 </Row>
                 <Row>
@@ -721,7 +794,8 @@ export default function Home() : ReactElement{
                 </Row>
               </Col>
             </Row>
-          </section>
+            </Col>
+          </Row>
         </Col>
       </Row>
     );
