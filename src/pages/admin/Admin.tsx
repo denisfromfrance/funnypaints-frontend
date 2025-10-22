@@ -251,6 +251,7 @@ export default function Admin(): ReactElement{
                 Category renamed successfully!
               </Row>
             );
+            setSelectedCategory(null);
           }
         },
         () => {}
@@ -1296,7 +1297,7 @@ export default function Admin(): ReactElement{
                                     type="text"
                                     className="form-control"
                                     id="edit-category-name"
-                                    defaultValue={selectedCategory?.category}
+                                    defaultValue={selectedCategory ? selectedCategory?.category : ""}
                                   />
                                 </Row>
                                 <Row className="justify-content-end pt-3">

@@ -15,6 +15,7 @@ import ProtectedView from "./controller/ProtectedView";
 // import { validateUserAuthState } from './utils/Utils';
 import Profile from './pages/Profile';
 import PublicView from './controller/PublicView';
+import Cart from './pages/Cart';
 
 
 function Application(){
@@ -30,6 +31,7 @@ function Application(){
     <BrowserRouter>
       <Routes >
         <Route path='/' element={<PublicView element={<Home />} authenticated={isAuthenticatedRef.current} setAuthenticated={setIsAuthenticatedRef}/> } />
+        <Route path='/cart' element={<PublicView element={<Cart />} authenticated={isAuthenticatedRef.current} setAuthenticated={setIsAuthenticatedRef}/> } />
         <Route path='/signup' element={<PublicView element={<SignUp setAuthenticated={setIsAuthenticatedRef}/>} authenticated={isAuthenticatedRef.current} setAuthenticated={setIsAuthenticatedRef}/> } />
         <Route path='/signin' element={<PublicView element={<SignIn setAuthenticated={setIsAuthenticatedRef}/>} authenticated={isAuthenticatedRef.current} setAuthenticated={setIsAuthenticatedRef}/> } />
         <Route path='/order-an-art' element={<PublicView element={<SendPaintRequest />} authenticated={isAuthenticatedRef.current} setAuthenticated={setIsAuthenticatedRef}/> } />

@@ -6,6 +6,8 @@ export const api = axios.create({baseURL: API_BASE_URL});
 api.interceptors.request.use(config => {
     let accessToken = null;
 
+    config.withCredentials = true;
+
     try{
         accessToken = localStorage.getItem(USER_ACCESS_TOKEN);
         if(accessToken != null){

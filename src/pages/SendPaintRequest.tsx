@@ -2,16 +2,22 @@ import { Card, CardHeader, Col, Row } from "react-bootstrap";
 import {useState, type ReactElement, useEffect} from "react";
 import { Category, ModelImage, Suit, WallImage } from "../state/Types";
 import { GET, POSTMedia } from "../utils/Utils";
-import { GET_CATEGORIES_URL, GET_WALL_IMAGES_URL, REQUEST_ART_URL, GET_SUITS } from "../state/Constants";
+import { GET_CATEGORIES_URL, GET_WALL_IMAGES_URL, GET_SUITS, ADD_ITEMS_TO_THE_CART } from "../state/Constants";
 
 import "./css/style.css";
 import { useSearchParams } from "react-router-dom";
+
+type SelectedProductInformation = {
+  variantIDs: {variantID: number, sizes: number[]}[]
+}
 
 export default function SendPaintRequest(): ReactElement{
   const [searchParams] = useSearchParams();
   const [categories, setCategories] = useState<Category[]>();
   const [selectedCategory, setSelectedCategory] = useState<Category>();
   const [selectedModelImage, setSelectedModelImage] = useState<ModelImage>();
+
+  const [selectedProductInformation, setSelectedProductInformation] = useState<SelectedProductInformation>({variantIDs: []});
 
   const [imagePreviewScale, setImagePreviewScale] = useState<number>(0.9);
   const [modelPreviewImageYPosition, setModelPreviewImageYPosition] = useState<number>(0);
@@ -79,19 +85,20 @@ export default function SendPaintRequest(): ReactElement{
   //   );
   // };
 
-  // const addToCart = async(modelImage: Number, wallImage: Number, userSelectedImage: File) => {
-  //   const formData = new FormData();
-  //     formData.append("modelImage", modelImage.toString());
-  //     formData.append("wallImage", wallImage.toString());
-  //     formData.append("userSelectedImage", userSelectedImage);
-  //     POSTMedia(ADD_ITEMS_TO_THE_CART, formData, (request: any) => {
-  //         if (request.data.status == "ok"){
-  //             alert("Request made successfully!");
-  //         }
-  //     }, (request: any) => {
-  //         console.log(request.message);
-  //     })
-  // }
+  const addToCart = async(modelImage: Number, wallImage: Number, userSelectedImage: File) => {
+    const formData = new FormData();
+      formData.append("modelImage", modelImage.toString());
+      formData.append("wallImage", wallImage.toString());
+      formData.append("userSelectedImage", userSelectedImage);
+      formData.append("variantInformation", JSON.stringify(selectedProductInformation));
+      POSTMedia(ADD_ITEMS_TO_THE_CART, formData, (request: any) => {
+          if (request.data.status == "ok"){
+              alert("Request made successfully!");
+          }
+      }, (request: any) => {
+          console.log(request.message);
+      })
+  }
 
   const [suits, setSuits] = useState<Suit[]>([]);
   const getSuits = async() => {
@@ -102,19 +109,19 @@ export default function SendPaintRequest(): ReactElement{
     }, () => {});
   }
 
-  const sendPaintRequest = (modelImage: Number, wallImage: Number, userSelectedImage: File) => {
-      const formData = new FormData();
-      formData.append("modelImage", modelImage.toString());
-      formData.append("wallImage", wallImage.toString());
-      formData.append("userSelectedImage", userSelectedImage);
-      POSTMedia(REQUEST_ART_URL, formData, (request: any) => {
-          if (request.data.status == "ok"){
-              alert("Request made successfully!");
-          }
-      }, (request: any) => {
-          console.log(request.message);
-      })
-  }  
+  // const sendPaintRequest = (modelImage: Number, wallImage: Number, userSelectedImage: File) => {
+  //     const formData = new FormData();
+  //     formData.append("modelImage", modelImage.toString());
+  //     formData.append("wallImage", wallImage.toString());
+  //     formData.append("userSelectedImage", userSelectedImage);
+  //     POSTMedia(REQUEST_ART_URL, formData, (request: any) => {
+  //         if (request.data.status == "ok"){
+  //             alert("Request made successfully!");
+  //         }
+  //     }, (request: any) => {
+  //         console.log(request.message);
+  //     })
+  // }  
 
   useEffect(() => {
     console.log(selectedCategory);
@@ -574,10 +581,9 @@ export default function SendPaintRequest(): ReactElement{
                 }}
               >
                 <option>Select the category</option>
-                <option value="paint-on-canvas">Paint On Canvas</option>
-                <option value="print-on-canvas">Print On Canvas</option>
-                <option value="print-on-metal">Print On Metal</option>
-                <option value="print-on-paper">Print On Paper</option>
+                {selectedModelImage?.variations.map((variation) => {
+                  return <option>{variation.variation?.variation}</option>
+                })}
                 {/* {categories?.map((category) => (
                   <option value={category.id}>{category.category}</option>
                 ))} */}
@@ -596,13 +602,17 @@ export default function SendPaintRequest(): ReactElement{
                 if (
                   selectedModelImage &&
                   selectedWallImage &&
-                  userSelectedImage
+                  userSelectedImage && selectedProductInformation?.variantIDs.length > 0
                 ) {
-                  sendPaintRequest(
-                    selectedModelImage?.imageID,
-                    selectedWallImage?.wallImageID,
-                    userSelectedImage
-                  );
+                  
+                  // sendPaintRequest(
+                  //   selectedModelImage?.imageID,
+                  //   selectedWallImage?.wallImageID,
+                  //   userSelectedImage
+                  // );
+
+                  addToCart(selectedModelImage.imageID, selectedWallImage.wallImageID, userSelectedImage);
+
                 } else {
                   alert(userSelectedImage);
                 }
@@ -617,6 +627,102 @@ export default function SendPaintRequest(): ReactElement{
           style={{ backgroundColor: "#8822FF22" }}
         >
           Pick the size. (Price may vary depending on the size)
+        </Row>
+        <Row className="gap-3">
+          {selectedModelImage?.variations?.map(variation => {
+            const sizes: number[] = [];
+
+            selectedProductInformation.variantIDs.forEach(v => {
+              sizes.push(...v.sizes);
+            })
+            return (
+              <>
+                <span className="product-variation-data-container" onClick={(event) => {
+                  const element = (event.currentTarget as HTMLElement);
+                  if (element.classList.contains("show")){
+                    element.classList.remove("show");
+                  }else{
+                    element.classList.add("show");
+                  }
+                }}>
+                  <span className="d-block heading-5">
+                    {variation ? variation.variation?.variation : ""}
+                  </span>
+                  <span className="d-flex gap-2 py-3">
+                    {variation ? variation.sizes?.map(size => {
+                      
+                      return <span 
+                      className="d-flex rounded-2 justify-content-center align-items-center heading-5 px-3" 
+                      style={{width: "auto", height: "50px", backgroundColor: "#2200ff33", border: size?.id ? sizes.includes(size?.id) ? "solid 2px #000" : "none" : "none"}}
+                      onClick={() => {
+                        const updatedProductInformation = selectedProductInformation;
+                        let foundVariantInformation = false;
+                        let foundSize = false;
+                        updatedProductInformation.variantIDs.forEach((variantInformation: {variantID: number, sizes: number[]}) => {
+                          if(variantInformation.variantID == variation.variation?.id){
+                            foundVariantInformation = true;
+                            variantInformation.sizes.forEach(sizeID => {
+                              if (sizeID == size.id){
+                                foundSize = true;
+                              }
+                            })
+                            return;
+                          }
+                        });
+
+                        if (!foundVariantInformation){
+                          if (variation.variation?.id && size){
+                            const sizes: number[] = [];
+                            if (size?.id){
+                              sizes.push(size.id);
+                            }
+                            updatedProductInformation.variantIDs.push({variantID: variation.variation?.id, sizes: sizes})
+                          }
+                        }else{
+                          if (foundSize){
+                            let newVariationIDs: {
+                              variantID: number;
+                              sizes: number[];
+                            }[] = [];
+                            updatedProductInformation.variantIDs.forEach(element => {
+
+                              const newSizes: number[] = [];
+                              element.sizes.forEach(s => {
+                                if (s != size.id){
+                                  return newSizes.push(s);
+                                }
+                              });
+
+                              if (newSizes.length != 0){
+                                element.sizes = newSizes;
+                                newVariationIDs.push(element);
+                              }
+                            });
+
+                            updatedProductInformation.variantIDs = newVariationIDs;
+                          }else{
+                            updatedProductInformation.variantIDs.forEach(
+                              (element) => {
+                                if(variation.variation?.id == element.variantID){
+                                  if (size?.id){
+                                    element.sizes.push(size.id);
+                                  }
+                                }
+                              }
+                            );
+                          }
+                        }
+                        setSelectedProductInformation(updatedProductInformation);
+                        console.log(updatedProductInformation);
+                      }}>
+                        {size.sizeObj?.width}{size.sizeObj?.unit}x{size.sizeObj?.height}{size.sizeObj?.unit}
+                        </span>
+                    }) : <></>}
+                  </span>
+                </span>
+              </>
+          );
+          })}
         </Row>
         <Row className=" pt-2 pb-3">
           {sizes?.map((size) => {
