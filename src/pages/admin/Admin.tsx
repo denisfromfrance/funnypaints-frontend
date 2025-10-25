@@ -2,7 +2,7 @@ import { ReactElement, useEffect, useState,  useRef, ReactNode } from "react";
 import { Accordion, AccordionBody, AccordionHeader, ButtonGroup, Card, CardBody, CardHeader, Col, Nav, NavItem, NavLink, Row, TabContainer, TabContent, TabPane, ToggleButton } from "react-bootstrap";
 
 import "../css/style.css";
-import { ADD_NEW_CATEGORY_URL, ADD_SIZE_URL, CHANGE_REQUEST_STATUS, DELETE_CATEGORY, DELETE_MODEL_IMAGE, DELETE_PREVIEW_IMAGE, GET_CATEGORIES_URL, GET_HOME_PAGE_INFORMATION, GET_PREVIEW_IMAGE, GET_REQUESTS_URL, GET_SIZES_URL, GET_STATUSES_URL, POST_WALL_IMAGES_URL, RENAME_CATEGORY } from "../../state/Constants";
+import { ADD_NEW_CATEGORY_URL, ADD_SIZE_URL, CHANGE_REQUEST_STATUS, DELETE_CATEGORY, DELETE_MODEL_IMAGE, DELETE_PREVIEW_IMAGE, GET_CATEGORIES_URL, GET_PREVIEW_IMAGE, GET_REQUESTS_URL, GET_SIZES_URL, GET_STATUSES_URL, POST_WALL_IMAGES_URL, RENAME_CATEGORY } from "../../state/Constants";
 import { GET, POST, POSTMedia } from "../../utils/Utils";
 import { Category, ModelImage, PaintingRequestStatus, Size, Variation, WallImage } from "../../state/Types";
 import { CheckCircle, CheckCircleFill, ClockHistory, PencilFill, Trash, TrashFill } from "react-bootstrap-icons";

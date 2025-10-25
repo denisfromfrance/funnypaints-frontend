@@ -1,4 +1,4 @@
-import { Card, CardHeader, Col, Row } from "react-bootstrap";
+import { Card, Col, Row } from "react-bootstrap";
 import {useState, type ReactElement, useEffect} from "react";
 import { Category, ModelImage, Suit, WallImage } from "../state/Types";
 import { GET, POSTMedia } from "../utils/Utils";
@@ -75,14 +75,14 @@ export default function SendPaintRequest(): ReactElement{
 
   // const [selectedSize, setSelectedSize] = useState<Size | null>();
   
-  const [selectedSize, setSelectedSize] = useState<{
-    size: string;
-    price: number | undefined;
-  } | null>();
+  // const [selectedSize, setSelectedSize] = useState<{
+  //   size: string;
+  //   price: number | undefined;
+  // } | null>();
 
   // const [sizes, setSizes] = useState<Size[]>();
 
-  const [sizes, setSizes] = useState<{size: string, price: number | undefined}[]>();
+  // const [sizes, setSizes] = useState<{size: string, price: number | undefined}[]>();
   // const getSizes = () => {
   //   GET(
   //     GET_SIZES_URL,
@@ -786,7 +786,7 @@ export default function SendPaintRequest(): ReactElement{
             })}
           </Row>
           <Row className=" pt-2 pb-3">
-            {sizes?.map((size) => {
+            {/* {sizes?.map((size) => {
               return (
                 <Card
                   className=""
@@ -807,16 +807,9 @@ export default function SendPaintRequest(): ReactElement{
                       <Col xs={6}>${size.price}</Col>
                     </Row>
                   </CardHeader>
-                  {/* <CardBody>
-                  <Row className="text-center justify-content-center">
-                    {size.width}
-                    {size.unit} x {size.height}
-                    {size.unit}
-                  </Row>
-                </CardBody> */}
                 </Card>
               );
-            })}
+            })} */}
 
             {/* {sizes?.map((size) => {
             return (
