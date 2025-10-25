@@ -5,15 +5,16 @@ import { Trash } from "react-bootstrap-icons";
 import "./css/style.css"
 import ScrollTo from "../custom-components/ScrollTo";
 
-export default function Cart(): ReactElement{
+export default function Cart(props: any): ReactElement{
     const [products, setProducts] = useState<any[]>([]);
+    const [shippingIsSameAsBillingAddress, setShippingIsSameAsBillingAddress] = useState<boolean>(true);
     useEffect(() => {
-      setProducts(["", "", "", ""]);
+      setProducts(props?.cartItems);
     }, []);
     return (
       <Row className="page py-5 mt-5 justify-content-center">
         <Col xs={11} md={8} className="d-flex flex-column gap-2">
-          {products.map(() => {
+          {products.map((product) => {
             return (
               <Row className="">
                 <Card className="py-3 ps-4 pe-5">
@@ -27,7 +28,9 @@ export default function Cart(): ReactElement{
                       <div
                         className="cart-product-preview"
                         style={{
-                          backgroundImage: `url(${""})`,
+                          backgroundImage: `url(${product?.modelImageURL})`,
+                          backgroundSize: "cover",
+                          backgroundRepeat: "no-repeat"
                         }}
                       ></div>
                     </Col>
@@ -105,7 +108,12 @@ export default function Cart(): ReactElement{
             );
           })}
           <Row className="justify-content-center" id="billing-information">
-            <Col xs={12} md={10} lg={8} className="pt-5 d-flex flex-column gap-3">
+            <Col
+              xs={12}
+              md={10}
+              lg={8}
+              className="pt-5 d-flex flex-column gap-3"
+            >
               <Row className="heading-5 fw-bold pt-5 pb-3">Billing details</Row>
               <Row>
                 <Col xs={12} md={6}>
@@ -137,7 +145,37 @@ export default function Cart(): ReactElement{
               </Row>
               <Row>
                 <Col xs={12}>
-                  <label className="required fw-medium">Street address</label>
+                  <label className="required fw-medium">Billing Street address</label>
+                  <input
+                    type="text"
+                    className="form-control mb-2"
+                    placeholder="House number and street name"
+                  />
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Apartment, suite, unit, etc. (optional)"
+                  />
+                </Col>
+                <Col
+                  xs={12}
+                  className="d-flex flex-row-reverse justify-content-end gap-3 pt-2"
+                >
+                  <label className="w-auto text">
+                    Shipping address is same as billing address
+                  </label>
+                  <input
+                    className=" form-check-input"
+                    style={{outline: "4px solid #0000FF33"}}
+                    type="checkbox"
+                    checked={shippingIsSameAsBillingAddress}
+                    onChange={() => {
+                      setShippingIsSameAsBillingAddress(!shippingIsSameAsBillingAddress);
+                    }}
+                  />
+                </Col>
+                <Col xs={12} className={(shippingIsSameAsBillingAddress ? 'd-none' : 'd-flex flex-column') + ' pt-3'}>
+                  <label className="required fw-medium">Shipping Street address</label>
                   <input
                     type="text"
                     className="form-control mb-2"
@@ -216,7 +254,7 @@ export default function Cart(): ReactElement{
             <Col xs={6} className="px-0 text-end">
               $200
             </Col>
-          <hr />
+            <hr />
           </Row>
           <Row>
             <p className="text fw-light text-black-50 px-0 pt-3">
@@ -228,7 +266,9 @@ export default function Cart(): ReactElement{
           </Row>
           <Row className="justify-content-end">
             <ScrollTo target="billing-information">
-              <button className="btn btn-primary text">Proceed to Checkout</button>
+              <button className="btn btn-primary text">
+                Proceed to Checkout
+              </button>
             </ScrollTo>
           </Row>
         </Col>

@@ -2,13 +2,14 @@ import { ReactElement, useEffect, useState,  useRef, ReactNode } from "react";
 import { Accordion, AccordionBody, AccordionHeader, ButtonGroup, Card, CardBody, CardHeader, Col, Nav, NavItem, NavLink, Row, TabContainer, TabContent, TabPane, ToggleButton } from "react-bootstrap";
 
 import "../css/style.css";
-import { ADD_NEW_CATEGORY_URL, ADD_SIZE_URL, CHANGE_REQUEST_STATUS, DELETE_CATEGORY, DELETE_MODEL_IMAGE, DELETE_PREVIEW_IMAGE, GET_CATEGORIES_URL, GET_PREVIEW_IMAGE, GET_REQUESTS_URL, GET_SIZES_URL, GET_STATUSES_URL, POST_WALL_IMAGES_URL, RENAME_CATEGORY } from "../../state/Constants";
+import { ADD_NEW_CATEGORY_URL, ADD_SIZE_URL, CHANGE_REQUEST_STATUS, DELETE_CATEGORY, DELETE_MODEL_IMAGE, DELETE_PREVIEW_IMAGE, GET_CATEGORIES_URL, GET_HOME_PAGE_INFORMATION, GET_PREVIEW_IMAGE, GET_REQUESTS_URL, GET_SIZES_URL, GET_STATUSES_URL, POST_WALL_IMAGES_URL, RENAME_CATEGORY } from "../../state/Constants";
 import { GET, POST, POSTMedia } from "../../utils/Utils";
 import { Category, ModelImage, PaintingRequestStatus, Size, Variation, WallImage } from "../../state/Types";
 import { CheckCircle, CheckCircleFill, ClockHistory, PencilFill, Trash, TrashFill } from "react-bootstrap-icons";
 import Toast from "./controls/Toast";
 import AddEditProduct from "./pages/AddEditProduct";
 import Variations from "./pages/Settings/Variations";
+import PagesSettings from "./pages/Settings/PagesSettings";
 
 
 type PaintRequest = {
@@ -742,9 +743,7 @@ export default function Admin(): ReactElement{
                               <thead>
                                 <th className="py-3">Product Image</th>
                                 <th className="py-3">Product Name</th>
-                                <th className="py-3">
-                                  Product Variations
-                                </th>
+                                <th className="py-3">Product Variations</th>
                                 <th className="py-3"></th>
                               </thead>
                               <tbody>
@@ -1214,6 +1213,11 @@ export default function Admin(): ReactElement{
                               Product Variations
                             </Nav.Link>
                           </Nav.Item>
+                          <Nav.Item>
+                            <Nav.Link eventKey={"Pages-settings"}>
+                              Pages settings
+                            </Nav.Link>
+                          </Nav.Item>
                         </Nav>
 
                         <TabContent className="pt-4">
@@ -1231,9 +1235,14 @@ export default function Admin(): ReactElement{
                                 />
                               </Col>
                               <Col xs={3}>
-                                <button className="btn btn-success" onClick={() => {
-                                  createCategory();
-                                }}>ADD</button>
+                                <button
+                                  className="btn btn-success"
+                                  onClick={() => {
+                                    createCategory();
+                                  }}
+                                >
+                                  ADD
+                                </button>
                               </Col>
                             </Row>
                             <Row className="gap-2 pt-2 justify-content-evenly h-100">
@@ -1297,7 +1306,11 @@ export default function Admin(): ReactElement{
                                     type="text"
                                     className="form-control"
                                     id="edit-category-name"
-                                    defaultValue={selectedCategory ? selectedCategory?.category : ""}
+                                    defaultValue={
+                                      selectedCategory
+                                        ? selectedCategory?.category
+                                        : ""
+                                    }
                                   />
                                 </Row>
                                 <Row className="justify-content-end pt-3">
@@ -1445,9 +1458,12 @@ export default function Admin(): ReactElement{
                                           </td>
                                           <td>${size.price}</td>
                                           <td>
-                                            <button className="btn btn-outline-danger" onClick={() => {
-                                              deleteSize(size.id);
-                                            }}>
+                                            <button
+                                              className="btn btn-outline-danger"
+                                              onClick={() => {
+                                                deleteSize(size.id);
+                                              }}
+                                            >
                                               <Trash />
                                             </button>
                                           </td>
@@ -1462,6 +1478,10 @@ export default function Admin(): ReactElement{
 
                           <TabPane eventKey={"variations"}>
                             <Variations variations={variations} />
+                          </TabPane>
+
+                          <TabPane eventKey="Pages-settings">
+                            <PagesSettings />
                           </TabPane>
 
                           <TabPane>

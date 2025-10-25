@@ -1,7 +1,7 @@
 import {useEffect, type ReactElement, useState } from "react";
 import { Accordion, AccordionBody, AccordionHeader, Card, CardBody, Col, Row } from "react-bootstrap";
 
-import HeroSectionBackground from "../assets/ChatGPT Image Jun 28, 2025, 04_52_52 PM.webp";
+// import HeroSectionBackground from "../assets/ChatGPT Image Jun 28, 2025, 04_52_52 PM.webp";
 import ContactAndFAQsBackroundImage from "../assets/ChatGPT Image Jun 28, 2025, 10_50_07 PM.webp";
 
 import Soldat from "../assets/Soldat.jpg";
@@ -10,7 +10,7 @@ import Tristounet from "../assets/Tristounet.jpg";
 
 import "./css/style.css";
 import { GET, observeElement, unobserveElement } from "../utils/Utils";
-import { GET_CATEGORIES_URL, GET_SIZES_URL } from "../state/Constants";
+import { GET_CATEGORIES_URL, GET_HOME_PAGE_INFORMATION, GET_SIZES_URL } from "../state/Constants";
 import { Category, Size } from "../state/Types";
 import { useNavigate } from "react-router";
 import ScrollTo from "../custom-components/ScrollTo";
@@ -45,9 +45,23 @@ export default function Home(props: {onReceiveCategories?: CallableFunction}) : 
     }, () => {});
   }
 
+  const [homepageInformation, setHomePageInformation] = useState<any>({});
+  const getHomepageInformation = () => {
+    GET(
+      GET_HOME_PAGE_INFORMATION,
+      (response: any) => {
+        const data = response.data.data;
+        setHomePageInformation(data);
+      },
+      () => {}
+    );
+  };
+
   useEffect(() => {
     getSizes();
     getCategories();
+
+    getHomepageInformation();
     
     const delayedPopupCard = document.getElementsByClassName("delayed-popup-card");
     if (delayedPopupCard){
@@ -76,7 +90,7 @@ export default function Home(props: {onReceiveCategories?: CallableFunction}) : 
           <Row
             className="py-5"
             style={{
-              backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.5)), url('${HeroSectionBackground}')`,
+              backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.5)), url('${homepageInformation?.image}')`,
               backgroundSize: "cover",
               backgroundPosition: "center",
               backgroundRepeat: "no-repeat",
@@ -86,12 +100,11 @@ export default function Home(props: {onReceiveCategories?: CallableFunction}) : 
               <Row className="justify-content-center">
                 <Col xs={11} md={8} xl={7}>
                   <Row className="heading-1 fw-bold justify-content-center text-center py-3 text-white">
-                    "Turn Your Favorite Photo into a Hand-Drawn Masterpiece"
+                    {homepageInformation?.mainHeadline}
                   </Row>
 
                   <Row className="heading-5 fw-medium justify-content-center text-center py-4 text-white">
-                    "Upload a photo and receive a custom drawing crafted just
-                    for you by a professional artist."
+                    {homepageInformation?.subheading}
                   </Row>
                   {/* <Row className="d-none d-md-flex fs-3 fw-semibold justify-content-center text-center py-3 text-white">
                   "Upload a photo and receive a custom drawing crafted just for
@@ -106,7 +119,7 @@ export default function Home(props: {onReceiveCategories?: CallableFunction}) : 
                     >
                       <ScrollTo target="categories">
                         <button className="cta-button cta-button">
-                          Request a Drawing
+                          Request My Painting
                         </button>
                       </ScrollTo>
                     </Col>
@@ -114,7 +127,7 @@ export default function Home(props: {onReceiveCategories?: CallableFunction}) : 
                 </Col>
               </Row>
 
-              <Row className="py-0 position-relative pb-5 bottom-0">
+              {/* <Row className="py-0 position-relative pb-5 bottom-0">
                 <svg
                   viewBox={"0, 0 500 100"}
                   className="p-0 position-absolute top-0 start-0"
@@ -125,7 +138,7 @@ export default function Home(props: {onReceiveCategories?: CallableFunction}) : 
                     stroke="#000"
                   />
                 </svg>
-              </Row>
+              </Row> */}
             </Col>
           </Row>
 
@@ -166,7 +179,7 @@ export default function Home(props: {onReceiveCategories?: CallableFunction}) : 
               </Col>
             </Row>
           </section> */}
-          <Row className="bg-black text-white pt-5 position-relative">
+          <Row className="bg-black text-white pt-5 position-relative d-none">
             <Col xs={12}>
               <Row className=" justify-content-center">
                 <Col xs={12} md={10}>
@@ -358,7 +371,7 @@ export default function Home(props: {onReceiveCategories?: CallableFunction}) : 
                   <Row className="justify-content-center pb-5">
                     <a href="#categories" className="w-auto">
                       <button className="cta-button cta-button">
-                        Request a Drawing
+                        Request My Painting
                       </button>
                     </a>
                   </Row>
@@ -387,29 +400,92 @@ export default function Home(props: {onReceiveCategories?: CallableFunction}) : 
                           <Row className="heading-5 py-3 fw-bold">
                             {category.category}
                           </Row>
-                          <Row className="gap-2 gap-md-3 gap-lg-4 flex-nowrap overflow-x-auto overflow-y-hidden mb-5">
-                            {category.images.map((image) => {
-                              return (
-                                <Card
-                                  key={image.imageID + "-" + image.categoryID}
-                                  style={{
-                                    color: "#FFF",
-                                    backgroundColor: "#EEEEEE",
-                                    backgroundImage: `url(${image.image})`,
-                                    backgroundSize: "cover",
-                                    backgroundRepeat: "no-repeat",
-                                    backgroundClip: "padding-box",
-                                    cursor: "pointer",
-                                  }}
-                                  className="d-flex flex-column justify-content-end pb-2 product-card"
-                                  onClick={() => {
-                                    navigate(
-                                      `/order-an-art?category=${category.category}&product=${image?.productName}`
-                                    );
-                                  }}
-                                ></Card>
-                              );
-                            })}
+                          <Row>
+                            <Col
+                              xs={2}
+                              lg={1}
+                              className="d-flex flex-column justify-content-center align-items-end"
+                            >
+                              <div
+                                className="heading-2 rounded-2 d-lex justify-content-center align-items-center px-3 py-2"
+                                style={{ boxShadow: "0px 5px 15px 1px #555" }}
+                                onClick={(event) => {
+                                  const scrollContainer: Element | undefined = (
+                                    event.target as HTMLElement
+                                  ).parentElement?.parentElement?.children[1]
+                                    .children[0];
+                                  // const images = scrollContainer?.children;
+                                  // let scrollWidth = 0;
+                                  // if (images && images.length > 0) {
+                                    // scrollWidth = parseInt(
+                                    //   (images[0] as HTMLElement).style.width
+                                    // );
+                                    // console.dir((images[0] as HTMLElement));
+                                  // }
+                                  scrollContainer?.scrollBy({
+                                    left: -200,
+                                    behavior: "smooth",
+                                  });
+                                  console.log(scrollContainer);
+                                }}
+                              >
+                                &#8249;
+                              </div>
+                            </Col>
+                            <Col xs={8} lg={10}>
+                              <Row className="gap-2 gap-md-3 gap-lg-4 flex-nowrap overflow-x-auto overflow-y-hidden mb-5">
+                                {category.images.map((image) => {
+                                  return (
+                                    <Card
+                                      key={
+                                        image.imageID + "-" + image.categoryID
+                                      }
+                                      style={{
+                                        color: "#FFF",
+                                        backgroundColor: "#EEEEEE",
+                                        backgroundImage: `url(${image.image})`,
+                                        backgroundSize: "cover",
+                                        backgroundRepeat: "no-repeat",
+                                        backgroundClip: "padding-box",
+                                        cursor: "pointer",
+                                      }}
+                                      className="d-flex flex-column justify-content-end pb-2 product-card"
+                                      onClick={() => {
+                                        navigate(
+                                          `/order-an-art?category=${category.category}&product=${image?.imageID}`
+                                        );
+                                      }}
+                                    ></Card>
+                                  );
+                                })}
+                              </Row>
+                            </Col>
+                            <Col
+                              xs={2}
+                              lg={1}
+                              className="d-flex flex-column justify-content-center align-items-end"
+                            >
+                              <div
+                                className="heading-2 rounded-2 d-lex justify-content-center align-items-center px-3 py-2"
+                                style={{
+                                  boxShadow: "0px 5px 15px 1px #555",
+                                  cursor: "pointer",
+                                }}
+                                onClick={(event) => {
+                                  const scrollContainer: Element | undefined = (
+                                    event.target as HTMLElement
+                                  ).parentElement?.parentElement?.children[1]
+                                    .children[0];
+                                  scrollContainer?.scrollBy({
+                                    left: 200,
+                                    behavior: "smooth",
+                                  });
+                                  console.log(scrollContainer);
+                                }}
+                              >
+                                &#8250;
+                              </div>
+                            </Col>
                           </Row>
                         </>
                       );
@@ -641,7 +717,6 @@ export default function Home(props: {onReceiveCategories?: CallableFunction}) : 
             <Col xs={12}>
               <Row className="justify-content-center align-items-center px-5">
                 <Col xs={12} md={6} lg={8}>
-
                   <Row className="justify-content-center heading-4 fw-bold pb-4 text-center text-xxl-start">
                     Ready to Get Your Photo Drawn?
                   </Row>
@@ -654,7 +729,7 @@ export default function Home(props: {onReceiveCategories?: CallableFunction}) : 
                   <Row className="justify-content-center pt-4">
                     <ScrollTo target="categories">
                       <button className="cta-button cta-button w-auto">
-                        Request My Drawing
+                        Request My Painting
                       </button>
                     </ScrollTo>
                   </Row>
@@ -729,14 +804,18 @@ export default function Home(props: {onReceiveCategories?: CallableFunction}) : 
                         What photo formats do you accept?
                       </span>
                     </AccordionHeader>
-                    <AccordionBody className="bg-white text">Content</AccordionBody>
+                    <AccordionBody className="bg-white text">
+                      Content
+                    </AccordionBody>
                   </Accordion>
 
                   <Accordion>
                     <AccordionHeader>
                       <span className="heading-6">How long does it take?</span>
                     </AccordionHeader>
-                    <AccordionBody className="bg-white text">Content</AccordionBody>
+                    <AccordionBody className="bg-white text">
+                      Content
+                    </AccordionBody>
                   </Accordion>
 
                   <Accordion>
@@ -745,7 +824,9 @@ export default function Home(props: {onReceiveCategories?: CallableFunction}) : 
                         Can I request revisions?
                       </span>
                     </AccordionHeader>
-                    <AccordionBody className="bg-white text">Content</AccordionBody>
+                    <AccordionBody className="bg-white text">
+                      Content
+                    </AccordionBody>
                   </Accordion>
 
                   <Accordion>
@@ -754,7 +835,9 @@ export default function Home(props: {onReceiveCategories?: CallableFunction}) : 
                         How is the artwork delivered?
                       </span>
                     </AccordionHeader>
-                    <AccordionBody className="bg-white text">Content</AccordionBody>
+                    <AccordionBody className="bg-white text">
+                      Content
+                    </AccordionBody>
                   </Accordion>
                 </Col>
               </Row>
@@ -775,7 +858,9 @@ export default function Home(props: {onReceiveCategories?: CallableFunction}) : 
                     <textarea rows={10} className="form-control"></textarea>
                   </Row>
                   <Row className="justify-content-end">
-                    <button className="btn btn-primary w-auto text">SEND</button>
+                    <button className="btn btn-primary w-auto text">
+                      SEND
+                    </button>
                   </Row>
                 </Col>
               </Row>

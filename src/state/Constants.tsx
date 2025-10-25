@@ -27,10 +27,12 @@ export const CHANGE_PAINTING_NAME = "admin/category/model/rename";
 export const CHANGE_PAINTING_PRICE = "admin/category/model/price/change";
 export const CHANGE_PAINTING = "admin/category/model/change";
 
-
 export const ADD_PREVIEW_IMAGE = "admin/preview-images/add";
 export const GET_PREVIEW_IMAGE = "admin/preview-images/get";
 export const DELETE_PREVIEW_IMAGE = "admin/preview-images/delete";
+
+export const UPDATE_HOME_PAGE_INFORMATION = "admin/pages/home/update";
+export const GET_HOME_PAGE_INFORMATION = "admin/pages/home/information/get";
 
 export const UPLOAD_SUITS = "admin/suits/add";
 

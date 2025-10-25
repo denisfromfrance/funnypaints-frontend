@@ -21,7 +21,7 @@ export default function UserBase(props: {element: ReactElement, authenticated: b
     GET(GET_CART_ITEMS, (response: any) => {
       if (response.data.status == "ok"){
         setCartItems(response.data.cart);
-        console.log(response.data);
+        console.log("Cart: ", response.data);
       }
     }, () => {});
   }
@@ -54,7 +54,7 @@ export default function UserBase(props: {element: ReactElement, authenticated: b
     }
   }
 
-  const element = React.cloneElement(props.element, {onReceiveCategories: onReceiveCategoriesHandler});
+  const element = React.cloneElement(props.element, {onReceiveCategories: onReceiveCategoriesHandler, cartItems: cartItems});
   useEffect(() => {
     const interval = setInterval(() => {
       getCartData();
@@ -71,10 +71,10 @@ export default function UserBase(props: {element: ReactElement, authenticated: b
     <>
       <Navbar
         expand="md"
-        className="bg-black py-1 py-lg-2 position-fixed top-0 start-0 w-100"
+        className="bg-white py-1 py-lg-2 position-fixed top-0 start-0 w-100"
         style={{ zIndex: 400 }}
       >
-        <Container className="d-flex gap-xl-5">
+        <Container className="d-flex gap-xl-5 justify-content-center">
           <NavbarBrand
             href="/"
             style={{ color: "#AAA" }}
@@ -90,18 +90,18 @@ export default function UserBase(props: {element: ReactElement, authenticated: b
           <NavbarCollapse aria-controls="toggle-btn" className="">
             <Nav className="gap-2 gap-lg-3 gap-xl-1">
               <NavItem>
-                <NavLink href="/" className="text-white">
+                <NavLink href="/" className="">
                   <span className="text">Home</span>
                 </NavLink>
               </NavItem>
               <NavItem>
-                <NavLink href="/contact" className="text-white">
+                <NavLink href="/contact" className="">
                   <span className="text">Contact</span>
                 </NavLink>
               </NavItem>
               <NavItem>
                 <NavLink
-                  className="text-white d-flex flex-row gap-2 align-items-center"
+                  className=" d-flex flex-row gap-2 align-items-center"
                   onClick={() => {
                     setExpand(!expand);
                   }}
@@ -112,11 +112,11 @@ export default function UserBase(props: {element: ReactElement, authenticated: b
                   ></span>
                 </NavLink>
               </NavItem>
-              <NavItem>
-                <NavLink href="/order-an-art" className="text-white">
+              {/* <NavItem>
+                <NavLink href="/order-an-art" className="">
                   <span className="text">Order</span>
                 </NavLink>
-              </NavItem>
+              </NavItem> */}
 
               <NavItem className="d-flex d-md-none">
                 <NavLink href="/profile" className="text-white">
@@ -140,12 +140,20 @@ export default function UserBase(props: {element: ReactElement, authenticated: b
                 className="border-0"
                 style={{ background: "transparent" }}
               >
-                <Cart4 color="#FFF" className="cart-icon" size={28} />
+                <Cart4 color="#000" className="cart-icon" size={28} />
               </Dropdown.Toggle>
               <Dropdown.Menu className="">
-                <Dropdown.Item href="#item">Item 1</Dropdown.Item>
-                <Dropdown.Item href="#item">Item 2</Dropdown.Item>
-                <Dropdown.Item href="#item">Item 3</Dropdown.Item>
+                {cartItems.map((cartItem: any) => {
+                  return (
+                    <Dropdown.Item>
+                      <img
+                        src={cartItem?.modelImageURL}
+                        width="50"
+                        height="70"
+                      />
+                    </Dropdown.Item>
+                  );
+                })}
                 <Row className="justify-content-center align-items-center">
                   <Col xs={12} className="px-4">
                     <a href="/cart" className="w-auto">
@@ -222,6 +230,7 @@ export default function UserBase(props: {element: ReactElement, authenticated: b
             </a>
           </Row>
         </Col>
+        {/* {JSON.stringify(cartItems)} */}
       </Row>
       {element}
       <Row className="bg-dark px-2 px-md-5" id="footer">

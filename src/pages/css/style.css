@@ -719,8 +719,8 @@ input:-webkit-autofill {
     width: 10px !important;
     height: 10px !important;
     margin-top: -4px;
-    border-bottom: solid 3px #FFF;
-    border-right: solid 3px #FFF;
+    border-bottom: solid 3px #000;
+    border-right: solid 3px #000;
     transform: rotate(45deg);
     transition: transform 0.3s ease, margin-top 0.3s ease;
 }
