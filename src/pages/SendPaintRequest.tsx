@@ -14,6 +14,7 @@ type SelectedProductInformation = {
 
 export default function SendPaintRequest(): ReactElement{
   const [searchParams] = useSearchParams();
+  const [cost, setCost] = useState<number>(0);
   const [categories, setCategories] = useState<Category[]>();
   const [selectedCategory, setSelectedCategory] = useState<Category>();
   const [selectedModelImage, setSelectedModelImage] = useState<ModelImage>();
@@ -640,6 +641,9 @@ export default function SendPaintRequest(): ReactElement{
               </a>
               : <></>}
             </Col>
+            <Col xs={12} md={3}>
+              Cost: ${cost}
+            </Col>
           </Row>
           <Row
             className="ps-3 mt-4 mb-2 w-auto rounded-2 py-1 justify-content-start align-items-center text-center"
@@ -658,14 +662,14 @@ export default function SendPaintRequest(): ReactElement{
               return (
                 <>
                   <span
-                    className="product-variation-data-container"
-                    onClick={(event) => {
-                      const element = event.currentTarget as HTMLElement;
-                      if (element.classList.contains("show")) {
-                        element.classList.remove("show");
-                      } else {
-                        element.classList.add("show");
-                      }
+                    className="product-variation-data-container show"
+                    onClick={() => {
+                      // const element = event.currentTarget as HTMLElement;
+                      // if (element.classList.contains("show")) {
+                      //   element.classList.remove("show");
+                      // } else {
+                      //   element.classList.add("show");
+                      // }
                     }}
                   >
                     <span className="d-block heading-5">
@@ -676,10 +680,11 @@ export default function SendPaintRequest(): ReactElement{
                         variation.sizes?.map((size) => {
                           return (
                             <span
-                              className="d-flex rounded-2 justify-content-center align-items-center heading-5 px-3"
+                              className="d-flex flex-column rounded-2 justify-content-center align-items-center heading-5 px-3"
                               style={{
                                 width: "auto",
-                                height: "50px",
+                                height: "auto",
+                                cursor: "pointer",
                                 backgroundColor: "#2200ff33",
                                 border: size?.id
                                   ? sizes.includes(size?.id)
@@ -692,6 +697,7 @@ export default function SendPaintRequest(): ReactElement{
                                   selectedProductInformation;
                                 let foundVariantInformation = false;
                                 let foundSize = false;
+
                                 updatedProductInformation.variantIDs.forEach(
                                   (variantInformation: {
                                     variantID: number;
@@ -719,6 +725,9 @@ export default function SendPaintRequest(): ReactElement{
                                     const sizes: number[] = [];
                                     if (size?.id) {
                                       sizes.push(size.id);
+                                      if (size.price){
+                                        setCost(cost + size.price);
+                                      }
                                     }
                                     updatedProductInformation.variantIDs.push({
                                       variantID: variation.variation?.id,
@@ -737,6 +746,10 @@ export default function SendPaintRequest(): ReactElement{
                                         element.sizes.forEach((s) => {
                                           if (s != size.id) {
                                             return newSizes.push(s);
+                                          }else{
+                                            if (size.price) {
+                                              setCost(cost - size.price);
+                                            }
                                           }
                                         });
 
@@ -757,6 +770,9 @@ export default function SendPaintRequest(): ReactElement{
                                           element.variantID
                                         ) {
                                           if (size?.id) {
+                                            if (size.price) {
+                                              setCost(cost + size.price);
+                                            }
                                             element.sizes.push(size.id);
                                           }
                                         }
@@ -770,9 +786,14 @@ export default function SendPaintRequest(): ReactElement{
                                 console.log(updatedProductInformation);
                               }}
                             >
+                              <span>
                               {size.sizeObj?.width}
                               {size.sizeObj?.unit}x{size.sizeObj?.height}
                               {size.sizeObj?.unit}
+                              </span>
+                              <span className="" style={{fontSize: "20px"}}>
+                                ${size.price}
+                              </span>
                             </span>
                           );
                         })

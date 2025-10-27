@@ -17,6 +17,8 @@ export default function UserBase(props: {element: ReactElement, authenticated: b
   const dropdownViewRef = useRef(null);
   const [categories, setCategories] = useState<Category[] | undefined | null>([]);
 
+  const [navbarStructuredCategories, setNavbarStructuredCategories] = useState<Category[][]>([]);
+
   const getCartData = async() => {
     GET(GET_CART_ITEMS, (response: any) => {
       if (response.data.status == "ok"){
@@ -30,6 +32,21 @@ export default function UserBase(props: {element: ReactElement, authenticated: b
 
   const onReceiveCategoriesHandler = (data: any) => {
     setCategories(data);
+    const itemsPerSection = 5;
+    const categoriesInTheSection: Category[][] = [];
+    let section: Category[] = [];
+    data.forEach((element: Category, i: number) => {
+      // console.log("i: " + i);
+      // console.log("element: " + element);
+      if ((i + 1) % itemsPerSection != 0) {
+        section.push(element);
+      } else {
+        categoriesInTheSection.push(section);
+        section = [element];
+      }
+    });
+    categoriesInTheSection.push(section);
+    setNavbarStructuredCategories(categoriesInTheSection);
     // alert("Data received!");
   }
 
@@ -54,7 +71,7 @@ export default function UserBase(props: {element: ReactElement, authenticated: b
     }
   }
 
-  const element = React.cloneElement(props.element, {onReceiveCategories: onReceiveCategoriesHandler, cartItems: cartItems});
+  const element = React.cloneElement(props.element, {onReceiveCategories: onReceiveCategoriesHandler, cartItems: cartItems, categories: categories});
   useEffect(() => {
     const interval = setInterval(() => {
       getCartData();
@@ -208,7 +225,7 @@ export default function UserBase(props: {element: ReactElement, authenticated: b
         }
         style={{ zIndex: 400 }}
       >
-        <Col xs={12} md={6} className="py-5">
+        <Col xs={12} md={8} className="py-5">
           <Row className="heading-6 text-white">
             <Col xs={6} className="pb-2">
               Categories
@@ -216,7 +233,7 @@ export default function UserBase(props: {element: ReactElement, authenticated: b
             </Col>
           </Row>
           <Row className=" text-decoration-none">
-            <a
+            {/* <a
               href="/collection?category=animal"
               className=" text-decoration-none dropdown-link-text w-50"
             >
@@ -227,7 +244,35 @@ export default function UserBase(props: {element: ReactElement, authenticated: b
               className=" text-decoration-none dropdown-link-text"
             >
               Nature
-            </a>
+            </a> */}
+            {/* {JSON.stringify(navbarStructuredCategories)} */}
+            {navbarStructuredCategories.map((section) => {
+              return (
+                <>
+                  <Col xs={12} md={4} lg={3}>{section.map((category) => {
+                    return <a
+                      href={`/collection?category=${category.category}`}
+                      style={{}}
+                      className="text-white-50 text-decoration-none text footer-category-text"
+                    >
+                      {category.category}
+                    </a>;
+                  })}</Col>
+                </>
+              );
+            })}
+
+            {/* {categories?.map((category) => {
+              return (
+                <a
+                  href={`/collection?category=${category.category}`}
+                  style={{}}
+                  className="text-white-50 text-decoration-none text footer-category-text w-auto"
+                >
+                  {category.category}
+                </a>
+              );
+            })} */}
           </Row>
         </Col>
         {/* {JSON.stringify(cartItems)} */}
@@ -342,9 +387,9 @@ export default function UserBase(props: {element: ReactElement, authenticated: b
                     {categories?.map((category) => {
                       return (
                         <a
-                          href="#"
+                          href={`/collection?category=${category.category}`}
                           style={{}}
-                          className="text-white-50 text-decoration-none text footer-category-text"
+                          className="text-white-50 text-decoration-none text footer-category-text w-auto"
                         >
                           {category.category}
                         </a>

@@ -45,7 +45,7 @@ export default function Home(props: {onReceiveCategories?: CallableFunction}) : 
     }, () => {});
   }
 
-  const [homepageInformation, setHomePageInformation] = useState<any>({});
+  const [homepageInformation, setHomePageInformation] = useState<any|undefined>();
   const getHomepageInformation = () => {
     GET(
       GET_HOME_PAGE_INFORMATION,
@@ -58,10 +58,18 @@ export default function Home(props: {onReceiveCategories?: CallableFunction}) : 
   };
 
   useEffect(() => {
+    const interval = setInterval(() => {
+      if (!homepageInformation){
+        getHomepageInformation();
+      }else{
+        clearInterval(interval);
+      }
+    }, 1000);
+  }, []);
+
+  useEffect(() => {
     getSizes();
     getCategories();
-
-    getHomepageInformation();
     
     const delayedPopupCard = document.getElementsByClassName("delayed-popup-card");
     if (delayedPopupCard){
@@ -84,6 +92,8 @@ export default function Home(props: {onReceiveCategories?: CallableFunction}) : 
       }
     }
   }, [])
+
+
     return (
       <Row className="pt-5 mt-2 mt-md-3">
         <Col xs={12} className="px-0">
@@ -102,7 +112,6 @@ export default function Home(props: {onReceiveCategories?: CallableFunction}) : 
                   <Row className="heading-1 fw-bold justify-content-center text-center py-3 text-white">
                     {homepageInformation?.mainHeadline}
                   </Row>
-
                   <Row className="heading-5 fw-medium justify-content-center text-center py-4 text-white">
                     {homepageInformation?.subheading}
                   </Row>
@@ -447,7 +456,10 @@ export default function Home(props: {onReceiveCategories?: CallableFunction}) : 
                                         backgroundSize: "cover",
                                         backgroundRepeat: "no-repeat",
                                         backgroundClip: "padding-box",
+                                        backgroundPosition: "center",
                                         cursor: "pointer",
+                                        objectFit: "fill",
+                                        objectPosition: "center"
                                       }}
                                       className="d-flex flex-column justify-content-end pb-2 product-card"
                                       onClick={() => {
@@ -749,7 +761,7 @@ export default function Home(props: {onReceiveCategories?: CallableFunction}) : 
                 Simple & Transparent Pricing
               </Row>
               <Row className="justify-content-center align-items-center pt-3">
-                <Col xs={12} md={10} lg={8}>
+                <Col xs={10} lg={8}>
                   <Row className="flex-column flex-lg-row align-items-center justify-content-center gap-3 pt-4">
                     {sizes?.map((size) => {
                       return (

@@ -58,8 +58,8 @@ button, li, div, span{
 }
 
 .product-card{
-    width: 195px;
-    height: 295px;
+    width: 195px !important;
+    height: 295px !important;
 }
 
 .cta-button{
@@ -170,6 +170,11 @@ button, li, div, span{
         width: 100px;
         height: 100px;
     }
+
+    .product-card {
+        width: 195px;
+        height: 295px;
+    }
 }
 
 
@@ -207,6 +212,11 @@ button, li, div, span{
         width: 98% !important;
     }
 
+    .product-card {
+        width: 195px !important;
+        height: 295px !important;
+    }
+
 }
 
 
@@ -242,6 +252,11 @@ button, li, div, span{
     .card-20 {
         width: 220px !important;
     }
+
+        .product-card {
+            width: 195px;
+            height: 295px;
+        }
     
 }
 
@@ -728,4 +743,10 @@ input:-webkit-autofill {
 .down-arrow.point-up{
     transform: rotate(-135deg);
     margin-top: 4px;
+}
+
+.vertical-wrap-container{
+    display: flex !important;
+    flex-wrap: wrap;
+    overflow: hidden;
 }
