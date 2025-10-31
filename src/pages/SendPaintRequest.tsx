@@ -19,9 +19,11 @@ export default function SendPaintRequest(): ReactElement{
   const [selectedCategory, setSelectedCategory] = useState<Category>();
   const [selectedModelImage, setSelectedModelImage] = useState<ModelImage>();
 
+  const imageUploadExcludeCategories = ["Drinks and cocktails", "Old posters", "Landscapes and Nature"];
+
   const [selectedProductInformation, setSelectedProductInformation] = useState<SelectedProductInformation>({variantIDs: []});
 
-  const [imagePreviewScale, setImagePreviewScale] = useState<number>(0.9);
+  // const [imagePreviewScale, setImagePreviewScale] = useState<number>(0.9);
   const [modelPreviewImageYPosition, setModelPreviewImageYPosition] = useState<number>(0);
 
   const [firstImageList, setFirstImageList] = useState<WallImage[]>([]);
@@ -67,8 +69,8 @@ export default function SendPaintRequest(): ReactElement{
       GET(GET_WALL_IMAGES_URL, (response: any) => {
           const data = response.data;
           setWallImages(data.wallImages);
-          setFirstImageList(data.wallImages.slice(0, 6));
-          setSecondImageList(data.wallImages.slice(6));
+          setFirstImageList(data.wallImages.slice(0, 5));
+          setSecondImageList(data.wallImages.slice(5));
       }, (response: any) => {
           console.log(response);
       })
@@ -95,11 +97,13 @@ export default function SendPaintRequest(): ReactElement{
   // };
 
   const [addedToCart, setAddedToCart] = useState<boolean>(false);
-  const addToCart = async(modelImage: Number, wallImage: Number, userSelectedImage: File) => {
+  const addToCart = async(modelImage: Number, wallImage: Number, userSelectedImage?: File) => {
     const formData = new FormData();
       formData.append("modelImage", modelImage.toString());
       formData.append("wallImage", wallImage.toString());
-      formData.append("userSelectedImage", userSelectedImage);
+      if (userSelectedImage){
+        formData.append("userSelectedImage", userSelectedImage);
+      }
       formData.append("variantInformation", JSON.stringify(selectedProductInformation));
       POSTMedia(ADD_ITEMS_TO_THE_CART, formData, (request: any) => {
           if (request.data.status == "ok"){
@@ -120,6 +124,8 @@ export default function SendPaintRequest(): ReactElement{
     }, () => {});
   }
 
+  const [categorySelected, setCategorySelected] = useState<string>("");
+
   // const sendPaintRequest = (modelImage: Number, wallImage: Number, userSelectedImage: File) => {
   //     const formData = new FormData();
   //     formData.append("modelImage", modelImage.toString());
@@ -136,7 +142,10 @@ export default function SendPaintRequest(): ReactElement{
 
   useEffect(() => {
     console.log(selectedCategory);
-    setImagePreviewScale(0.9);
+    // setImagePreviewScale(0.9);
+    const categoryFromURL = searchParams.get("category");
+
+    setCategorySelected(categoryFromURL != null ? categoryFromURL : "");
   }, []);
 
   useEffect(() => {
@@ -159,7 +168,311 @@ export default function SendPaintRequest(): ReactElement{
           <Row>
             <Col xs={3} md={2} className="">
               <Row className="flex-column gap-2">
-                {firstImageList?.map((wallImage) => {
+                <div className="gallery">
+                  <div className="main">
+                    {/* <img
+                      src={selectedWallImage?.image}
+                      id="main-image"
+                      alt="Main"
+                    /> */}
+                    <div
+                      className="position-relative justify-content-center align-items-center"
+                      style={{
+                        // width: `${580 * imagePreviewScale}px`,
+                        // height: `${495 * imagePreviewScale}px`,
+                        // transform: `scale(${imagePreviewScale})`,
+                        backgroundImage: selectedWallImage?.image
+                          ? `url('${selectedWallImage?.image}')`
+                          : "rgba(50, 50, 50, 1.0)",
+                        backgroundColor: "#CCCCCC",
+                        borderRadius: "10px",
+                        overflow: "hidden",
+                        backgroundRepeat: "no-repeat",
+                        // backgroundSize: `${540 * imagePreviewScale}px ${
+                        //   495 * imagePreviewScale
+                        // }px`,
+                        backgroundPosition: "center",
+                      }}
+                    >
+                      {!selectedWallImage?.image ? (
+                        <svg
+                          viewBox="0 0 500 400"
+                          className="position-absolute top-0 start-0 w-100 h-100"
+                          preserveAspectRatio="XMidyMid slice"
+                        >
+                          <rect
+                            x={"175"}
+                            width={"150"}
+                            y={"150"}
+                            height={"100"}
+                            stroke="#888"
+                            strokeWidth={5}
+                            rx={10}
+                            ry={10}
+                            fill="transparent"
+                          />
+                          <path
+                            d="M185,230 L215,200 255,230"
+                            stroke="#888"
+                            fill="transparent"
+                            strokeWidth={5}
+                            strokeLinecap="round"
+                          />
+                          <path
+                            d="M227,208 L235,200 275,230"
+                            stroke="#888"
+                            fill="transparent"
+                            strokeWidth={5}
+                            strokeLinecap="round"
+                          />
+                          <path
+                            d="M270,220 L315,220"
+                            stroke="#888"
+                            fill="transparent"
+                            strokeWidth={5}
+                            strokeLinecap="round"
+                          />
+                          <circle
+                            cx={290}
+                            cy={195}
+                            r={8}
+                            stroke="transparent"
+                            fill="#888"
+                          />
+                        </svg>
+                      ) : (
+                        <div
+                          className="position-relative"
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            backgroundColor: "transparent",
+                            backgroundImage: `url(${selectedModelImage?.image})`,
+                            backgroundSize: "90px auto",
+                            backgroundPosition: `center calc(50% - ${modelPreviewImageYPosition}px)`,
+                            backgroundRepeat: "no-repeat",
+                          }}
+                        ></div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="thumbs-right">
+                    {/* <img src="r1.jpg" alt="thumb" />
+                    <img src="r2.jpg" alt="thumb" />
+                    <img src="r3.jpg" alt="thumb" /> */}
+                    {firstImageList?.map((wallImage) => {
+                      if (!imageSize) {
+                        const image = new Image();
+                        image.src = wallImage.image;
+                        image.onload = () => {
+                          const maxWidth = 125;
+                          const scale =
+                            image.width > maxWidth ? maxWidth / image.width : 1;
+                          wallImage.width = image.width * scale;
+                          wallImage.height = image.height * scale;
+                          setImageSize({
+                            width: image.width * scale,
+                            height: image.height * scale,
+                          });
+                          // alert(size);
+                        };
+                      }
+
+                      let smallImagePositionY = 0;
+
+                      if (wallImage.wallImageID == 1) {
+                        smallImagePositionY = 12;
+                      } else if (wallImage.wallImageID == 2) {
+                        smallImagePositionY = 8;
+                      } else if (wallImage.wallImageID == 3) {
+                        smallImagePositionY = 15;
+                      } else if (wallImage.wallImageID == 4) {
+                        smallImagePositionY = 15;
+                      } else if (wallImage.wallImageID == 5) {
+                        smallImagePositionY = 20;
+                      } else if (wallImage.wallImageID == 6) {
+                        smallImagePositionY = 16;
+                      }
+
+                      return (
+                        // <Col xs={5} md={4} lg={2}>
+                        <div
+                          className="d-flex flex-column align-items-center justify-content-center p-0"
+                          style={{
+                            width: `${imageSize?.width}px`,
+                            height: `${imageSize?.height}px`,
+                            backgroundImage: `url('${wallImage.image}')`,
+                            backgroundSize: "cover",
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "center",
+                            border:
+                              selectedWallImageID == wallImage.wallImageID
+                                ? "3px solid #0088FF"
+                                : "",
+                          }}
+                          onClick={() => {
+                            const id = wallImage.wallImageID;
+
+                            if (id == 1) {
+                              setModelPreviewImageYPosition(52);
+                            } else if (id == 2) {
+                              setModelPreviewImageYPosition(38);
+                            } else if (id == 3) {
+                              setModelPreviewImageYPosition(70);
+                            } else if (id == 4) {
+                              setModelPreviewImageYPosition(50);
+                            } else if (id == 5) {
+                              setModelPreviewImageYPosition(120);
+                            }
+                            setSelectedWallImage(wallImage);
+                            setSelectedWallImageID(wallImage.wallImageID);
+                          }}
+                        >
+                          {selectedWallImageID == wallImage.wallImageID ? (
+                            <svg
+                              viewBox="0 0 50 50"
+                              style={{ width: "50px", height: "50px" }}
+                              className="position-absolute top-0 end-0"
+                            >
+                              <path d="M0,0 50,0 50,50 Z" fill="#0088FF" />
+                              <path
+                                d="M24,12 30,18 42,6"
+                                fill="transparent"
+                                stroke="#FFF"
+                                strokeLinecap="round"
+                                strokeWidth={3}
+                              />
+                            </svg>
+                          ) : (
+                            <></>
+                          )}
+                          <div
+                            className="position-relative"
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              backgroundColor: "transparent",
+                              backgroundImage: `url(${selectedModelImage?.image})`,
+                              backgroundSize: "15px auto",
+                              backgroundPosition: `center calc(50% - ${smallImagePositionY}px)`,
+                              backgroundRepeat: "no-repeat",
+                            }}
+                          ></div>
+                        </div>
+                        // </Col>
+                      );
+                    })}
+                  </div>
+
+                  <div className="thumbs-bottom">
+                    {secondImageList?.map((wallImage) => {
+                      if (!imageSize) {
+                        const image = new Image();
+                        image.src = wallImage.image;
+                        image.onload = () => {
+                          const maxWidth = 125;
+                          const scale =
+                            image.width > maxWidth ? maxWidth / image.width : 1;
+                          wallImage.width = image.width * scale;
+                          wallImage.height = image.height * scale;
+                          setImageSize({
+                            width: image.width * scale,
+                            height: image.height * scale,
+                          });
+                          // alert(size);
+                        };
+                      }
+
+                      let smallImagePositionY = 0;
+
+                      if (wallImage.wallImageID == 1) {
+                        smallImagePositionY = 12;
+                      } else if (wallImage.wallImageID == 2) {
+                        smallImagePositionY = 8;
+                      } else if (wallImage.wallImageID == 3) {
+                        smallImagePositionY = 15;
+                      } else if (wallImage.wallImageID == 4) {
+                        smallImagePositionY = 15;
+                      } else if (wallImage.wallImageID == 5) {
+                        smallImagePositionY = 20;
+                      } else if (wallImage.wallImageID == 6) {
+                        smallImagePositionY = 16;
+                      } else if (wallImage.wallImageID == 6) {
+                        smallImagePositionY = 80;
+                      }
+
+                      return (
+                        // <Col xs={5} md={4} lg={2}>
+                        <div
+                          className="d-flex flex-column align-items-center justify-content-center p-0"
+                          style={{
+                            width: `${imageSize?.width}px`,
+                            height: `${imageSize?.height}px`,
+                            backgroundImage: `url('${wallImage.image}')`,
+                            backgroundSize: "cover",
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "center",
+                            border:
+                              selectedWallImageID == wallImage.wallImageID
+                                ? "3px solid #0088FF"
+                                : "",
+                          }}
+                          onClick={() => {
+                            const id = wallImage.wallImageID;
+                            if (id == 6) {
+                              setModelPreviewImageYPosition(80);
+                            } else if (id == 7) {
+                              setModelPreviewImageYPosition(52);
+                            } else if (id == 8) {
+                              setModelPreviewImageYPosition(48);
+                            } else if (id == 9) {
+                              setModelPreviewImageYPosition(70);
+                            } else if (id == 10) {
+                              setModelPreviewImageYPosition(50);
+                            }
+                            setSelectedWallImage(wallImage);
+                            setSelectedWallImageID(wallImage.wallImageID);
+                          }}
+                        >
+                          {selectedWallImageID == wallImage.wallImageID ? (
+                            <svg
+                              viewBox="0 0 50 50"
+                              style={{ width: "50px", height: "50px" }}
+                              className="position-absolute top-0 end-0"
+                            >
+                              <path d="M0,0 50,0 50,50 Z" fill="#0088FF" />
+                              <path
+                                d="M24,12 30,18 42,6"
+                                fill="transparent"
+                                stroke="#FFF"
+                                strokeLinecap="round"
+                                strokeWidth={3}
+                              />
+                            </svg>
+                          ) : (
+                            <></>
+                          )}
+                          <div
+                            className="position-relative"
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              backgroundColor: "transparent",
+                              backgroundImage: `url(${selectedModelImage?.image})`,
+                              backgroundSize: "15px auto",
+                              backgroundPosition: `center calc(50% - ${smallImagePositionY}px)`,
+                              backgroundRepeat: "no-repeat",
+                            }}
+                          ></div>
+                        </div>
+                        // </Col>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* {firstImageList?.map((wallImage) => {
                   if (!imageSize) {
                     const image = new Image();
                     image.src = wallImage.image;
@@ -262,10 +575,10 @@ export default function SendPaintRequest(): ReactElement{
                     </Card>
                     // </Col>
                   );
-                })}
+                })} */}
               </Row>
             </Col>
-            <Col xs={9} md={10} className="d-flex flex-column ps-4 pe-0">
+            {/* <Col xs={9} md={10} className="d-flex flex-column ps-4 pe-0">
               <Row
                 className="position-relative justify-content-center align-items-center"
                 style={{
@@ -447,7 +760,7 @@ export default function SendPaintRequest(): ReactElement{
                   );
                 })}
               </Row>
-            </Col>
+            </Col> */}
           </Row>
 
           <Row>
@@ -501,22 +814,24 @@ export default function SendPaintRequest(): ReactElement{
             image or images you choose.
           </Row>
           <Row className="gap-3 pt-3">
-            <Col xs={4}>
-              <Row>
-                <input
-                  type="file"
-                  className="form-control"
-                  placeholder="Select an image"
-                  onChange={(event) => {
-                    const files = event.target.files;
-                    if (files != null && files.length > 0) {
-                      const file = files[0];
-                      setUserSelectedImage(file);
-                    }
-                  }}
-                />
-              </Row>
-            </Col>
+            {!imageUploadExcludeCategories.includes(categorySelected) ?
+              <Col xs={4}>
+                <Row>
+                  <input
+                    type="file"
+                    className="form-control"
+                    placeholder="Select an image"
+                    onChange={(event) => {
+                      const files = event.target.files;
+                      if (files != null && files.length > 0) {
+                        const file = files[0];
+                        setUserSelectedImage(file);
+                      }
+                    }}
+                  />
+                </Row>
+              </Col>
+              : <></> }
             {/* <Col xs={4}>
               <Row>
                  <select
@@ -604,7 +919,7 @@ export default function SendPaintRequest(): ReactElement{
               <button
                 className="btn btn-primary"
                 disabled={
-                  selectedModelImage && selectedWallImage && userSelectedImage
+                  selectedModelImage && selectedWallImage && (userSelectedImage || imageUploadExcludeCategories.includes(categorySelected))
                     ? false
                     : true
                 }
@@ -612,7 +927,10 @@ export default function SendPaintRequest(): ReactElement{
                   if (
                     selectedModelImage &&
                     selectedWallImage &&
-                    userSelectedImage &&
+                    (userSelectedImage ||
+                      imageUploadExcludeCategories.includes(
+                        categorySelected
+                      )) &&
                     selectedProductInformation?.variantIDs.length > 0
                   ) {
                     // sendPaintRequest(
@@ -633,15 +951,17 @@ export default function SendPaintRequest(): ReactElement{
               >
                 Place The Order
               </button>
-              {addedToCart ?
-              <a href="/cart" className="w-auto">
-                <button className="btn btn-success">
-                  <Cart4 /> View Cart
-                </button>
-              </a>
-              : <></>}
+              {addedToCart ? (
+                <a href="/cart" className="w-auto">
+                  <button className="btn btn-success">
+                    <Cart4 /> View Cart
+                  </button>
+                </a>
+              ) : (
+                <></>
+              )}
             </Col>
-            <Col xs={12} md={3}>
+            <Col xs={12}>
               Cost: ${cost}
             </Col>
           </Row>
@@ -725,7 +1045,7 @@ export default function SendPaintRequest(): ReactElement{
                                     const sizes: number[] = [];
                                     if (size?.id) {
                                       sizes.push(size.id);
-                                      if (size.price){
+                                      if (size.price) {
                                         setCost(cost + size.price);
                                       }
                                     }
@@ -746,7 +1066,7 @@ export default function SendPaintRequest(): ReactElement{
                                         element.sizes.forEach((s) => {
                                           if (s != size.id) {
                                             return newSizes.push(s);
-                                          }else{
+                                          } else {
                                             if (size.price) {
                                               setCost(cost - size.price);
                                             }
@@ -787,11 +1107,11 @@ export default function SendPaintRequest(): ReactElement{
                               }}
                             >
                               <span>
-                              {size.sizeObj?.width}
-                              {size.sizeObj?.unit}x{size.sizeObj?.height}
-                              {size.sizeObj?.unit}
+                                {size.sizeObj?.width}
+                                {size.sizeObj?.unit}x{size.sizeObj?.height}
+                                {size.sizeObj?.unit}
                               </span>
-                              <span className="" style={{fontSize: "20px"}}>
+                              <span className="" style={{ fontSize: "20px" }}>
                                 ${size.price}
                               </span>
                             </span>
@@ -863,30 +1183,34 @@ export default function SendPaintRequest(): ReactElement{
           })} */}
           </Row>
         </Col>
-        <Col xs={12} className="px-2 px-md-5">
-          <Row className="justify-content-center">
-            <Col xs={12} md={8}>
-              <Row className="pb-2">
-                Select the suitable suit for your animal
-              </Row>
-              <Row className="flex-wrap gap-3">
-                {suits?.map((suit) => {
-                  return (
-                    <Card
-                      style={{
-                        width: "120px",
-                        height: "120px",
-                        backgroundImage: `url(${suit.suitImage})`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                      }}
-                    ></Card>
-                  );
-                })}
-              </Row>
-            </Col>
-          </Row>
-        </Col>
+        {searchParams.get("category") == "Animals In Suits" ? (
+          <Col xs={12} className="px-2 px-md-5">
+            <Row className="justify-content-center">
+              <Col xs={12} md={8}>
+                <Row className="pb-2">
+                  Select the suitable suit for your animal
+                </Row>
+                <Row className="flex-wrap gap-3">
+                  {suits?.map((suit) => {
+                    return (
+                      <Card
+                        style={{
+                          width: "120px",
+                          height: "120px",
+                          backgroundImage: `url(${suit.suitImage})`,
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                        }}
+                      ></Card>
+                    );
+                  })}
+                </Row>
+              </Col>
+            </Row>
+          </Col>
+        ) : (
+          <></>
+        )}
       </Row>
     </>
   );

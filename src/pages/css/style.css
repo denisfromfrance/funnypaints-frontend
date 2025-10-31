@@ -750,3 +750,64 @@ input:-webkit-autofill {
     flex-wrap: wrap;
     overflow: hidden;
 }
+
+
+
+.gallery {
+    display: grid;
+    grid-template-areas:
+        "thumbs-right main"
+        "thumbs-right thumbs-bottom";
+    grid-template-columns: 1fr auto;
+    grid-template-rows: 1fr auto;
+    gap: 8px;
+    width: 100%;
+    height: 100%;
+    max-width: 800px;
+    max-height: 600px;
+    margin: auto;
+    box-sizing: border-box;
+}
+
+.main {
+    grid-area: main;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.main div {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.thumbs-right {
+    grid-area: thumbs-right;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.thumbs-right div,
+.thumbs-bottom div {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: transform 0.2s;
+}
+
+.thumbs-bottom {
+    grid-area: thumbs-bottom;
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.thumbs-right img:hover,
+.thumbs-bottom img:hover {
+    transform: scale(1.05);
+}

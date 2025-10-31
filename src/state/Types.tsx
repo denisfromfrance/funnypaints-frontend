@@ -37,6 +37,7 @@ export type ModelImage = {
 
 export type Category = {
     id: number,
+    priority: number,
     category: string,
     images: ModelImage[],
     wallImages: WallImage[]

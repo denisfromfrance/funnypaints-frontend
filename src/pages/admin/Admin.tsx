@@ -71,7 +71,7 @@ export default function Admin(): ReactElement{
     const getCategories = async() => {
         GET(GET_CATEGORIES_URL, (response: any) => {
             if (response.data.status == "ok"){
-                setCategories(response.data.categories);
+              setCategories(response.data.categories);
             }
         }, (response: any) => {
             console.log(response.data.message);
@@ -252,7 +252,10 @@ export default function Admin(): ReactElement{
                 Category renamed successfully!
               </Row>
             );
+            const element = document.getElementById("edit-category-name") as HTMLInputElement;
+            element.value = "";
             setSelectedCategory(null);
+            getCategories();
           }
         },
         () => {}
@@ -356,9 +359,66 @@ export default function Admin(): ReactElement{
 
     const [addProduct, setAddProduct] = useState<boolean>(false);
 
+    const [draggingID, setDraggingID] = useState<number|null>(null);
+    const [targetIndex, setTargetIndex] = useState<number | null>(null);
+
+    const updatedCategoriesPriority = async() => {
+      POST("admin/category/change-priorities", {categories: categories}, () => {
+        // alert("Categories Updated successfully!")
+      }, () => {
+
+      });
+    }
+
+    const onDragStart = (event: React.DragEvent<HTMLElement>, id: number) => {
+      setDraggingID(id);
+      setTargetIndex(id);
+      setSelectedCategory(categories[id]);
+      // alert("Dragging element: "+ id);
+      console.log("Dragging element " + id);
+      event.dataTransfer.effectAllowed = "move";
+    };
+
+    const onDragOver = (event: React.DragEvent<HTMLElement>, id: number) => {
+      event.preventDefault();
+      if (draggingID == id) return;
+      // alert("Entered into a new position");
+      console.log("Dragging id: " + draggingID);
+      console.log("Target Element: " + targetIndex);
+      console.log("Current Hovering Element: " + id);
+      if (targetIndex !== id && draggingID !== null){
+        console.log("Entered into a new position " + id);
+        const newCategories = [...categories];
+        // const draggedIndex = newCategories.findIndex((category, i) => i === draggingID);
+        // const targetIndex = newCategories.findIndex((category, i) => i === id);
+        const [draggedItem] = newCategories.splice(draggingID, 1);
+        newCategories.splice(id, 0, draggedItem);
+
+        const updatedCategories:Category[] = newCategories.map((category: Category, i: number) => {
+          category.priority = i + 1;
+          return category;
+        });
+
+        setCategories(updatedCategories);
+        setDraggingID(id);
+        setTargetIndex(id);
+      }
+    };
+
+    const onDragEnd = (event: React.DragEvent<HTMLElement>, id: number) => {
+      console.log(event);
+      console.log("Dragging ended of element index: " + id);
+      updatedCategoriesPriority();
+      setDraggingID(null);
+    };
+
+
+    useEffect(() => {
+      getCategories();
+    }, []);
+
     useEffect(() => {
         const interval = setInterval(() => {
-            getCategories();
             getStatuses();
             getRequests();
             getPreviewImages();
@@ -481,7 +541,7 @@ export default function Admin(): ReactElement{
                           style={{ width: "250px" }}
                         >
                           <CardHeader className="fs-5">
-                            Peding Requests
+                            Pending Requests
                           </CardHeader>
                           <CardBody className="fs-4 text-center">
                             {pendingRequests}
@@ -1257,10 +1317,14 @@ export default function Admin(): ReactElement{
                                     xs={12}
                                     className="d-flex flex-column gap-1"
                                   >
-                                    {categories?.map((categoryItem) => {
+                                    {categories?.map((categoryItem, i) => {
                                       return (
                                         <Row
                                           className="px-2 py-3 rounded-2"
+                                          draggable={true}
+                                          onDragStart={(e) => {onDragStart(e, i)}}
+                                          onDragOver={(e) => {onDragOver(e, i)}}
+                                          onDragEnd={(e) => {onDragEnd(e, i)}}
                                           style={{
                                             backgroundColor: selectedCategory
                                               ? categoryItem.id ==
@@ -1271,9 +1335,17 @@ export default function Admin(): ReactElement{
                                           }}
                                           onClick={() => {
                                             setSelectedCategory(categoryItem);
+                                            console.log(categoryItem);
+                                            const element = document.getElementById("edit-category-name") as HTMLInputElement;
+                                            element.value = categoryItem.category;
                                           }}
                                         >
-                                          <Col xs={8}>
+                                          <Col xs={2}>
+                                            <span className=" text-center py-1 px-3 rounded-2" style={{backgroundColor: "#2200FF22"}}>
+                                              =
+                                            </span>
+                                          </Col>
+                                          <Col xs={6}>
                                             {categoryItem.category}
                                           </Col>
                                           <Col
@@ -1306,11 +1378,6 @@ export default function Admin(): ReactElement{
                                     type="text"
                                     className="form-control"
                                     id="edit-category-name"
-                                    defaultValue={
-                                      selectedCategory
-                                        ? selectedCategory?.category
-                                        : ""
-                                    }
                                   />
                                 </Row>
                                 <Row className="justify-content-end pt-3">
