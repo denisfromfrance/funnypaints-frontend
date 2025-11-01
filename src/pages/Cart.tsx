@@ -287,6 +287,7 @@ export default function Cart(props: any): ReactElement{
     // };
 
     const [invoiceData, setInvoiceData] = useState<any>({});
+    const [orderedData, setOrderedData] = useState<any>({});
     const [showInvoice, setShowInvoice] = useState<boolean>(false);
     const getInvoice = (invoiceID: number) => {
       POST(
@@ -297,6 +298,7 @@ export default function Cart(props: any): ReactElement{
           console.log(data);
           // setPaymentData(data);
           setInvoiceData(data?.invoiceData);
+          setOrderedData(data?.orderedData);
           setShowInvoice(true)
         },
         () => {}
@@ -396,6 +398,26 @@ export default function Cart(props: any): ReactElement{
                       <hr />
                     </Row>
                     <Row className="py-2">
+                      {/* {JSON.stringify(orderedData)} */}
+                      {Object.entries(orderedData)?.map((information) => {
+                        const productData: any = information[1];
+
+                        return <>
+                        {/* {JSON.stringify(information)} */}
+                        <div style={{
+                          width: "100px",
+                          height: "150px",
+                          backgroundImage: `url(${productData?.image})`,
+                          backgroundSize: `contain`
+                        }}>
+
+                        </div>
+                        {productData?.name}<br/>
+                        {productData?.category}<br/>
+                        {/* {information?.name}<br/>
+                        {information?.category}<br/> */}
+                        </>
+                      })}
                     </Row>
                   </Col>
                 </Row>
