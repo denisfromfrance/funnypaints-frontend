@@ -96,6 +96,8 @@ export default function SendPaintRequest(): ReactElement{
   //   );
   // };
 
+  // const [selectedSizes, setSelectedSize] = useState<{sizeID: number, variation: string}|any>({});
+
   const [addedToCart, setAddedToCart] = useState<boolean>(false);
   const addToCart = async(modelImage: Number, wallImage: Number, userSelectedImage?: File) => {
     const formData = new FormData();
@@ -144,7 +146,15 @@ export default function SendPaintRequest(): ReactElement{
     console.log(selectedCategory);
     // setImagePreviewScale(0.9);
     const categoryFromURL = searchParams.get("category");
+    if (firstImageList.length > 0){
+      const id = firstImageList[0].wallImageID;
 
+      if (id == 1) {
+        setModelPreviewImageYPosition(52);
+      }
+      setSelectedWallImage(firstImageList[0])
+      setSelectedWallImageID(id);
+    }
     setCategorySelected(categoryFromURL != null ? categoryFromURL : "");
   }, []);
 
@@ -152,7 +162,6 @@ export default function SendPaintRequest(): ReactElement{
       const interval = setInterval(() => {
           getCategories();
           getWallImages();
-          // getSizes();
           getSuits();
       }, 2000);
 
@@ -163,428 +172,17 @@ export default function SendPaintRequest(): ReactElement{
 
   return (
     <>
-      <Row className="h-100 py-5 mt-5 justify-content-center gap-5">
-        <Col xs={5}>
-          <Row>
-            <Col xs={3} md={2} className="">
-              <Row className="flex-column gap-2">
-                <div className="gallery">
-                  <div className="main">
-                    {/* <img
-                      src={selectedWallImage?.image}
-                      id="main-image"
-                      alt="Main"
-                    /> */}
-                    <div
-                      className="position-relative justify-content-center align-items-center"
-                      style={{
-                        // width: `${580 * imagePreviewScale}px`,
-                        // height: `${495 * imagePreviewScale}px`,
-                        // transform: `scale(${imagePreviewScale})`,
-                        backgroundImage: selectedWallImage?.image
-                          ? `url('${selectedWallImage?.image}')`
-                          : "rgba(50, 50, 50, 1.0)",
-                        backgroundColor: "#CCCCCC",
-                        borderRadius: "10px",
-                        overflow: "hidden",
-                        backgroundRepeat: "no-repeat",
-                        // backgroundSize: `${540 * imagePreviewScale}px ${
-                        //   495 * imagePreviewScale
-                        // }px`,
-                        backgroundPosition: "center",
-                      }}
-                    >
-                      {!selectedWallImage?.image ? (
-                        <svg
-                          viewBox="0 0 500 400"
-                          className="position-absolute top-0 start-0 w-100 h-100"
-                          preserveAspectRatio="XMidyMid slice"
-                        >
-                          <rect
-                            x={"175"}
-                            width={"150"}
-                            y={"150"}
-                            height={"100"}
-                            stroke="#888"
-                            strokeWidth={5}
-                            rx={10}
-                            ry={10}
-                            fill="transparent"
-                          />
-                          <path
-                            d="M185,230 L215,200 255,230"
-                            stroke="#888"
-                            fill="transparent"
-                            strokeWidth={5}
-                            strokeLinecap="round"
-                          />
-                          <path
-                            d="M227,208 L235,200 275,230"
-                            stroke="#888"
-                            fill="transparent"
-                            strokeWidth={5}
-                            strokeLinecap="round"
-                          />
-                          <path
-                            d="M270,220 L315,220"
-                            stroke="#888"
-                            fill="transparent"
-                            strokeWidth={5}
-                            strokeLinecap="round"
-                          />
-                          <circle
-                            cx={290}
-                            cy={195}
-                            r={8}
-                            stroke="transparent"
-                            fill="#888"
-                          />
-                        </svg>
-                      ) : (
-                        <div
-                          className="position-relative"
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            backgroundColor: "transparent",
-                            backgroundImage: `url(${selectedModelImage?.image})`,
-                            backgroundSize: "90px auto",
-                            backgroundPosition: `center calc(50% - ${modelPreviewImageYPosition}px)`,
-                            backgroundRepeat: "no-repeat",
-                          }}
-                        ></div>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="thumbs-right">
-                    {/* <img src="r1.jpg" alt="thumb" />
-                    <img src="r2.jpg" alt="thumb" />
-                    <img src="r3.jpg" alt="thumb" /> */}
-                    {firstImageList?.map((wallImage) => {
-                      if (!imageSize) {
-                        const image = new Image();
-                        image.src = wallImage.image;
-                        image.onload = () => {
-                          const maxWidth = 125;
-                          const scale =
-                            image.width > maxWidth ? maxWidth / image.width : 1;
-                          wallImage.width = image.width * scale;
-                          wallImage.height = image.height * scale;
-                          setImageSize({
-                            width: image.width * scale,
-                            height: image.height * scale,
-                          });
-                          // alert(size);
-                        };
-                      }
-
-                      let smallImagePositionY = 0;
-
-                      if (wallImage.wallImageID == 1) {
-                        smallImagePositionY = 12;
-                      } else if (wallImage.wallImageID == 2) {
-                        smallImagePositionY = 8;
-                      } else if (wallImage.wallImageID == 3) {
-                        smallImagePositionY = 15;
-                      } else if (wallImage.wallImageID == 4) {
-                        smallImagePositionY = 15;
-                      } else if (wallImage.wallImageID == 5) {
-                        smallImagePositionY = 20;
-                      } else if (wallImage.wallImageID == 6) {
-                        smallImagePositionY = 16;
-                      }
-
-                      return (
-                        // <Col xs={5} md={4} lg={2}>
-                        <div
-                          className="d-flex flex-column align-items-center justify-content-center p-0"
-                          style={{
-                            width: `${imageSize?.width}px`,
-                            height: `${imageSize?.height}px`,
-                            backgroundImage: `url('${wallImage.image}')`,
-                            backgroundSize: "cover",
-                            backgroundRepeat: "no-repeat",
-                            backgroundPosition: "center",
-                            border:
-                              selectedWallImageID == wallImage.wallImageID
-                                ? "3px solid #0088FF"
-                                : "",
-                          }}
-                          onClick={() => {
-                            const id = wallImage.wallImageID;
-
-                            if (id == 1) {
-                              setModelPreviewImageYPosition(52);
-                            } else if (id == 2) {
-                              setModelPreviewImageYPosition(38);
-                            } else if (id == 3) {
-                              setModelPreviewImageYPosition(70);
-                            } else if (id == 4) {
-                              setModelPreviewImageYPosition(50);
-                            } else if (id == 5) {
-                              setModelPreviewImageYPosition(120);
-                            }
-                            setSelectedWallImage(wallImage);
-                            setSelectedWallImageID(wallImage.wallImageID);
-                          }}
-                        >
-                          {selectedWallImageID == wallImage.wallImageID ? (
-                            <svg
-                              viewBox="0 0 50 50"
-                              style={{ width: "50px", height: "50px" }}
-                              className="position-absolute top-0 end-0"
-                            >
-                              <path d="M0,0 50,0 50,50 Z" fill="#0088FF" />
-                              <path
-                                d="M24,12 30,18 42,6"
-                                fill="transparent"
-                                stroke="#FFF"
-                                strokeLinecap="round"
-                                strokeWidth={3}
-                              />
-                            </svg>
-                          ) : (
-                            <></>
-                          )}
-                          <div
-                            className="position-relative"
-                            style={{
-                              width: "100%",
-                              height: "100%",
-                              backgroundColor: "transparent",
-                              backgroundImage: `url(${selectedModelImage?.image})`,
-                              backgroundSize: "15px auto",
-                              backgroundPosition: `center calc(50% - ${smallImagePositionY}px)`,
-                              backgroundRepeat: "no-repeat",
-                            }}
-                          ></div>
-                        </div>
-                        // </Col>
-                      );
-                    })}
-                  </div>
-
-                  <div className="thumbs-bottom">
-                    {secondImageList?.map((wallImage) => {
-                      if (!imageSize) {
-                        const image = new Image();
-                        image.src = wallImage.image;
-                        image.onload = () => {
-                          const maxWidth = 125;
-                          const scale =
-                            image.width > maxWidth ? maxWidth / image.width : 1;
-                          wallImage.width = image.width * scale;
-                          wallImage.height = image.height * scale;
-                          setImageSize({
-                            width: image.width * scale,
-                            height: image.height * scale,
-                          });
-                          // alert(size);
-                        };
-                      }
-
-                      let smallImagePositionY = 0;
-
-                      if (wallImage.wallImageID == 1) {
-                        smallImagePositionY = 12;
-                      } else if (wallImage.wallImageID == 2) {
-                        smallImagePositionY = 8;
-                      } else if (wallImage.wallImageID == 3) {
-                        smallImagePositionY = 15;
-                      } else if (wallImage.wallImageID == 4) {
-                        smallImagePositionY = 15;
-                      } else if (wallImage.wallImageID == 5) {
-                        smallImagePositionY = 20;
-                      } else if (wallImage.wallImageID == 6) {
-                        smallImagePositionY = 16;
-                      } else if (wallImage.wallImageID == 6) {
-                        smallImagePositionY = 80;
-                      }
-
-                      return (
-                        // <Col xs={5} md={4} lg={2}>
-                        <div
-                          className="d-flex flex-column align-items-center justify-content-center p-0"
-                          style={{
-                            width: `${imageSize?.width}px`,
-                            height: `${imageSize?.height}px`,
-                            backgroundImage: `url('${wallImage.image}')`,
-                            backgroundSize: "cover",
-                            backgroundRepeat: "no-repeat",
-                            backgroundPosition: "center",
-                            border:
-                              selectedWallImageID == wallImage.wallImageID
-                                ? "3px solid #0088FF"
-                                : "",
-                          }}
-                          onClick={() => {
-                            const id = wallImage.wallImageID;
-                            if (id == 6) {
-                              setModelPreviewImageYPosition(80);
-                            } else if (id == 7) {
-                              setModelPreviewImageYPosition(52);
-                            } else if (id == 8) {
-                              setModelPreviewImageYPosition(48);
-                            } else if (id == 9) {
-                              setModelPreviewImageYPosition(70);
-                            } else if (id == 10) {
-                              setModelPreviewImageYPosition(50);
-                            }
-                            setSelectedWallImage(wallImage);
-                            setSelectedWallImageID(wallImage.wallImageID);
-                          }}
-                        >
-                          {selectedWallImageID == wallImage.wallImageID ? (
-                            <svg
-                              viewBox="0 0 50 50"
-                              style={{ width: "50px", height: "50px" }}
-                              className="position-absolute top-0 end-0"
-                            >
-                              <path d="M0,0 50,0 50,50 Z" fill="#0088FF" />
-                              <path
-                                d="M24,12 30,18 42,6"
-                                fill="transparent"
-                                stroke="#FFF"
-                                strokeLinecap="round"
-                                strokeWidth={3}
-                              />
-                            </svg>
-                          ) : (
-                            <></>
-                          )}
-                          <div
-                            className="position-relative"
-                            style={{
-                              width: "100%",
-                              height: "100%",
-                              backgroundColor: "transparent",
-                              backgroundImage: `url(${selectedModelImage?.image})`,
-                              backgroundSize: "15px auto",
-                              backgroundPosition: `center calc(50% - ${smallImagePositionY}px)`,
-                              backgroundRepeat: "no-repeat",
-                            }}
-                          ></div>
-                        </div>
-                        // </Col>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* {firstImageList?.map((wallImage) => {
-                  if (!imageSize) {
-                    const image = new Image();
-                    image.src = wallImage.image;
-                    image.onload = () => {
-                      const maxWidth = 125;
-                      const scale =
-                        image.width > maxWidth ? maxWidth / image.width : 1;
-                      wallImage.width = image.width * scale;
-                      wallImage.height = image.height * scale;
-                      setImageSize({
-                        width: image.width * scale,
-                        height: image.height * scale,
-                      });
-                      // alert(size);
-                    };
-                  }
-
-                  let smallImagePositionY = 0;
-
-                  if (wallImage.wallImageID == 1) {
-                    smallImagePositionY = 12;
-                  } else if (wallImage.wallImageID == 2) {
-                    smallImagePositionY = 8;
-                  } else if (wallImage.wallImageID == 3) {
-                    smallImagePositionY = 15;
-                  } else if (wallImage.wallImageID == 4) {
-                    smallImagePositionY = 15;
-                  } else if (wallImage.wallImageID == 5) {
-                    smallImagePositionY = 20;
-                  } else if (wallImage.wallImageID == 6) {
-                    smallImagePositionY = 16;
-                  }
-
-                  return (
-                    // <Col xs={5} md={4} lg={2}>
-                    <Card
-                      className="d-flex flex-column align-items-center justify-content-center p-0"
-                      style={{
-                        width: `${imageSize?.width}px`,
-                        height: `${imageSize?.height}px`,
-                        backgroundImage: `url('${wallImage.image}')`,
-                        backgroundSize: "cover",
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: "center",
-                        border:
-                          selectedWallImageID == wallImage.wallImageID
-                            ? "3px solid #0088FF"
-                            : "",
-                      }}
-                      onClick={() => {
-                        const id = wallImage.wallImageID;
-
-                        if (id == 1) {
-                          setModelPreviewImageYPosition(52);
-                        } else if (id == 2) {
-                          setModelPreviewImageYPosition(38);
-                        } else if (id == 3) {
-                          setModelPreviewImageYPosition(70);
-                        } else if (id == 4) {
-                          setModelPreviewImageYPosition(50);
-                        } else if (id == 5) {
-                          setModelPreviewImageYPosition(120);
-                        } else if (id == 6) {
-                          setModelPreviewImageYPosition(80);
-                        }
-                        setSelectedWallImage(wallImage);
-                        setSelectedWallImageID(wallImage.wallImageID);
-                      }}
-                    >
-                      {selectedWallImageID == wallImage.wallImageID ? (
-                        <svg
-                          viewBox="0 0 50 50"
-                          style={{ width: "50px", height: "50px" }}
-                          className="position-absolute top-0 end-0"
-                        >
-                          <path d="M0,0 50,0 50,50 Z" fill="#0088FF" />
-                          <path
-                            d="M24,12 30,18 42,6"
-                            fill="transparent"
-                            stroke="#FFF"
-                            strokeLinecap="round"
-                            strokeWidth={3}
-                          />
-                        </svg>
-                      ) : (
-                        <></>
-                      )}
-                      <Card
-                        className="position-relative"
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          backgroundColor: "transparent",
-                          backgroundImage: `url(${selectedModelImage?.image})`,
-                          backgroundSize: "15px auto",
-                          backgroundPosition: `center calc(50% - ${smallImagePositionY}px)`,
-                          backgroundRepeat: "no-repeat",
-                        }}
-                      ></Card>
-                    </Card>
-                    // </Col>
-                  );
-                })} */}
-              </Row>
-            </Col>
-            {/* <Col xs={9} md={10} className="d-flex flex-column ps-4 pe-0">
-              <Row
+      <Row className="h-100 pt-5 mt-3 mt-md-2 pt-md-4 pb-5 justify-content-evenly gap-lg-2">
+        <Col
+          xs={12}
+          md={6}
+          className="pt-md-5 px-0 d-flex justify-content-center justify-content-lg-start"
+        >
+          <div className="gallery">
+            <div className="main">
+              <div
                 className="position-relative justify-content-center align-items-center"
                 style={{
-                  width: `${580 * imagePreviewScale}px`,
-                  height: `${495 * imagePreviewScale}px`,
-                  // transform: `scale(${imagePreviewScale})`,
                   backgroundImage: selectedWallImage?.image
                     ? `url('${selectedWallImage?.image}')`
                     : "rgba(50, 50, 50, 1.0)",
@@ -592,10 +190,8 @@ export default function SendPaintRequest(): ReactElement{
                   borderRadius: "10px",
                   overflow: "hidden",
                   backgroundRepeat: "no-repeat",
-                  backgroundSize: `${540 * imagePreviewScale}px ${
-                    495 * imagePreviewScale
-                  }px`,
                   backgroundPosition: "center",
+                  backgroundSize: "contain",
                 }}
               >
                 {!selectedWallImage?.image ? (
@@ -645,176 +241,225 @@ export default function SendPaintRequest(): ReactElement{
                     />
                   </svg>
                 ) : (
-                  <Card
-                    className="position-relative"
+                  <div
+                    className="position-relative slide-preview-image"
                     style={{
                       width: "100%",
                       height: "100%",
                       backgroundColor: "transparent",
                       backgroundImage: `url(${selectedModelImage?.image})`,
-                      backgroundSize: "90px auto",
                       backgroundPosition: `center calc(50% - ${modelPreviewImageYPosition}px)`,
                       backgroundRepeat: "no-repeat",
                     }}
-                  ></Card>
+                  ></div>
                 )}
-              </Row>
-              <Row className="gap-2 pt-2">
-                {secondImageList?.map((wallImage) => {
-                  if (!imageSize) {
-                    const image = new Image();
-                    image.src = wallImage.image;
-                    image.onload = () => {
-                      const maxWidth = 125;
-                      const scale =
-                        image.width > maxWidth ? maxWidth / image.width : 1;
-                      wallImage.width = image.width * scale;
-                      wallImage.height = image.height * scale;
-                      setImageSize({
-                        width: image.width * scale,
-                        height: image.height * scale,
-                      });
-                      // alert(size);
-                    };
-                  }
+              </div>
+            </div>
 
-                  let smallImagePositionY = 0;
+            <div className="thumbs-right">
+              {firstImageList?.map((wallImage) => {
+                if (!imageSize) {
+                  const image = new Image();
+                  image.src = wallImage.image;
+                  image.onload = () => {
+                    const maxWidth = 125;
+                    const scale =
+                      image.width > maxWidth ? maxWidth / image.width : 1;
+                    wallImage.width = image.width * scale;
+                    wallImage.height = image.height * scale;
+                    setImageSize({
+                      width: image.width * scale,
+                      height: image.height * scale,
+                    });
+                    // alert(size);
+                  };
+                }
 
-                  if (wallImage.wallImageID == 1) {
-                    smallImagePositionY = 12;
-                  } else if (wallImage.wallImageID == 2) {
-                    smallImagePositionY = 8;
-                  } else if (wallImage.wallImageID == 3) {
-                    smallImagePositionY = 15;
-                  } else if (wallImage.wallImageID == 4) {
-                    smallImagePositionY = 15;
-                  } else if (wallImage.wallImageID == 5) {
-                    smallImagePositionY = 20;
-                  } else if (wallImage.wallImageID == 6) {
-                    smallImagePositionY = 16;
-                  }
+                let smallImagePositionY = 0;
 
-                  return (
-                    // <Col xs={5} md={4} lg={2}>
-                    <Card
-                      className="d-flex flex-column align-items-center justify-content-center p-0"
+                if (wallImage.wallImageID == 1) {
+                  smallImagePositionY = 5.3;
+                } else if (wallImage.wallImageID == 2) {
+                  smallImagePositionY = 5;
+                } else if (wallImage.wallImageID == 3) {
+                  smallImagePositionY = 8;
+                } else if (wallImage.wallImageID == 4) {
+                  smallImagePositionY = 8;
+                } else if (wallImage.wallImageID == 5) {
+                  smallImagePositionY = 12;
+                } else if (wallImage.wallImageID == 6) {
+                  smallImagePositionY = 16;
+                }
+
+                return (
+                  // <Col xs={5} md={4} lg={2}>
+                  <div
+                    className="d-flex flex-column align-items-center justify-content-center p-0"
+                    style={{
+                      backgroundImage: `url('${wallImage.image}')`,
+                      backgroundSize: "cover",
+                      backgroundRepeat: "no-repeat",
+                      backgroundPosition: "center",
+                      border:
+                        selectedWallImageID == wallImage.wallImageID
+                          ? "3px solid #0088FF"
+                          : "",
+                    }}
+                    onClick={() => {
+                      const id = wallImage.wallImageID;
+
+                      if (id == 1) {
+                        setModelPreviewImageYPosition(52);
+                      } else if (id == 2) {
+                        setModelPreviewImageYPosition(38);
+                      } else if (id == 3) {
+                        setModelPreviewImageYPosition(70);
+                      } else if (id == 4) {
+                        setModelPreviewImageYPosition(50);
+                      } else if (id == 5) {
+                        setModelPreviewImageYPosition(80);
+                      }
+                      setSelectedWallImage(wallImage);
+                      setSelectedWallImageID(wallImage.wallImageID);
+                    }}
+                  >
+                    {selectedWallImageID == wallImage.wallImageID ? (
+                      <svg
+                        viewBox="0 0 50 50"
+                        style={{ width: "50px", height: "50px" }}
+                        className="position-absolute top-0 end-0"
+                      >
+                        <path d="M0,0 50,0 50,50 Z" fill="#0088FF" />
+                        <path
+                          d="M24,12 30,18 42,6"
+                          fill="transparent"
+                          stroke="#FFF"
+                          strokeLinecap="round"
+                          strokeWidth={3}
+                        />
+                      </svg>
+                    ) : (
+                      <></>
+                    )}
+                    <div
+                      className="position-relative slide-preview-small-image"
                       style={{
-                        width: `${imageSize?.width}px`,
-                        height: `${imageSize?.height}px`,
-                        backgroundImage: `url('${wallImage.image}')`,
-                        backgroundSize: "cover",
+                        width: "100%",
+                        height: "100%",
+                        backgroundColor: "transparent",
+                        backgroundImage: `url(${selectedModelImage?.image})`,
+                        backgroundPosition: `center calc(50% - ${smallImagePositionY}px)`,
                         backgroundRepeat: "no-repeat",
-                        backgroundPosition: "center",
-                        border:
-                          selectedWallImageID == wallImage.wallImageID
-                            ? "3px solid #0088FF"
-                            : "",
                       }}
-                      onClick={() => {
-                        const id = wallImage.wallImageID;
-                        if (id == 7) {
-                          setModelPreviewImageYPosition(52);
-                        } else if (id == 8) {
-                          setModelPreviewImageYPosition(48);
-                        } else if (id == 9) {
-                          setModelPreviewImageYPosition(70);
-                        } else if (id == 10) {
-                          setModelPreviewImageYPosition(50);
-                        }
-                        setSelectedWallImage(wallImage);
-                        setSelectedWallImageID(wallImage.wallImageID);
-                      }}
-                    >
-                      {selectedWallImageID == wallImage.wallImageID ? (
-                        <svg
-                          viewBox="0 0 50 50"
-                          style={{ width: "50px", height: "50px" }}
-                          className="position-absolute top-0 end-0"
-                        >
-                          <path d="M0,0 50,0 50,50 Z" fill="#0088FF" />
-                          <path
-                            d="M24,12 30,18 42,6"
-                            fill="transparent"
-                            stroke="#FFF"
-                            strokeLinecap="round"
-                            strokeWidth={3}
-                          />
-                        </svg>
-                      ) : (
-                        <></>
-                      )}
-                      <Card
-                        className="position-relative"
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          backgroundColor: "transparent",
-                          backgroundImage: `url(${selectedModelImage?.image})`,
-                          backgroundSize: "15px auto",
-                          backgroundPosition: `center calc(50% - ${smallImagePositionY}px)`,
-                          backgroundRepeat: "no-repeat",
-                        }}
-                      ></Card>
-                    </Card>
-                    // </Col>
-                  );
-                })}
-              </Row>
-            </Col> */}
-          </Row>
+                    ></div>
+                  </div>
+                );
+              })}
+            </div>
 
-          <Row>
-            <Col xs={12} className="pt-4">
-              <Row className="gap-3">
-                {/* {selectedCategory?.images.map((image) => (
-                <Card
-                  className="position-relative"
-                  style={{
-                    width: "160px",
-                    height: "200px",
-                    backgroundColor: "#EEEEEE",
-                    backgroundImage: `url('${image.image}')`,
-                    backgroundSize: "cover",
-                    backgroundRepeat: "no-repeat",
-                    backgroundPosition: "center",
-                    border:
-                      selectedModelImage == image ? "3px solid #0088FF" : "",
-                  }}
-                  onClick={() => {
-                    setSelectedModelImage(image);
-                  }}
-                >
-                  {selectedModelImage == image ? (
-                    <svg
-                      viewBox="0 0 50 50"
-                      style={{ width: "50px", height: "50px" }}
-                      className="position-absolute top-0 end-0"
-                    >
-                      <path d="M0,0 50,0 50,50 Z" fill="#0088FF" />
-                      <path
-                        d="M24,12 30,18 42,6"
-                        fill="transparent"
-                        stroke="#FFF"
-                        strokeLinecap="round"
-                        strokeWidth={3}
-                      />
-                    </svg>
-                  ) : (
-                    <></>
-                  )}
-                </Card>
-              ))} */}
-              </Row>
-            </Col>
-          </Row>
+            <div className="thumbs-bottom">
+              {secondImageList?.map((wallImage) => {
+                if (!imageSize) {
+                  const image = new Image();
+                  image.src = wallImage.image;
+                  image.onload = () => {
+                    const maxWidth = 125;
+                    const scale =
+                      image.width > maxWidth ? maxWidth / image.width : 1;
+                    wallImage.width = image.width * scale;
+                    wallImage.height = image.height * scale;
+                    setImageSize({
+                      width: image.width * scale,
+                      height: image.height * scale,
+                    });
+                    // alert(size);
+                  };
+                }
+
+                let smallImagePositionY = 0;
+
+                if (wallImage.wallImageID == 6) {
+                  smallImagePositionY = 5;
+                } else if (wallImage.wallImageID == 7) {
+                  smallImagePositionY = 0;
+                } else if (wallImage.wallImageID == 8) {
+                  smallImagePositionY = 10;
+                } else if (wallImage.wallImageID == 9) {
+                  smallImagePositionY = 0;
+                }
+
+                return (
+                  <div
+                    className="d-flex flex-column align-items-center justify-content-center p-0"
+                    style={{
+                      backgroundImage: `url('${wallImage.image}')`,
+                      backgroundSize: "cover",
+                      backgroundRepeat: "no-repeat",
+                      backgroundPosition: "center",
+                      border:
+                        selectedWallImageID == wallImage.wallImageID
+                          ? "3px solid #0088FF"
+                          : "",
+                    }}
+                    onClick={() => {
+                      const id = wallImage.wallImageID;
+                      if (id == 6) {
+                        setModelPreviewImageYPosition(80);
+                      } else if (id == 7) {
+                        setModelPreviewImageYPosition(52);
+                      } else if (id == 8) {
+                        setModelPreviewImageYPosition(48);
+                      } else if (id == 9) {
+                        setModelPreviewImageYPosition(70);
+                      } else if (id == 10) {
+                        setModelPreviewImageYPosition(50);
+                      }
+                      setSelectedWallImage(wallImage);
+                      setSelectedWallImageID(wallImage.wallImageID);
+                    }}
+                  >
+                    {selectedWallImageID == wallImage.wallImageID ? (
+                      <svg
+                        viewBox="0 0 50 50"
+                        style={{ width: "50px", height: "50px" }}
+                        className="position-absolute top-0 end-0"
+                      >
+                        <path d="M0,0 50,0 50,50 Z" fill="#0088FF" />
+                        <path
+                          d="M24,12 30,18 42,6"
+                          fill="transparent"
+                          stroke="#FFF"
+                          strokeLinecap="round"
+                          strokeWidth={3}
+                        />
+                      </svg>
+                    ) : (
+                      <></>
+                    )}
+                    <div
+                      className="position-relative slide-preview-small-image"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        backgroundColor: "transparent",
+                        backgroundImage: `url(${selectedModelImage?.image})`,
+                        backgroundPosition: `center calc(50% - ${smallImagePositionY}px)`,
+                        backgroundRepeat: "no-repeat",
+                      }}
+                    ></div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </Col>
-        <Col xs={6}>
-          <Row>
+        <Col xs={11} lg={5} className="pt-5">
+          <Row className="text text-center text-md-start">
             The animal you see in the image will get replaced with the animal
             image or images you choose.
           </Row>
           <Row className="gap-3 pt-3">
-            {!imageUploadExcludeCategories.includes(categorySelected) ?
+            {!imageUploadExcludeCategories.includes(categorySelected) ? (
               <Col xs={4}>
                 <Row>
                   <input
@@ -831,95 +476,22 @@ export default function SendPaintRequest(): ReactElement{
                   />
                 </Row>
               </Col>
-              : <></> }
-            {/* <Col xs={4}>
-              <Row>
-                 <select
-                className="form-select"
-                onChange={(event) => {
-                  const selectedValue = event.target.value;
-                  // categories?.forEach((value) => {
-                  //   if (parseInt(selectedValue) === value.id) {
-                  //     setSelectedCategory(value);
-                  //   }
-                  // });
+            ) : (
+              <></>
+            )}
 
-                  if (selectedValue == "paint-on-canvas") {
-                    setSizes([
-                      {
-                        size: "small",
-                        price: selectedModelImage?.smallPaintOnCanvasSize,
-                      },
-                      {
-                        size: "medium",
-                        price: selectedModelImage?.mediumPaintOnCanvasSize,
-                      },
-                      {
-                        size: "large",
-                        price: selectedModelImage?.largePaintOnCanvasSize,
-                      },
-                    ]);
-                  } else if (selectedValue == "print-on-canvas") {
-                    setSizes([
-                      {
-                        size: "small",
-                        price: selectedModelImage?.smallSize,
-                      },
-                      {
-                        size: "medium",
-                        price: selectedModelImage?.mediumSize,
-                      },
-                      {
-                        size: "large",
-                        price: selectedModelImage?.largeSize,
-                      },
-                    ]);
-                  } else if (selectedValue == "print-on-metal") {
-                    setSizes([
-                      {
-                        size: "small",
-                        price: selectedModelImage?.smallPrintMetalSize,
-                      },
-                      {
-                        size: "medium",
-                        price: selectedModelImage?.mediumPrintMetalSize,
-                      },
-                      {
-                        size: "large",
-                        price: selectedModelImage?.largePrintMetalSize,
-                      },
-                    ]);
-                  } else if (selectedValue == "print-on-paper") {
-                    setSizes([
-                      {
-                        size: "small",
-                        price: selectedModelImage?.smallPrintPaperSize,
-                      },
-                      {
-                        size: "medium",
-                        price: selectedModelImage?.mediumPrintPaperSize,
-                      },
-                      {
-                        size: "large",
-                        price: selectedModelImage?.largePrintPaperSize,
-                      },
-                    ]);
-                  }
-                }}
-              >
-                <option>Select the category</option>
-                {selectedModelImage?.variations.map((variation) => {
-                  return <option>{variation.variation?.variation}</option>
-                })}
-              </select>
-              </Row>
-            </Col>
-            */}
-            <Col xs={6} className="d-flex gap-2">
+            <Col
+              xs={12}
+              md={6}
+              className="d-flex gap-2 justify-content-center justify-content-md-start"
+            >
               <button
-                className="btn btn-primary"
+                className="btn btn-primary text"
                 disabled={
-                  selectedModelImage && selectedWallImage && (userSelectedImage || imageUploadExcludeCategories.includes(categorySelected))
+                  selectedModelImage &&
+                  selectedWallImage &&
+                  (userSelectedImage ||
+                    imageUploadExcludeCategories.includes(categorySelected))
                     ? false
                     : true
                 }
@@ -933,19 +505,13 @@ export default function SendPaintRequest(): ReactElement{
                       )) &&
                     selectedProductInformation?.variantIDs.length > 0
                   ) {
-                    // sendPaintRequest(
-                    //   selectedModelImage?.imageID,
-                    //   selectedWallImage?.wallImageID,
-                    //   userSelectedImage
-                    // );
-
                     addToCart(
                       selectedModelImage.imageID,
                       selectedWallImage.wallImageID,
                       userSelectedImage
                     );
                   } else {
-                    alert(userSelectedImage);
+                    // alert(userSelectedImage);
                   }
                 }}
               >
@@ -961,12 +527,12 @@ export default function SendPaintRequest(): ReactElement{
                 <></>
               )}
             </Col>
-            <Col xs={12}>
+            <Col xs={12} className="text text-center text-md-start">
               Cost: ${cost}
             </Col>
           </Row>
           <Row
-            className="ps-3 mt-4 mb-2 w-auto rounded-2 py-1 justify-content-start align-items-center text-center"
+            className="ps-3 mt-4 mb-2 w-auto rounded-2 py-1 justify-content-start align-items-center text-center text"
             style={{ backgroundColor: "#8822FF22" }}
           >
             Pick the size. (Price may vary depending on the size)
@@ -998,16 +564,31 @@ export default function SendPaintRequest(): ReactElement{
                     <span className="d-flex gap-2 py-3">
                       {variation ? (
                         variation.sizes?.map((size) => {
+                          let selected = false;
+                          selectedProductInformation.variantIDs.forEach(
+                            (element) => {
+                              if (size.id) {
+                                if (
+                                  element.variantID ==
+                                    variation.variation?.id &&
+                                  element.sizes?.includes(size.id)
+                                ) {
+                                  selected = true;
+                                }
+                              }
+                            }
+                          );
+
                           return (
                             <span
-                              className="d-flex flex-column rounded-2 justify-content-center align-items-center heading-5 px-3"
+                              className="d-flex flex-column rounded-2 justify-content-center align-items-center heading-5 px-3 py-2 position-relative"
                               style={{
                                 width: "auto",
                                 height: "auto",
                                 cursor: "pointer",
                                 backgroundColor: "#2200ff33",
                                 border: size?.id
-                                  ? sizes.includes(size?.id)
+                                  ? selected
                                     ? "solid 2px #000"
                                     : "none"
                                   : "none",
@@ -1060,26 +641,31 @@ export default function SendPaintRequest(): ReactElement{
                                       variantID: number;
                                       sizes: number[];
                                     }[] = [];
+
                                     updatedProductInformation.variantIDs.forEach(
                                       (element) => {
                                         const newSizes: number[] = [];
                                         element.sizes.forEach((s) => {
-                                          if (s != size.id) {
-                                            return newSizes.push(s);
-                                          } else {
+                                          if (
+                                            s == size.id &&
+                                            element.variantID ==
+                                              variation.variation?.id
+                                          ) {
                                             if (size.price) {
                                               setCost(cost - size.price);
                                             }
+                                          } else {
+                                            newSizes.push(s);
                                           }
                                         });
 
+                                        /** Only add variations with sizes selected */
                                         if (newSizes.length != 0) {
                                           element.sizes = newSizes;
                                           newVariationIDs.push(element);
                                         }
                                       }
                                     );
-
                                     updatedProductInformation.variantIDs =
                                       newVariationIDs;
                                   } else {
@@ -1100,18 +686,26 @@ export default function SendPaintRequest(): ReactElement{
                                     );
                                   }
                                 }
+
                                 setSelectedProductInformation(
                                   updatedProductInformation
                                 );
                                 console.log(updatedProductInformation);
                               }}
                             >
-                              <span>
+                              {/* {selected ? "s" : "u"} */}
+                              <span className="text pt-2">
                                 {size.sizeObj?.width}
                                 {size.sizeObj?.unit}x{size.sizeObj?.height}
                                 {size.sizeObj?.unit}
                               </span>
-                              <span className="" style={{ fontSize: "20px" }}>
+                              <span
+                                className="position-absolute top-0 end-0 bg-black rounded-2 text-white card-overlay px-2"
+                                style={{
+                                  marginTop: "-3px",
+                                  marginRight: "-3px",
+                                }}
+                              >
                                 ${size.price}
                               </span>
                             </span>
@@ -1125,62 +719,6 @@ export default function SendPaintRequest(): ReactElement{
                 </>
               );
             })}
-          </Row>
-          <Row className=" pt-2 pb-3">
-            {/* {sizes?.map((size) => {
-              return (
-                <Card
-                  className=""
-                  style={{
-                    width: "200px",
-                    border:
-                      selectedSize?.size == size.size
-                        ? "solid 3px #0055FF"
-                        : "",
-                  }}
-                  onClick={() => {
-                    setSelectedSize(size);
-                  }}
-                >
-                  <CardHeader className="justify-content-center text-center">
-                    <Row>
-                      <Col xs={6}>{size.size}</Col>
-                      <Col xs={6}>${size.price}</Col>
-                    </Row>
-                  </CardHeader>
-                </Card>
-              );
-            })} */}
-
-            {/* {sizes?.map((size) => {
-            return (
-              <Card
-                className=""
-                style={{
-                  width: "200px",
-                  border:
-                    selectedSize?.id == size.id ? "solid 3px #0055FF" : "",
-                }}
-                onClick={() => {
-                  setSelectedSize(size);
-                }}
-              >
-                <CardHeader className="justify-content-center text-center">
-                  <Row>
-                    <Col xs={6}>{size.size}</Col>
-                    <Col xs={6}>${size.price}</Col>
-                  </Row>
-                </CardHeader>
-                <CardBody>
-                  <Row className="text-center justify-content-center">
-                    {size.width}
-                    {size.unit} x {size.height}
-                    {size.unit}
-                  </Row>
-                </CardBody>
-              </Card>
-            );
-          })} */}
           </Row>
         </Col>
         {searchParams.get("category") == "Animals In Suits" ? (

@@ -1,6 +1,6 @@
 import { type ReactElement, useState, useEffect } from "react";
 import { Card, Col, Row } from "react-bootstrap";
-import { Trash, TrashFill } from "react-bootstrap-icons";
+import { Download, Trash, TrashFill } from "react-bootstrap-icons";
 
 import "./css/style.css"
 import ScrollTo from "../custom-components/ScrollTo";
@@ -224,21 +224,7 @@ function FormElement(props: {products: any[], setData: CallableFunction}) {
           ></textarea>
         </Col>
       </Row>
-      {/* <Row className="">
-        <Col xs={12} className="d-flex justify-content-end">
-          <button
-            className="w-auto place-order-button"
-            onClick={() => {
-              setInitiatePayment(true);
-            }}
-          >
-            Place My Order
-          </button>
-        </Col>
-      </Row> */}
-
       <CardElement className=" form-control" />
-
       <button className="btn btn-primary mt-2" disabled={loading || !stripe}>
         Pay
       </button>
@@ -320,31 +306,45 @@ export default function Cart(props: any): ReactElement{
         {/* {initiatePayment ? <StripePaymentDialog /> : <></>} */}
         <Row
           className={
-            "vh-100 vw-100 position-fixed top-0 start-0 bg-white " +
+            "vh-100 vw-100 position-fixed top-0 start-0 bg-white overflow-y-scroll pt-5 mt-3 " +
             (showInvoice ? "d-flex" : "d-none")
           }
-          style={{ zIndex: 3000 }}
+          style={{ zIndex: 300 }}
         >
           <Col xs={12}>
-            <Row>
-              <button
-                className="btn btn-danger"
-                onClick={() => {
-                  setShowInvoice(false);
-                }}
-              >
-                CLOSE
-              </button>
-            </Row>
             <Row className="justify-content-center align-items-start py-5">
               {/* {JSON.stringify(paymentData)} */}
               <Col xs={11} lg={6} className="d-flex flex-column gap-2">
-                
+                <Row className="justify-content-end gap-2">
+                  <button
+                    className="btn btn-success w-auto"
+                    onClick={() => {
+                      setShowInvoice(false);
+                    }}
+                  >
+                    <Download /> Download
+                  </button>
+                  <button
+                    className="btn btn-danger w-auto"
+                    onClick={() => {
+                      setShowInvoice(false);
+                    }}
+                  >
+                    CLOSE
+                  </button>
+                </Row>
                 <Row className="fw-bold">
                   <h2>Invoice</h2>
                   <hr />
                 </Row>
-
+                <Row>
+                  <Col xs={4} lg={3} className="fw-medium">
+                    Invoice ID:
+                  </Col>
+                  <Col xs={4} lg={8}>
+                    {invoiceData?.invoiceID}
+                  </Col>
+                </Row>
                 <Row>
                   <Col xs={4} lg={3} className="fw-medium">
                     Invoice Date:
@@ -353,7 +353,6 @@ export default function Cart(props: any): ReactElement{
                     {invoiceData?.invoiceDate}
                   </Col>
                 </Row>
-
                 <Row>
                   <Col xs={4} lg={3} className="fw-medium">
                     Payment Date:
@@ -362,7 +361,6 @@ export default function Cart(props: any): ReactElement{
                     {invoiceData?.paymentDate}
                   </Col>
                 </Row>
-
                 <Row>
                   <Col xs={4} lg={3} className="fw-medium">
                     Currency
@@ -371,7 +369,6 @@ export default function Cart(props: any): ReactElement{
                     {invoiceData?.amount} {invoiceData?.currency}
                   </Col>
                 </Row>
-
                 <Row className="">
                   <Col xs={4} lg={3} className="fw-medium">
                     Payment Status
@@ -390,7 +387,36 @@ export default function Cart(props: any): ReactElement{
                     </span>
                   </Col>
                 </Row>
+                <Row className="py-3">
+                  <Col xs={12} className="d-flex flex-column gap-2">
+                    <Row>
+                      <Col xs={4} lg={3} className="fw-medium">
+                        Customer Email
+                      </Col>
+                      <Col xs={4} lg={4}>
+                        {invoiceData?.customerEmail}
+                      </Col>
+                    </Row>
 
+                    <Row>
+                      <Col xs={4} lg={3} className="fw-medium">
+                        Billing Address
+                      </Col>
+                      <Col xs={4} lg={4}>
+                        {invoiceData?.billingAddress}
+                      </Col>
+                    </Row>
+
+                    <Row>
+                      <Col xs={4} lg={3} className="fw-medium">
+                        Shipping Address
+                      </Col>
+                      <Col xs={4} lg={4}>
+                        {invoiceData?.shippingAddress}
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
                 <Row>
                   <Col xs={12}>
                     <Row className="fw-bold pt-4">
@@ -398,30 +424,82 @@ export default function Cart(props: any): ReactElement{
                       <hr />
                     </Row>
                     <Row className="py-2">
-                      {/* {JSON.stringify(orderedData)} */}
-                      {Object.entries(orderedData)?.map((information) => {
-                        const productData: any = information[1];
+                      <Col xs={12}>
+                        <Row className="mb-2 justify-content-evenly">
+                          {/* {JSON.stringify(information)} */}
+                          <Col xs={12} md={3} className="fw-bold">
+                            Image
+                          </Col>
+                          <Col xs={12} md={3} className="fw-bold">
+                            Name & Category
+                          </Col>
+                          <Col xs={12} md={3} className="fw-bold">
+                            Sizes
+                          </Col>
+                        </Row>
+                        {/* {JSON.stringify(orderedData)} */}
+                        {Object.entries(orderedData ? orderedData : {})?.map(
+                          (information) => {
+                            const productData: any = information[1];
 
-                        return <>
-                        {/* {JSON.stringify(information)} */}
-                        <div style={{
-                          width: "100px",
-                          height: "150px",
-                          backgroundImage: `url(${productData?.image})`,
-                          backgroundSize: `contain`
-                        }}>
-
-                        </div>
-                        {productData?.name}<br/>
-                        {productData?.category}<br/>
-                        {/* {information?.name}<br/>
-                        {information?.category}<br/> */}
-                        </>
-                      })}
+                            return (
+                              <Row className="mb-2 justify-content-evenly border-top py-2">
+                                {/* {JSON.stringify(information)} */}
+                                <Col xs={12} md={3}>
+                                  <div
+                                    style={{
+                                      width: "100px",
+                                      height: "150px",
+                                      backgroundImage: `url(${productData?.image})`,
+                                      backgroundSize: `contain`,
+                                    }}
+                                  ></div>
+                                </Col>
+                                <Col xs={12} md={3}>
+                                  <strong>Name:</strong>
+                                  <br /> {productData?.name}
+                                  <br />
+                                  <br />
+                                  <strong>Category:</strong>
+                                  <br /> {productData?.category}
+                                  <br />
+                                </Col>
+                                <Col xs={12} md={3}>
+                                  {Object.entries(productData?.variations)?.map(
+                                    (information: any) => {
+                                      const variation = information[0];
+                                      const sizes: any = information[1]?.sizes;
+                                      return (
+                                        <>
+                                          <Row>{variation}</Row>
+                                          <Row className="gap-2">
+                                            {sizes?.map((size: any) => {
+                                              return (
+                                                <span
+                                                  className="px-2 py-1 rounded-2 w-auto"
+                                                  style={{
+                                                    backgroundColor:
+                                                      "#2200FF22",
+                                                  }}
+                                                >
+                                                  {size}
+                                                </span>
+                                              );
+                                            })}
+                                          </Row>
+                                        </>
+                                      );
+                                    }
+                                  )}
+                                </Col>
+                              </Row>
+                            );
+                          }
+                        )}
+                      </Col>
                     </Row>
                   </Col>
                 </Row>
-
                 <Row>
                   <hr />
                   <Col xs={12}>
@@ -431,7 +509,6 @@ export default function Cart(props: any): ReactElement{
                     </Row>
                   </Col>
                 </Row>
-
               </Col>
             </Row>
           </Col>

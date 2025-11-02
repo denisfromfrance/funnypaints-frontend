@@ -87,7 +87,7 @@ export default function UserBase(props: {element: ReactElement, authenticated: b
   return (
     <>
       <Navbar
-        expand="md"
+        expand="lg"
         className="bg-white py-1 py-lg-2 position-fixed top-0 start-0 w-100"
         style={{ zIndex: 400 }}
       >
@@ -220,62 +220,39 @@ export default function UserBase(props: {element: ReactElement, authenticated: b
       <Row
         ref={dropdownViewRef}
         className={
-          "filled-width-dropdown d-flex w-100 position-fixed mt-5 justify-content-center bg-black " +
+          "filled-width-dropdown d-flex w-100 position-fixed mt-5 justify-content-center bg-white " +
           (expand ? `expand-dropdown` : "collapse-dropdown")
         }
-        style={{ zIndex: 400 }}
+        style={{ zIndex: 400, boxShadow: `0px 10px 10px 1px ${expand ? '#5555' : '#0000'}` }}
       >
         <Col xs={12} md={8} className="py-5">
-          <Row className="heading-6 text-white">
+          <Row className="heading-6">
             <Col xs={6} className="pb-2">
               Categories
               <hr />
             </Col>
           </Row>
           <Row className=" text-decoration-none">
-            {/* <a
-              href="/collection?category=animal"
-              className=" text-decoration-none dropdown-link-text w-50"
-            >
-              Animal in suits
-            </a>
-            <a
-              href="/collection?category=animal"
-              className=" text-decoration-none dropdown-link-text"
-            >
-              Nature
-            </a> */}
-            {/* {JSON.stringify(navbarStructuredCategories)} */}
             {navbarStructuredCategories.map((section) => {
               return (
                 <>
-                  <Col xs={12} md={4} lg={3}>{section.map((category) => {
-                    return <a
-                      href={`/collection?category=${category.category}`}
-                      style={{}}
-                      className="text-white-50 text-decoration-none text footer-category-text"
-                    >
-                      {category.category}
-                    </a>;
+                  <Col xs={12} md={4}>{section.map((category) => {
+                    return (
+                    <Row>
+                      <a
+                        href={`/collection?category=${category.category}`}
+                        style={{}}
+                        className="-50 text-decoration-none text footer-category-text"
+                      >
+                        {category.category}
+                      </a>
+                    </Row>);
                   })}</Col>
                 </>
               );
             })}
-
-            {/* {categories?.map((category) => {
-              return (
-                <a
-                  href={`/collection?category=${category.category}`}
-                  style={{}}
-                  className="text-white-50 text-decoration-none text footer-category-text w-auto"
-                >
-                  {category.category}
-                </a>
-              );
-            })} */}
           </Row>
         </Col>
-        {/* {JSON.stringify(cartItems)} */}
       </Row>
       {element}
       <Row className="bg-dark px-2 px-md-5" id="footer">
